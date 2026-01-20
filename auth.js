@@ -36,7 +36,7 @@ onAuthStateChanged(auth, async (user) => {
 const loginBtn = document.getElementById('loginBtn');
 if (loginBtn) {
     loginBtn.addEventListener('click', async () => {
-        const email = document.getElementById('loginUsername').value + '@naz3game.com';
+        const email = document.getElementById('loginUsername').value.value;
         const password = document.getElementById('loginPassword').value;
         
         if (!email || !password) {
