@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NAZ3 Game - Play & Earn NAZ Coins</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 3em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+        
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+        
+        .content {
+            padding: 40px;
+        }
+        
+        .auth-section {
+            display: none;
+        }
+        
+        .auth-section.active {
+            display: block;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 600;
+        }
+        
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+        
+        .form-group input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        .btn {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin: 5px;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+        
+        .btn-secondary {
+            background: #e0e0e0;
+            color: #333;
+        }
+        
+        .btn-secondary:hover {
+            background: #d0d0d0;
+        }
+        
+        .user-info {
+            background: #f5f5f5;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .coin-balance {
+            font-size: 24px;
+            font-weight: bold;
+            color: #667eea;
+        }
+        
+        .game-area {
+            background: #f9f9f9;
+            padding: 30px;
+            border-radius: 10px;
+            text-align: center;
+        }
+        
+        .game-buttons {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        .game-btn {
+            padding: 40px 20px;
+            background: white;
+            border: 3px solid #667eea;
+            border-radius: 15px;
+            font-size: 18px;
+            font-weight: 600;
+            color: #667eea;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .game-btn:hover {
+            background: #667eea;
+            color: white;
+            transform: scale(1.05);
+        }
+        
+        .result {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 8px;
+            font-size: 18px;
+            font-weight: 600;
+        }
+        
+        .result.win {
+            background: #d4edda;
+            color: #155724;
+        }
+        
+        .result.lose {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        
+        .toggle-link {
+            color: #667eea;
+            cursor: pointer;
+            text-decoration: underline;
+            font-weight: 600;
+        }
+        
+        .toggle-link:hover {
+            color: #764ba2;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎮 NAZ3 GAME</h1>
+            <p>Play Games & Earn NAZ Coins!</p>
+        </div>
+        
+        <div class="content">
+            <!-- Login Section -->
+            <div id="loginSection" class="auth-section active">
+                <h2 style="margin-bottom: 20px; color: #333;">Login to Your Account</h2>
+                <div class="form-group">
+                    <label>Username:</label>
+                    <input type="text" id="loginUsername" placeholder="Enter your username">
+                </div>
+                <div class="form-group">
+                    <label>Password:</label>
+                    <input type="password" id="loginPassword" placeholder="Enter your password">
+                </div>
+                <button class="btn btn-primary" onclick="login()">Login</button>
+                <p style="margin-top: 15px;">Don't have an account? <span class="toggle-link" onclick="showRegister()">Register here</span></p>
+            </div>
+            
+            <!-- Register Section -->
+            <div id="registerSection" class="auth-section">
+                <h2 style="margin-bottom: 20px; color: #333;">Create New Account</h2>
+                <div class="form-group">
+                    <label>Username:</label>
+                    <input type="text" id="regUsername" placeholder="Choose a username">
+                </div>
+                <div class="form-group">
+                    <label>Email:</label>
+                    <input type="email" id="regEmail" placeholder="Enter your email">
+                </div>
+                <div class="form-group">
+                    <label>Password:</label>
+                    <input type="password" id="regPassword" placeholder="Choose a password">
+                </div>
+                <button class="btn btn-primary" onclick="register()">Create Account</button>
+                <p style="margin-top: 15px;">Already have an account? <span class="toggle-link" onclick="showLogin()">Login here</span></p>
+            </div>
+            
+            <!-- Game Section -->
+            <div id="gameSection" class="auth-section">
+                <div class="user-info">
+                    <div>
+                        <h3>Welcome, <span id="username">Player</span>!</h3>
+                    </div>
+                    <div class="coin-balance">
+                        💰 <span id="coinBalance">100</span> NAZ Coins
+                    </div>
+                    <button class="btn btn-secondary" onclick="logout()">Logout</button>
+                </div>
+                
+                <div class="game-area">
+                    <h2 style="margin-bottom: 20px; color: #333;">Choose Your Game</h2>
+                    <div class="game-buttons">
+                        <button class="game-btn" onclick="playGame('dice')">🎲 Dice Roll<br><small>Bet 10 coins, win 30</small></button>
+                        <button class="game-btn" onclick="playGame('flip')">🪙 Coin Flip<br><small>Bet 5 coins, win 15</small></button>
+                        <button class="game-btn" onclick="playGame('lucky')">🍀 Lucky Number<br><small>Bet 20 coins, win 60</small></button>
+                    </div>
+                    <div id="gameResult"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Game data storage
+        let users = JSON.parse(localStorage.getItem('naz3Users')) || {};
+        let currentUser = localStorage.getItem('naz3CurrentUser');
+        
+        // Initialize
+        if (currentUser && users[currentUser]) {
+            showGame();
+        }
+        
+        function showLogin() {
+            document.getElementById('loginSection').classList.add('active');
+            document.getElementById('registerSection').classList.remove('active');
+            document.getElementById('gameSection').classList.remove('active');
+        }
+        
+        function showRegister() {
+            document.getElementById('registerSection').classList.add('active');
+            document.getElementById('loginSection').classList.remove('active');
+            document.getElementById('gameSection').classList.remove('active');
+        }
+        
+        function showGame() {
+            document.getElementById('gameSection').classList.add('active');
+            document.getElementById('loginSection').classList.remove('active');
+            document.getElementById('registerSection').classList.remove('active');
+            updateUserInfo();
+        }
+        
+        function register() {
+            const username = document.getElementById('regUsername').value.trim();
+            const email = document.getElementById('regEmail').value.trim();
+            const password = document.getElementById('regPassword').value;
+            
+            if (!username || !email || !password) {
+                alert('Please fill in all fields!');
+                return;
+            }
+            
+            if (users[username]) {
+                alert('Username already exists!');
+                return;
+            }
+            
+            users[username] = {
+                email: email,
+                password: password,
+                coins: 100
+            };
+            
+            localStorage.setItem('naz3Users', JSON.stringify(users));
+            alert('Registration successful! Please login.');
+            showLogin();
+        }
+        
+        function login() {
+            const username = document.getElementById('loginUsername').value.trim();
+            const password = document.getElementById('loginPassword').value;
+            
+            if (!username || !password) {
+                alert('Please enter username and password!');
+                return;
+            }
+            
+            if (!users[username] || users[username].password !== password) {
+                alert('Invalid username or password!');
+                return;
+            }
+            
+            currentUser = username;
+            localStorage.setItem('naz3CurrentUser', currentUser);
+            showGame();
+        }
+        
+        function logout() {
+            currentUser = null;
+            localStorage.removeItem('naz3CurrentUser');
+            showLogin();
+        }
+        
+        function updateUserInfo() {
+            if (currentUser && users[currentUser]) {
+                document.getElementById('username').textContent = currentUser;
+                document.getElementById('coinBalance').textContent = users[currentUser].coins;
+            }
+        }
+        
+        function playGame(gameType) {
+            const resultDiv = document.getElementById('gameResult');
+            let bet, winAmount, winChance;
+            
+            if (gameType === 'dice') {
+                bet = 10;
+                winAmount = 30;
+                winChance = 0.5;
+            } else if (gameType === 'flip') {
+                bet = 5;
+                winAmount = 15;
+                winChance = 0.5;
+            } else if (gameType === 'lucky') {
+                bet = 20;
+                winAmount = 60;
+                winChance = 0.3;
+            }
+            
+            if (users[currentUser].coins < bet) {
+                resultDiv.innerHTML = `<div class="result lose">Not enough coins! You need ${bet} NAZ coins to play.</div>`;
+                return;
+            }
+            
+            users[currentUser].coins -= bet;
+            
+            const won = Math.random() < winChance;
+            
+            if (won) {
+                users[currentUser].coins += winAmount;
+                resultDiv.innerHTML = `<div class="result win">🎉 You Won! +${winAmount} NAZ Coins!</div>`;
+            } else {
+                resultDiv.innerHTML = `<div class="result lose">😢 You Lost! -${bet} NAZ Coins. Try again!</div>`;
+            }
+            
+            localStorage.setItem('naz3Users', JSON.stringify(users));
+            updateUserInfo();
+            
+            setTimeout(() => {
+                resultDiv.innerHTML = '';
+            }, 3000);
+        }
+    </script>
+</body>
+</html>
