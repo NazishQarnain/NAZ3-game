@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Coin Flip - NAZ3 Game</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 800px;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .user-info {
+            background: #f5f5f5;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .coin-balance {
+            font-size: 24px;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .btn {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-secondary {
+            background: #e0e0e0;
+            color: #333;
+        }
+
+        .btn-secondary:hover {
+            background: #d0d0d0;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .game-area {
+            padding: 40px;
+            text-align: center;
+        }
+
+        .coin {
+            width: 200px;
+            height: 200px;
+            background: linear-gradient(135deg, #ffd700, #ffed4e);
+            border-radius: 50%;
+            margin: 30px auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 80px;
+            box-shadow: 0 10px 30px rgba(255, 215, 0, 0.4);
+            border: 5px solid #ffaa00;
+        }
+
+        .coin.flipping {
+            animation: flip 0.6s linear infinite;
+        }
+
+        @keyframes flip {
+            0% { transform: rotateY(0deg); }
+            100% { transform: rotateY(360deg); }
+        }
+
+        .result {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 8px;
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .result.win {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .result.lose {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .info-text {
+            color: #666;
+            margin: 20px 0;
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🪙 Coin Flip Game</h1>
+            <p>Bet 5 coins, win 15!</p>
+        </div>
+
+        <div class="user-info">
+            <div>
+                <h3>Welcome, <span id="username">Player</span>!</h3>
+            </div>
+            <div class="coin-balance">
+                💰 <span id="coinBalance">100</span> NAZ Coins
+            </div>
+            <button class="btn btn-secondary" onclick="goBack()">Back to Games</button>
+        </div>
+
+        <div class="game-area">
+            <p class="info-text">Flip the coin and guess Heads to win!</p>
+            
+            <div id="coinDisplay" class="coin">🪙</div>
+            
+            <button class="btn btn-primary" onclick="flipCoin()" id="playBtn">🪙 Flip Coin (5 coins)</button>
+            
+            <div id="gameResult"></div>
+        </div>
+    </div>
+
+    <script>
+        let users = JSON.parse(localStorage.getItem('naz3Users')) || {};
+        let currentUser = localStorage.getItem('naz3CurrentUser');
+
+        if (!currentUser || !users[currentUser]) {
+            alert('Please login first!');
+            window.location.href = 'index.html';
+        }
+
+        function updateUserInfo() {
+            if (currentUser && users[currentUser]) {
+                document.getElementById('username').textContent = currentUser;
+                document.getElementById('coinBalance').textContent = users[currentUser].coins;
+            }
+        }
+
+        function goBack() {
+            window.location.href = 'index.html';
+        }
+
+        function flipCoin() {
+            if (users[currentUser].coins < 5) {
+                alert('Not enough coins! You need 5 NAZ coins to play.');
+                return;
+            }
+
+            users[currentUser].coins -= 5;
+            updateUserInfo();
+            
+            const coin = document.getElementById('coinDisplay');
+            const resultDiv = document.getElementById('gameResult');
+            const playBtn = document.getElementById('playBtn');
+            
+            playBtn.disabled = true;
+            coin.classList.add('flipping');
+            resultDiv.innerHTML = '';
+
+            setTimeout(() => {
+                const result = Math.random() < 0.5 ? 'Heads' : 'Tails';
+                coin.textContent = result === 'Heads' ? '🙂' : '☹️';
+                coin.classList.remove('flipping');
+                
+                const won = (result === 'Heads');
+
+                setTimeout(() => {
+                    if (won) {
+                        users[currentUser].coins += 15;
+                        resultDiv.innerHTML = `<div class="result win">🎉 You Won! It's ${result}! +15 NAZ Coins!</div>`;
+                    } else {
+                        resultDiv.innerHTML = `<div class="result lose">😢 You Lost! It's ${result}. Try again!</div>`;
+                    }
+
+                    localStorage.setItem('naz3Users', JSON.stringify(users));
+                    updateUserInfo();
+                    
+                    setTimeout(() => {
+                        resultDiv.innerHTML = '';
+                        coin.textContent = '🪙';
+                    }, 3000);
+                    
+                    playBtn.disabled = false;
+                }, 500);
+            }, 1500);
+        }
+
+        updateUserInfo();
+    </script>
+</body>
+</html>
