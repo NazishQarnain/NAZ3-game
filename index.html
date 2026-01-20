@@ -153,6 +153,8 @@
             font-weight: 600;
             color: #667eea;
             cursor: pointer;
+                    text-decoration: none;
+                    display: block;
             transition: all 0.3s;
         }
         
@@ -483,14 +485,10 @@
                 <div class="game-area">
                     <h2 style="margin-bottom: 20px; color: #333;">Choose Your Game</h2>
                     <div class="game-buttons">
-                        <button class="game-btn" onclick="playGame('dice')">🎲 Dice Roll<br><small>Bet 10 coins, win 30</small></button>
-                        <button class="game-btn" onclick="playGame('flip')">🪙 Coin Flip<br><small>Bet 5 coins, win 15</small></button>
-                        <button class="game-btn" onclick="playGame('lucky')">🍀 Lucky Number<br><small>Bet 20 coins, win 60</small></button>
-                                                <button class="game-btn" onclick="playGame('tricolor')">🇮🇳 Tri Color<br><small>Bet 15 coins, win 30</small></button>
-                    </div>
-                    <div id="gameResult"></div>
-                </div>
-            </div>
+            <a href="dice.html" class="game-btn">🎲 Dice Roll<br><small>Bet 10 coins, win 30</small></a>                        <button class="game-btn" onclick="playGame('flip')">🪙 Coin Flip<br><small>Bet 5 coins, win 15</small></button>
+            <a href="coin.html" class="game-btn">🪙 Coin Flip<br><small>Bet 5 coins, win 15</small></a>                                                <button class="game-btn" onclick="playGame('tricolor')">🇮🇳 Tri Color<br><small>Bet 15 coins, win 30</small></button>
+            <a href="lucky.html" class="game-btn">🍀 Lucky Number<br><small>Bet 20 coins, win 60</small></a>                    <div id="gameResult"></div>
+            <a href="tricolor.html" class="game-btn">🇮🇳 Tri Color<br><small>Bet 15 coins, win 30</small></a>            </div>
         </div>
     </div>
     
