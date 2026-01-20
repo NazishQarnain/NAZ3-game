@@ -252,6 +252,7 @@
                         <button class="game-btn" onclick="playGame('dice')">🎲 Dice Roll<br><small>Bet 10 coins, win 30</small></button>
                         <button class="game-btn" onclick="playGame('flip')">🪙 Coin Flip<br><small>Bet 5 coins, win 15</small></button>
                         <button class="game-btn" onclick="playGame('lucky')">🍀 Lucky Number<br><small>Bet 20 coins, win 60</small></button>
+                                                <button class="game-btn" onclick="playGame('tricolor')">🇮🇳 Tri Color<br><small>Bet 15 coins, win 30</small></button>
                     </div>
                     <div id="gameResult"></div>
                 </div>
@@ -362,6 +363,20 @@
                 bet = 20;
                 winAmount = 60;
                 winChance = 0.3;
+            }
+                        
+            if (gameType === 'tricolor') {
+                // Show color selection modal
+                const color = prompt('Choose a color: Orange, Yellow, or Green');
+                if (!color || !['orange', 'yellow', 'green'].includes(color.toLowerCase())) {
+                    resultDiv.innerHTML = `<div class="result lose">Invalid color selection!</div>`;
+                    return;
+                }
+                bet = 15;
+                winAmount = 30;
+                const colors = ['orange', 'yellow', 'green'];
+                const winningColor = colors[Math.floor(Math.random() * colors.length)];
+                winChance = (color.toLowerCase() === winningColor) ? 1 : 0;
             }
             
             if (users[currentUser].coins < bet) {
