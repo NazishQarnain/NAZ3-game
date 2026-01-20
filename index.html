@@ -493,7 +493,8 @@
         </div>
     </div>
     
-    <script>
+        <!-- OLD LOCALSTORAGE CODE - DISABLED FOR FIREBASE
+            <script>
         // Game data storage
         let users = JSON.parse(localStorage.getItem('naz3Users')) || {};
         let currentUser = localStorage.getItem('naz3CurrentUser');
@@ -713,6 +714,7 @@
                 function closeLuckyModal() { document.getElementById('luckyModal').classList.remove('active'); document.getElementById('luckyDisplay').textContent = '?'; }
                 function playLucky() { if (users[currentUser].coins < 20) { alert('Not enough coins!'); return; } users[currentUser].coins -= 20; const lucky = document.getElementById('luckyDisplay'); lucky.classList.add('spinning'); setTimeout(() => { const result = Math.floor(Math.random() * 10) + 1; lucky.textContent = result; lucky.classList.remove('spinning'); const won = Math.random() < 0.3; setTimeout(() => { const resultDiv = document.getElementById('gameResult'); if (won) { users[currentUser].coins += 60; resultDiv.innerHTML = `<div class="result win">🎉 You Won! +60 NAZ Coins!</div>`; } else { resultDiv.innerHTML = `<div class="result lose">😢 You Lost! -20 NAZ Coins!</div>`; } localStorage.setItem('naz3Users', JSON.stringify(users)); updateUserInfo(); setTimeout(() => { resultDiv.innerHTML = ''; }, 3000); closeLuckyModal(); }, 1000); }, 1500); }
     </script>
+        -->
 </body>
 
 
