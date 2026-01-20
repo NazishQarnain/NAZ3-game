@@ -596,16 +596,11 @@
                         // Open modal instead of inline logic
                         openLuckyModal();
                         return;
-            
-            
-            localStorage.setItem('naz3Users', JSON.stringify(users));
-            updateUserInfo();
-            
-            setTimeout(() => {
-                resultDiv.innerHTML = '';
-            }, 3000);
-        }
-
+                    } else if (gameType === 'tricolor') {
+                        openTriColorModal();
+                        return;
+                    }
+    
                     
         // Tri-Color Game Functions
         let selectedColor = null;
