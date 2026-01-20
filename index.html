@@ -190,6 +190,139 @@
         .toggle-link:hover {
             color: #764ba2;
         }
+
+                
+        /* Tri-Color Game Styles */
+        .tri-color-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .tri-color-modal.active {
+            display: flex;
+        }
+        
+        .tri-color-container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            text-align: center;
+            max-width: 500px;
+            animation: slideIn 0.5s ease;
+        }
+        
+        @keyframes slideIn {
+            from {
+                transform: translateY(-50px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+        
+        .color-wheel {
+            width: 300px;
+            height: 300px;
+            margin: 30px auto;
+            position: relative;
+            border-radius: 50%;
+            background: conic-gradient(
+                from 0deg,
+                #FF9933 0deg 120deg,
+                #FFFFFF 120deg 240deg,
+                #138808 240deg 360deg
+            );
+            animation: spin 3s linear infinite;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+        }
+        
+        .color-wheel.spinning {
+            animation: spin 0.5s linear infinite;
+        }
+        
+        .color-wheel.stopped {
+            animation: none;
+        }
+        
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        
+        .wheel-pointer {
+            position: absolute;
+            top: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 0;
+            border-left: 20px solid transparent;
+            border-right: 20px solid transparent;
+            border-top: 30px solid #667eea;
+            z-index: 10;
+        }
+        
+        .color-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 30px;
+        }
+        
+        .color-btn {
+            padding: 15px 30px;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            color: white;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+        }
+        
+        .color-btn.orange {
+            background: linear-gradient(135deg, #FF9933, #FF7700);
+        }
+        
+        .color-btn.yellow {
+            background: linear-gradient(135deg, #FFD700, #FFA500);
+        }
+        
+        .color-btn.green {
+            background: linear-gradient(135deg, #138808, #0d5c05);
+        }
+        
+        .color-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+        
+        .color-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .close-modal {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: none;
+            border: none;
+            font-size: 30px;
+            cursor: pointer;
+            color: #333;
+        }
     </style>
 </head>
 <body>
@@ -365,18 +498,10 @@
                 winChance = 0.3;
             }
                         
-            if (gameType === 'tricolor') {
-                // Show color selection modal
-                const color = prompt('Choose a color: Orange, Yellow, or Green');
-                if (!color || !['orange', 'yellow', 'green'].includes(color.toLowerCase())) {
-                    resultDiv.innerHTML = `<div class="result lose">Invalid color selection!</div>`;
-                    return;
-                }
-                bet = 15;
-                winAmount = 30;
-                const colors = ['orange', 'yellow', 'green'];
-                const winningColor = colors[Math.floor(Math.random() * colors.length)];
-                winChance = (color.toLowerCase() === winningColor) ? 1 : 0;
+            iif (gameType === 'tricolor') {
+                // Open the modal instead of using prompt
+                openTriColorModal();
+                return;
             }
             
             if (users[currentUser].coins < bet) {
@@ -402,6 +527,89 @@
                 resultDiv.innerHTML = '';
             }, 3000);
         }
+
+                    
+        // Tri-Color Game Functions
+        let selectedColor = null;
+        
+        function openTriColorModal() {
+            document.getElementById('triColorModal').classList.add('active');
+        }
+        
+        function closeTriColorModal() {
+            document.getElementById('triColorModal').classList.remove('active');
+            selectedColor = null;
+            document.getElementById('colorWheel').classList.remove('spinning', 'stopped');
+        }
+        
+        function selectColor(color) {
+            if (users[currentUser].coins < 15) {
+                alert('Not enough coins! You need 15 NAZ coins to play.');
+                return;
+            }
+            
+            selectedColor = color;
+            const wheel = document.getElementById('colorWheel');
+            const buttons = document.querySelectorAll('.color-btn');
+            
+            // Disable buttons
+            buttons.forEach(btn => btn.disabled = true);
+            
+            // Deduct bet
+            users[currentUser].coins -= 15;
+            updateUserInfo();
+            
+            // Spin animation
+            wheel.classList.add('spinning');
+            
+            setTimeout(() => {
+                wheel.classList.remove('spinning');
+                wheel.classList.add('stopped');
+                
+                // Determine winner
+                const colors = ['orange', 'yellow', 'green'];
+                const winningColor = colors[Math.floor(Math.random() * colors.length)];
+                const won = (selectedColor === winningColor);
+                
+                setTimeout(() => {
+                    const resultDiv = document.getElementById('gameResult');
+                    
+                    if (won) {
+                        users[currentUser].coins += 30;
+                        resultDiv.innerHTML = `<div class="result win">🎉 You Won! Your ${selectedColor} matched! +30 NAZ Coins!</div>`;
+                    } else {
+                        resultDiv.innerHTML = `<div class="result lose">😢 You Lost! Winning color was ${winningColor}. -15 NAZ Coins. Try again!</div>`;
+                    }
+                    
+                    localStorage.setItem('naz3Users', JSON.stringify(users));
+                    updateUserInfo();
+                    
+                    setTimeout(() => {
+                        resultDiv.innerHTML = '';
+                    }, 3000);
+                    
+                    closeTriColorModal();
+                    buttons.forEach(btn => btn.disabled = false);
+                }, 1000);
+            }, 2000);
+        }
     </script>
 </body>
+
+        
+    <!-- Tri-Color Game Modal -->
+    <div id="triColorModal" class="tri-color-modal">
+        <div class="tri-color-container">
+            <button class="close-modal" onclick="closeTriColorModal()">&times;</button>
+            <h2 style="color: #333; margin-bottom: 20px;">🇮🇳 Tri-Color Game</h2>
+            <p style="color: #666; margin-bottom: 10px;">Choose your color and spin the wheel!</p>
+            <div class="wheel-pointer"></div>
+            <div id="colorWheel" class="color-wheel"></div>
+            <div class="color-buttons">
+                <button class="color-btn orange" onclick="selectColor('orange')">🟠 Orange</button>
+                <button class="color-btn yellow" onclick="selectColor('yellow')">🟡 Yellow</button>
+                <button class="color-btn green" onclick="selectColor('green')">🟢 Green</button>
+            </div>
+        </div>
+    </div>
 </html>
