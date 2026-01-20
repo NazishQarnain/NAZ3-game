@@ -112,3 +112,47 @@ window.logout = async function() {
         console.error('Logout error:', error);
     }
 };
+
+// Global functions for HTML onclick handlers
+window.showLogin = function() {
+    document.getElementById('loginSection').classList.add('active');
+    document.getElementById('registerSection').classList.remove('active');
+};
+
+window.showRegister = function() {
+    document.getElementById('registerSection').classList.add('active');
+    document.getElementById('loginSection').classList.remove('active');
+};
+
+window.register = async function() {
+    const username = document.getElementById('regUsername').value.trim();
+    const email = document.getElementById('regEmail').value.trim();
+    const password = document.getElementById('regPassword').value;
+
+    if (!username || !email || !password) {
+        alert('Please fill in all fields!');
+        return;
+    }
+
+    try {
+        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+        const user = userCredential.user;
+
+        // Create user document in Firestore
+        await setDoc(doc(db, 'users', user.uid), {
+            username: username,
+            email: email,
+            coins: 200,
+            createdAt: new Date().toISOString()
+        });
+
+        alert('Registration successful! You can now login.');
+        showLogin();
+    } catch (error) {
+        if (error.code === 'auth/email-already-in-use') {
+            alert('Email already registered. Please login.');
+        } else {
+            alert('Registration failed: ' + error.message);
+        }
+    }
+};
