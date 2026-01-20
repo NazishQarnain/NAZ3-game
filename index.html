@@ -583,43 +583,20 @@
         
         function playGame(gameType) {
             const resultDiv = document.getElementById('gameResult');
-            let bet, winAmount, winChance;
             
             if (gameType === 'dice') {
-                bet = 10;
-                winAmount = 30;
-                winChance = 0.5;
-            } else if (gameType === 'flip') {
-                bet = 5;
-                winAmount = 15;
-                winChance = 0.5;
+                    // Open modal instead of inline logic
+                        openDiceModal();
+                        return;
+                    } else if (gameType === 'flip') {
+                        // Open modal instead of inline logic
+                        openCoinModal();
+                        return;
             } else if (gameType === 'lucky') {
-                bet = 20;
-                winAmount = 60;
-                winChance = 0.3;
-            }
-                        
-            if (gameType === 'tricolor') {
-                // Open the modal instead of using prompt
-                openTriColorModal();
-                return;
-            }
+                        // Open modal instead of inline logic
+                        openLuckyModal();
+                        return;
             
-            if (users[currentUser].coins < bet) {
-                resultDiv.innerHTML = `<div class="result lose">Not enough coins! You need ${bet} NAZ coins to play.</div>`;
-                return;
-            }
-            
-            users[currentUser].coins -= bet;
-            
-            const won = Math.random() < winChance;
-            
-            if (won) {
-                users[currentUser].coins += winAmount;
-                resultDiv.innerHTML = `<div class="result win">🎉 You Won! +${winAmount} NAZ Coins!</div>`;
-            } else {
-                resultDiv.innerHTML = `<div class="result lose">😢 You Lost! -${bet} NAZ Coins. Try again!</div>`;
-            }
             
             localStorage.setItem('naz3Users', JSON.stringify(users));
             updateUserInfo();
