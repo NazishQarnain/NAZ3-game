@@ -671,6 +671,53 @@
                 }, 1000);
             }, 2000);
         }
+
+                // Modal functions for Dice, Coin, Lucky games
+                function openDiceModal() {
+                            document.getElementById('diceModal').classList.add('active');
+                        }
+
+                function closeDiceModal() {
+                            document.getElementById('diceModal').classList.remove('active');
+                            document.getElementById('diceDisplay').textContent = '🎲';
+                        }
+
+                function rollDice() {
+                            if (users[currentUser].coins < 10) {
+                                            alert('Not enough coins! You need 10 NAZ coins to play.');
+                                            return;
+                                        }
+                            users[currentUser].coins -= 10;
+                            const dice = document.getElementById('diceDisplay');
+                            dice.classList.add('rolling');
+                            setTimeout(() => {
+                                            const result = Math.floor(Math.random() * 6) + 1;
+                                            dice.textContent = result;
+                                            dice.classList.remove('rolling');
+                                            const won = (result >= 4);
+                                            setTimeout(() => {
+                                                                const resultDiv = document.getElementById('gameResult');
+                                                                if (won) {
+                                                                                        users[currentUser].coins += 30;
+                                                                                        resultDiv.innerHTML = `<div class="result win">🎉 You Won! +30 NAZ Coins!</div>`;
+                                                                                    } else {
+                                                                                        resultDiv.innerHTML = `<div class="result lose">😢 You Lost! -10 NAZ Coins. Try again!</div>`;
+                                                                                    }
+                                                                localStorage.setItem('naz3Users', JSON.stringify(users));
+                                                                updateUserInfo();
+                                                                setTimeout(() => { resultDiv.innerHTML = ''; }, 3000);
+                                                                closeDiceModal();
+                                                            }, 1000);
+                                        }, 1500);
+                        }
+
+                function openCoinModal() { document.getElementById('coinModal').classList.add('active'); }
+                function closeCoinModal() { document.getElementById('coinModal').classList.remove('active'); document.getElementById('coinDisplay').textContent = '🪙'; }
+                function flipCoin() { if (users[currentUser].coins < 5) { alert('Not enough coins!'); return; } users[currentUser].coins -= 5; const coin = document.getElementById('coinDisplay'); coin.classList.add('flipping'); setTimeout(() => { const result = Math.random() < 0.5 ? 'Heads' : 'Tails'; coin.textContent = result === 'Heads' ? '🙂' : '☹️'; coin.classList.remove('flipping'); const won = (result === 'Heads'); setTimeout(() => { const resultDiv = document.getElementById('gameResult'); if (won) { users[currentUser].coins += 15; resultDiv.innerHTML = `<div class="result win">🎉 You Won! +15 NAZ Coins!</div>`; } else { resultDiv.innerHTML = `<div class="result lose">😢 You Lost! -5 NAZ Coins!</div>`; } localStorage.setItem('naz3Users', JSON.stringify(users)); updateUserInfo(); setTimeout(() => { resultDiv.innerHTML = ''; }, 3000); closeCoinModal(); }, 1000); }, 1500); }
+
+                function openLuckyModal() { document.getElementById('luckyModal').classList.add('active'); }
+                function closeLuckyModal() { document.getElementById('luckyModal').classList.remove('active'); document.getElementById('luckyDisplay').textContent = '?'; }
+                function playLucky() { if (users[currentUser].coins < 20) { alert('Not enough coins!'); return; } users[currentUser].coins -= 20; const lucky = document.getElementById('luckyDisplay'); lucky.classList.add('spinning'); setTimeout(() => { const result = Math.floor(Math.random() * 10) + 1; lucky.textContent = result; lucky.classList.remove('spinning'); const won = Math.random() < 0.3; setTimeout(() => { const resultDiv = document.getElementById('gameResult'); if (won) { users[currentUser].coins += 60; resultDiv.innerHTML = `<div class="result win">🎉 You Won! +60 NAZ Coins!</div>`; } else { resultDiv.innerHTML = `<div class="result lose">😢 You Lost! -20 NAZ Coins!</div>`; } localStorage.setItem('naz3Users', JSON.stringify(users)); updateUserInfo(); setTimeout(() => { resultDiv.innerHTML = ''; }, 3000); closeLuckyModal(); }, 1000); }, 1500); }
     </script>
 </body>
 
