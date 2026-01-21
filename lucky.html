@@ -10,7 +10,7 @@
             padding: 0;
             box-sizing: border-box;
         }
-
+        
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -19,7 +19,7 @@
             justify-content: center;
             align-items: center;
         }
-
+        
         .container {
             width: 90%;
             max-width: 800px;
@@ -28,19 +28,19 @@
             box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
             overflow: hidden;
         }
-
+        
         .header {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
             padding: 30px;
             text-align: center;
         }
-
+        
         .header h1 {
             font-size: 2.5em;
             margin-bottom: 10px;
         }
-
+        
         .user-info {
             background: #f5f5f5;
             padding: 20px;
@@ -48,13 +48,13 @@
             justify-content: space-between;
             align-items: center;
         }
-
+        
         .coin-balance {
             font-size: 24px;
             font-weight: bold;
             color: #667eea;
         }
-
+        
         .btn {
             padding: 12px 30px;
             border: none;
@@ -64,55 +64,55 @@
             cursor: pointer;
             transition: all 0.3s;
         }
-
+        
         .btn-secondary {
             background: #e0e0e0;
             color: #333;
         }
-
+        
         .btn-secondary:hover {
             background: #d0d0d0;
         }
-
+        
         .btn-primary {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
         }
-
+        
         .btn-primary:hover {
             transform: translateY(-2px);
             box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
         }
-
+        
         .game-area {
             padding: 40px;
             text-align: center;
         }
-
+        
         .lucky-number {
-            width: 250px;
-            height: 250px;
+            width: 200px;
+            height: 200px;
             background: linear-gradient(135deg, #667eea, #764ba2);
             border-radius: 50%;
             margin: 30px auto;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 120px;
+            font-size: 100px;
             color: white;
             font-weight: bold;
             box-shadow: 0 15px 40px rgba(102, 126, 234, 0.5);
         }
-
+        
         .lucky-number.spinning {
             animation: pulse 0.5s ease-in-out infinite;
         }
-
+        
         @keyframes pulse {
             0%, 100% { transform: scale(1); }
             50% { transform: scale(1.1); }
         }
-
+        
         .result {
             margin-top: 20px;
             padding: 15px;
@@ -120,23 +120,107 @@
             font-size: 18px;
             font-weight: 600;
         }
-
+        
         .result.win {
             background: #d4edda;
             color: #155724;
         }
-
+        
         .result.lose {
             background: #f8d7da;
             color: #721c24;
         }
-
+        
         .info-text {
             color: #666;
             margin: 20px 0;
             font-size: 16px;
         }
     </style>
+    <script type="module">
+        import { auth, db } from './firebase-config.js';
+        import { onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
+        import { doc, getDoc, updateDoc } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+        
+        let currentUserData = null;
+        
+        // Check authentication
+        onAuthStateChanged(auth, async (user) => {
+            if (!user) {
+                alert('Please login first!');
+                window.location.href = 'index.html';
+                return;
+            }
+            
+            // Get user data from Firestore
+            const userDoc = await getDoc(doc(db, 'users', user.uid));
+            if (userDoc.exists()) {
+                currentUserData = { uid: user.uid, ...userDoc.data() };
+                updateUserInfo();
+            }
+        });
+        
+        function updateUserInfo() {
+            if (currentUserData) {
+                document.getElementById('username').textContent = currentUserData.username || currentUserData.email;
+                document.getElementById('coinBalance').textContent = currentUserData.coins || 0;
+            }
+        }
+        
+        window.goBack = function() {
+            window.location.href = 'index.html';
+        };
+        
+        window.playLucky = async function() {
+            if (!currentUserData || currentUserData.coins < 20) {
+                alert('Not enough coins! You need 20 NAZ coins to play.');
+                return;
+            }
+            
+            const lucky = document.getElementById('luckyDisplay');
+            const resultDiv = document.getElementById('gameResult');
+            const playBtn = document.getElementById('playBtn');
+            
+            playBtn.disabled = true;
+            lucky.classList.add('spinning');
+            resultDiv.innerHTML = '';
+            
+            // Deduct bet amount
+            currentUserData.coins -= 20;
+            await updateDoc(doc(db, 'users', currentUserData.uid), {
+                coins: currentUserData.coins
+            });
+            updateUserInfo();
+            
+            setTimeout(async () => {
+                const result = Math.floor(Math.random() * 10) + 1;
+                lucky.textContent = result;
+                lucky.classList.remove('spinning');
+                
+                const won = Math.random() < 0.3;
+                
+                setTimeout(async () => {
+                    if (won) {
+                        currentUserData.coins += 60;
+                        resultDiv.innerHTML = `<div class="result win">🎉 You Won! Lucky ${result}! +60 NAZ Coins!</div>`;
+                    } else {
+                        resultDiv.innerHTML = `<div class="result lose">😢 You Lost! Better luck next time!</div>`;
+                    }
+                    
+                    await updateDoc(doc(db, 'users', currentUserData.uid), {
+                        coins: currentUserData.coins
+                    });
+                    updateUserInfo();
+                    
+                    setTimeout(() => {
+                        resultDiv.innerHTML = '';
+                    }, 3000);
+                    
+                    playBtn.disabled = false;
+                }, 500);
+            }, 1500);
+        };
+    </script>
 </head>
 <body>
     <div class="container">
@@ -144,7 +228,7 @@
             <h1>🍀 Lucky Number Game</h1>
             <p>Bet 20 coins, win 60!</p>
         </div>
-
+        
         <div class="user-info">
             <div>
                 <h3>Welcome, <span id="username">Player</span>!</h3>
@@ -154,7 +238,7 @@
             </div>
             <button class="btn btn-secondary" onclick="goBack()">Back to Games</button>
         </div>
-
+        
         <div class="game-area">
             <p class="info-text">Pick a lucky number from 1-10 and win!</p>
             
@@ -165,73 +249,5 @@
             <div id="gameResult"></div>
         </div>
     </div>
-
-    <script>
-        let users = JSON.parse(localStorage.getItem('naz3Users')) || {};
-        let currentUser = localStorage.getItem('naz3CurrentUser');
-
-        if (!currentUser || !users[currentUser]) {
-            alert('Please login first!');
-            window.location.href = 'index.html';
-        }
-
-        function updateUserInfo() {
-            if (currentUser && users[currentUser]) {
-                document.getElementById('username').textContent = currentUser;
-                document.getElementById('coinBalance').textContent = users[currentUser].coins;
-            }
-        }
-
-        function goBack() {
-            window.location.href = 'index.html';
-        }
-
-        function playLucky() {
-            if (users[currentUser].coins < 20) {
-                alert('Not enough coins! You need 20 NAZ coins to play.');
-                return;
-            }
-
-            users[currentUser].coins -= 20;
-            updateUserInfo();
-            
-            const lucky = document.getElementById('luckyDisplay');
-            const resultDiv = document.getElementById('gameResult');
-            const playBtn = document.getElementById('playBtn');
-            
-            playBtn.disabled = true;
-            lucky.classList.add('spinning');
-            resultDiv.innerHTML = '';
-
-            setTimeout(() => {
-                const result = Math.floor(Math.random() * 10) + 1;
-                lucky.textContent = result;
-                lucky.classList.remove('spinning');
-                
-                const won = Math.random() < 0.3;
-
-                setTimeout(() => {
-                    if (won) {
-                        users[currentUser].coins += 60;
-                        resultDiv.innerHTML = `<div class="result win">🎉 You Won! Lucky number ${result}! +60 NAZ Coins!</div>`;
-                    } else {
-                        resultDiv.innerHTML = `<div class="result lose">😢 You Lost! Better luck next time!</div>`;
-                    }
-
-                    localStorage.setItem('naz3Users', JSON.stringify(users));
-                    updateUserInfo();
-                    
-                    setTimeout(() => {
-                        resultDiv.innerHTML = '';
-                        lucky.textContent = '?';
-                    }, 3000);
-                    
-                    playBtn.disabled = false;
-                }, 500);
-            }, 1500);
-        }
-
-        updateUserInfo();
-    </script>
 </body>
 </html>
