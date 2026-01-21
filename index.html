@@ -129,7 +129,46 @@
             font-weight: bold;
             color: #667eea;
         }
-        
+
+                .game-logos {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 20px;
+            margin-bottom: 25px;
+            justify-items: center;
+        }
+
+        .game-logo-item {
+            text-align: center;
+            text-decoration: none;
+            color: #333;
+            transition: transform 0.2s;
+        }
+
+        .game-logo-item img {
+            width: 80px;
+            height: 80px;
+            object-fit: contain;
+            border-radius: 16px;
+            border: 2px solid #667eea;
+            padding: 8px;
+            background: #fff;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .game-logo-item span {
+            display: block;
+            margin-top: 8px;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .game-logo-item:hover img {
+            transform: scale(1.05);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+        }
+
         .game-area {
             background: #f9f9f9;
             padding: 30px;
@@ -482,6 +521,30 @@
                 
                 <div class="game-area">
                     <h2 style="margin-bottom: 20px; color: #333;">Choose Your Game</h2>
+                                
+            <!-- Game Logos Section -->
+            <div class="game-logos">
+                <a href="dice.html" class="game-logo-item">
+                    <img src="https://img.icons8.com/color/96/dice.png" alt="Dice Roll">
+                    <span>Dice Roll</span>
+                </a>
+                
+                <a href="coin.html" class="game-logo-item">
+                    <img src="https://img.icons8.com/color/96/coin.png" alt="Coin Flip">
+                    <span>Coin Flip</span>
+                </a>
+                
+                <a href="lucky.html" class="game-logo-item">
+                    <img src="https://img.icons8.com/color/96/clover.png" alt="Lucky Number">
+                    <span>Lucky Number</span>
+                </a>
+                
+                <a href="tricolor.html" class="game-logo-item">
+                    <img src="https://img.icons8.com/color/96/india.png" alt="Tri Color">
+                    <span>Tri Color</span>
+                </a>
+            </div>
+            
                     <div class="game-buttons">
             <a href="dice.html" class="game-btn">🎲 Dice Roll<br><small>Bet 10 coins, win 30</small></a>                        <button class="game-btn" onclick="playGame('flip')">🪙 Coin Flip<br><small>Bet 5 coins, win 15</small></button>
             <a href="coin.html" class="game-btn">🪙 Coin Flip<br><small>Bet 5 coins, win 15</small></a>                                                <button class="game-btn" onclick="playGame('tricolor')">🇮🇳 Tri Color<br><small>Bet 15 coins, win 30</small></button>
