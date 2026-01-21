@@ -27,6 +27,7 @@ onAuthStateChanged(auth, async (user) => {
             // If on login page, redirect to games
             if (window.location.pathname.includes('index.html')) {
 
+                                window.location.reload();
             }
         }
     }
@@ -55,6 +56,7 @@ if (loginBtn) {
                 localStorage.setItem('currentUser', userData.username);
                 localStorage.setItem('nazCoins', userData.coins);
                 localStorage.setItem('firebaseUID', user.uid);
+                                window.location.reload();
                 
             }
         } catch (error) {
@@ -75,6 +77,7 @@ if (loginBtn) {
                     localStorage.setItem('currentUser', username);
                     localStorage.setItem('nazCoins', '200');
                     localStorage.setItem('firebaseUID', user.uid);
+                                    window.location.reload();
 
                 } catch (regError) {
                     alert('Registration failed: ' + regError.message);
