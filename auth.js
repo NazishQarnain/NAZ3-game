@@ -81,11 +81,10 @@ if (loginBtn) {
 
                 } catch (regError) {
                     alert('Registration failed: ' + regError.message);
-                }
-            
+                }            
+                            } else {
                 alert('Login failed: ' + error.message);
-            }
-        }
+            }        }
     });
 }
 
