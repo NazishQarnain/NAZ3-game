@@ -468,6 +468,36 @@
     </style>
         <script type="module" src="firebase-config.js"></script>
         <script type="module" src="auth.js"></script>
+        <script>
+        // Check login state and show appropriate section
+        window.addEventListener('DOMContentLoaded', function() {
+            const currentUser = localStorage.getItem('currentUser');
+            const firebaseUID = localStorage.getItem('firebaseUID');
+            
+            if (currentUser || firebaseUID) {
+                // User is logged in, show game section
+                showGame();
+            } else {
+                // User not logged in, show login section
+                document.getElementById('loginSection').classList.add('active');
+            }
+        });
+        
+        // Function to show/hide sections
+        function showGame() {
+            document.getElementById('gameSection').classList.add('active');
+            document.getElementById('loginSection').classList.remove('active');
+            document.getElementById('registerSection').classList.remove('active');
+            updateUserInfo();
+        }
+        
+        function updateUserInfo() {
+            const username = localStorage.getItem('currentUser') || 'Player';
+            const coins = localStorage.getItem('nazCoins') || '100';
+            document.getElementById('username').textContent = username;
+            document.getElementById('coinBalance').textContent = coins;
+        }
+    </script>
 </head>
 <body>        
     <div class="container">
