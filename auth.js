@@ -55,11 +55,10 @@ if (loginBtn) {
                 localStorage.setItem('currentUser', userData.username);
                 localStorage.setItem('nazCoins', userData.coins);
                 localStorage.setItem('firebaseUID', user.uid);
-                window.location.href = 'dice.html';
+                
             }
         } catch (error) {
             if (error.code === 'auth/user-not-found') {
-                // Auto-register new user
                 try {
                     const username = document.getElementById('loginUsername').value;
                     const userCredential = await createUserWithEmailAndPassword(auth, email, password);
@@ -76,11 +75,11 @@ if (loginBtn) {
                     localStorage.setItem('currentUser', username);
                     localStorage.setItem('nazCoins', '200');
                     localStorage.setItem('firebaseUID', user.uid);
-                    window.location.href = 'dice.html';
+
                 } catch (regError) {
                     alert('Registration failed: ' + regError.message);
                 }
-            } else {
+            
                 alert('Login failed: ' + error.message);
             }
         }
