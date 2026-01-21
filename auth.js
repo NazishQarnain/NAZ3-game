@@ -26,7 +26,7 @@ onAuthStateChanged(auth, async (user) => {
             
             // If on login page, redirect to games
             if (window.location.pathname.includes('index.html')) {
-                window.location.href = 'dice.html';
+
             }
         }
     }
