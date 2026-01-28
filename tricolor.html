@@ -24,7 +24,7 @@
         .color-buttons { display: flex; gap: 15px; justify-content: center; margin-top: 30px; }
         .color-btn { padding: 15px 30px; border: none; border-radius: 10px; font-size: 16px; font-weight: 600; cursor: pointer; transition: all 0.3s; color: white; text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3); }
         .color-btn.orange { background: linear-gradient(135deg, #FF9933, #FF7700); }
-        .color-btn.yellow { background: linear-gradient(135deg, #FFD700, #FFA500); }
+        .color-btn.white { background: linear-gradient(135deg, #FFD700, #FFA500); }
         .color-btn.green { background: linear-gradient(135deg, #138808, #0d5c05); }
         .color-btn:hover { transform: translateY(-3px); box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3); }
         .color-btn:disabled { opacity: 0.5; cursor: not-allowed; }
@@ -87,7 +87,7 @@
             box-shadow: 0 4px 15px rgba(255, 153, 51, 0.4);
         }
         
-        .color-btn.yellow {
+        .color-btn.white {
             box-shadow: 0 4px 15px rgba(255, 215, 0, 0.4);
         }
         
@@ -159,7 +159,7 @@
             
             setTimeout(async () => {
                 wheel.classList.remove('spinning');
-                const colors = ['orange', 'yellow', 'green'];
+                const colors = ['orange', 'white', 'green'];
                 const winningColor = colors[Math.floor(Math.random() * colors.length)];
                 const won = (color === winningColor);
                 
@@ -197,7 +197,7 @@
             <div id="colorWheel" class="color-wheel"></div>
             <div class="color-buttons">
                 <button class="color-btn orange" onclick="selectColor('orange')">🟠 Orange</button>
-                <button class="color-btn yellow" onclick="selectColor('yellow')">🟡 Yellow</button>
+                <button class="color-btn white" onclick="selectColor('white')">🟡 white</button>
                 <button class="color-btn green" onclick="selectColor('green')">🟢 Green</button>
             </div>
             <div id="gameResult"></div>
