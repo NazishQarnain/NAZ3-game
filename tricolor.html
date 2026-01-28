@@ -21,6 +21,7 @@
         .color-wheel { width: 300px; height: 300px; margin: 30px auto; border-radius: 50%; background: conic-gradient(from 0deg, #FF9933 0deg 120deg, #FFFFFF 120deg 240deg, #138808 240deg 360deg); box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3); }
         .color-wheel.spinning { animation: spin 0.5s linear infinite; }
         @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+                .wheel-arrow { position: absolute; top: 40px; left: 50%; transform: translateX(-50%); width: 0; height: 0; border-left: 15px solid transparent; border-right: 15px solid transparent; border-top: 25px solid #FF4444; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3)); z-index: 10; }
         .color-buttons { display: flex; gap: 15px; justify-content: center; margin-top: 30px; }
         .color-btn { padding: 15px 30px; border: none; border-radius: 10px; font-size: 16px; font-weight: 600; cursor: pointer; transition: all 0.3s; color: white; text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3); }
         .color-btn.orange { background: linear-gradient(135deg, #FF9933, #FF7700); }
@@ -194,7 +195,10 @@
         </div>
         <div class="game-area">
             <p class="info-text">Choose your color and spin the wheel!</p>
+                        <div style="position: relative; display: inline-block;">
             <div id="colorWheel" class="color-wheel"></div>
+                                            <div class="wheel-arrow"></div>
+                                        </div>
             <div class="color-buttons">
                 <button class="color-btn orange" onclick="selectColor('orange')">🟠 Orange</button>
                 <button class="color-btn white" onclick="selectColor('white')">⚪ white</button>
