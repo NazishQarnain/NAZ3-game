@@ -1,1 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tri-Color - NAZ3 Game</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; display: flex; justify-content: center; align-items: center; }
+        .container { width: 90%; max-width: 800px; background: rgba(255, 255, 255, 0.95); border-radius: 20px; box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3); overflow: hidden; }
+        .header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 30px; text-align: center; }
+        .header h1 { font-size: 2.5em; margin-bottom: 10px; }
+        .user-info { background: #f5f5f5; padding: 20px; display: flex; justify-content: space-between; align-items: center; }
+        .coin-balance { font-size: 24px; font-weight: bold; color: #667eea; }
+        .btn { padding: 12px 30px; border: none; border-radius: 8px; font-size: 16px; font-weight: 600; cursor: pointer; transition: all 0.3s; }
+        .btn-secondary { background: #e0e0e0; color: #333; }
+        .btn-secondary:hover { background: #d0d0d0; }
+        .btn-primary { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4); }
+        .game-area { padding: 40px; text-align: center; }
+        .color-wheel { width: 300px; height: 300px; margin: 30px auto; border-radius: 50%; background: conic-gradient(from 0deg, #FF9933 0deg 120deg, #FFFFFF 120deg 240deg, #138808 240deg 360deg); box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3); }
+        .color-wheel.spinning { animation: spin 0.5s linear infinite; }
+        @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+                .wheel-arrow { position: absolute; top: 40px; left: 50%; transform: translateX(-50%); width: 0; height: 0; border-left: 15px solid transparent; border-right: 15px solid transparent; border-top: 25px solid #FF4444; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3)); z-index: 10; }
+        .color-buttons { display: flex; gap: 15px; justify-content: center; margin-top: 30px; }
+        .color-btn { padding: 15px 30px; border: none; border-radius: 10px; font-size: 16px; font-weight: 600; cursor: pointer; transition: all 0.3s; color: white; text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3); }
+        .color-btn.orange { background: linear-gradient(135deg, #FF9933, #FF7700); }
+        .color-btn.white { background: linear-gradient(135deg, #FFFFFF, #E8E8E8); color: #333; text-shadow: none); }
+        .color-btn.green { background: linear-gradient(135deg, #138808, #0d5c05); }
+        .color-btn:hover { transform: translateY(-3px); box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3); }
+        .color-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+        .result { margin-top: 20px; padding: 15px; border-radius: 8px; font-size: 18px; font-weight: 600; }
+        .result.win { background: #d4edda; color: #155724; }
+        .result.lose { background: #f8d7da; color: #721c24; }
+        .info-text { color: #666; margin: 20px 0; font-size: 16px; }
 
+                /* Enhanced Styles */
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            box-shadow: 0 8px 32px rgba(102, 126, 234, 0.3);
+            animation: headerGlow 2s ease-in-out infinite alternate;
+        }
+        
+        @keyframes headerGlow {
+            from { box-shadow: 0 8px 32px rgba(102, 126, 234, 0.3); }
+            to { box-shadow: 0 8px 32px rgba(118, 75, 162, 0.5); }
+        }
+        
+        .coin-balance {
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            padding: 8px 16px;
+            border-radius: 20px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .game-area {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            padding: 50px 40px;
+        }
+        
+        .color-wheel {
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+            border: 5px solid white;
+        }
+        
+        .color-btn {
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .color-btn:hover {
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+        }
+        
+        .color-btn.orange {
+            box-shadow: 0 4px 15px rgba(255, 153, 51, 0.4);
+        }
+        
+        .color-btn.white {
+            box-shadow: 0 4px 15px rgba(255, 215, 0, 0.4);
+        }
+        
+        .color-btn.green {
+            box-shadow: 0 4px 15px rgba(19, 136, 8, 0.4);
+        }
+        
+        .result {
+            animation: resultFadeIn 0.5s ease-in;
+        }
+        
+        @keyframes resultFadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+    <script type="module">
+        import { auth, db } from './firebase-config.js';
+        import { onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
+        import { doc, getDoc, updateDoc } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+        
+        let currentUserData = null;
+        
+        onAuthStateChanged(auth, async (user) => {
+            if (!user) {
+                alert('Please login first!');
+                window.location.href = 'index.html';
+                return;
+            }
+            const userDoc = await getDoc(doc(db, 'users', user.uid));
+            if (userDoc.exists()) {
+                currentUserData = { uid: user.uid, ...userDoc.data() };
+                updateUserInfo();
+            }
+        });
+        
+        function updateUserInfo() {
+            if (currentUserData) {
+                document.getElementById('username').textContent = currentUserData.username || currentUserData.email;
+                document.getElementById('coinBalance').textContent = currentUserData.coins || 0;
+            }
+        }
+        
+        window.goBack = function() { window.location.href = 'index.html'; };
+        
+        window.selectColor = async function(color) {
+            if (!currentUserData || currentUserData.coins < 15) {
+                alert('Not enough coins! You need 15 NAZ coins to play.');
+                return;
+            }
+            
+            const wheel = document.getElementById('colorWheel');
+            const buttons = document.querySelectorAll('.color-btn');
+            const resultDiv = document.getElementById('gameResult');
+            
+            buttons.forEach(btn => btn.disabled = true);
+            wheel.classList.add('spinning');
+            resultDiv.innerHTML = '';
+            
+            currentUserData.coins -= 15;
+            await updateDoc(doc(db, 'users', currentUserData.uid), { coins: currentUserData.coins });
+            updateUserInfo();
+            
+            setTimeout(async () => {
+                wheel.classList.remove('spinning');
+                const colors = ['orange', 'white', 'green'];
+                const winningColor = colors[Math.floor(Math.random() * colors.length)];
+                const won = (color === winningColor);
+                
+                setTimeout(async () => {
+                    if (won) {
+                        currentUserData.coins += 30;
+                        resultDiv.innerHTML = `<div class="result win">🎉 You Won! Your ${color} matched! +30 NAZ Coins!</div>`;
+                    } else {
+                        resultDiv.innerHTML = `<div class="result lose">😢 You Lost! Winning color was ${winningColor}. Try again!</div>`;
+                    }
+                    
+                    await updateDoc(doc(db, 'users', currentUserData.uid), { coins: currentUserData.coins });
+                    updateUserInfo();
+                    
+                    setTimeout(() => { resultDiv.innerHTML = ''; }, 3000);
+                    buttons.forEach(btn => btn.disabled = false);
+                }, 1000);
+            }, 2000);
+        };
+    </script>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🇮🇳 Tri-Color Game</h1>
+            <p>Bet 15 coins, win 30!</p>
+        </div>
+        <div class="user-info">
+            <div><h3>Welcome, <span id="username">Player</span>!</h3></div>
+            <div class="coin-balance">💰 <span id="coinBalance">100</span> NAZ Coins</div>
+            <button class="btn btn-secondary" onclick="goBack()">Back to Games</button>
+        </div>
+        <div class="game-area">
+            <p class="info-text">Choose your color and spin the wheel!</p>
+                        <div style="position: relative; display: inline-block;">
+            <div id="colorWheel" class="color-wheel"></div>
+                                            <div class="wheel-arrow"></div>
+                                        </div>
+            <div class="color-buttons">
+                <button class="color-btn orange" onclick="selectColor('orange')">🟠 Orange</button>
+                <button class="color-btn white" onclick="selectColor('white')">⚪ white</button>
+                <button class="color-btn green" onclick="selectColor('green')">🟢 Green</button>
+            </div>
+            <div id="gameResult"></div>
+        </div>
+    </div>
+</body>
+</html>
