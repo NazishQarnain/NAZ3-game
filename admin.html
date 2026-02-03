@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel - NAZ3 Game</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        .header h1 {
+            color: #667eea;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        
+        .logout-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            padding: 10px 20px;
+            background: #f44336;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        
+        .logout-btn:hover {
+            background: #d32f2f;
+        }
+        
+        .section {
+            background: #f5f5f5;
+            padding: 30px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+        }
+        
+        .section h2 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 600;
+        }
+        
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+        
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        .btn {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+        
+        .users-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        
+        .users-table th,
+        .users-table td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        .users-table th {
+            background: #667eea;
+            color: white;
+        }
+        
+        .users-table tr:hover {
+            background: #f5f5f5;
+        }
+        
+        .message {
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: none;
+        }
+        
+        .message.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .message.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        
+        .message.show {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <button class="logout-btn" onclick="adminLogout()">Logout</button>
+    
+    <div class="container">
+        <div class="header">
+            <h1>🔐 Admin Dashboard</h1>
+            <p>Manage NAZ3 Game Users & Coins</p>
+        </div>
+        
+        <div id="messageBox" class="message"></div>
+        
+        <div class="section">
+            <h2>💰 Add Coins to User</h2>
+            <div class="form-group">
+                <label>Select User:</label>
+                <select id="userSelect">
+                    <option value="">Loading users...</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Amount to Add:</label>
+                <input type="number" id="coinAmount" placeholder="Enter coin amount" min="1">
+            </div>
+            <button class="btn btn-primary" onclick="addCoinsToUser()">Add Coins</button>
+        </div>
+        
+        <div class="section">
+            <h2>👥 All Users</h2>
+            <table class="users-table">
+                <thead>
+                    <tr>
+                        <th>Username</th>
+                        <th>Email</th>
+                        <th>Current Coins</th>
+                        <th>Created At</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="usersTableBody">
+                    <tr>
+                        <td colspan="5" style="text-align: center;">Loading users...</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    
+    <script type="module">
+        import { auth, db } from './firebase-config.js';
+        import { onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
+        import { collection, getDocs, doc, updateDoc, getDoc } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+        
+        // Admin email (change this to your admin email)
+        const ADMIN_EMAIL = 'admin@naz3game.com';
+        
+        // Check if user is admin
+        onAuthStateChanged(auth, async (user) => {
+            if (!user || user.email !== ADMIN_EMAIL) {
+                alert('Unauthorized! Admin access only.');
+                window.location.href = 'index.html';
+                return;
+            }
+            
+            // Load users
+            await loadAllUsers();
+        });
+        
+        // Load all users from Firebase
+        async function loadAllUsers() {
+            try {
+                const usersRef = collection(db, 'users');
+                const querySnapshot = await getDocs(usersRef);
+                
+                let usersHTML = '';
+                let selectHTML = '<option value="">Select a user</option>';
+                
+                querySnapshot.forEach((doc) => {
+                    const userData = doc.data();
+                    const createdAt = new Date(userData.createdAt).toLocaleDateString();
+                    
+                    usersHTML += `
+                        <tr>
+                            <td>${userData.username}</td>
+                            <td>${userData.email}</td>
+                            <td><strong>${userData.coins}</strong> NAZ</td>
+                            <td>${createdAt}</td>
+                            <td>
+                                <button class="btn" style="padding: 5px 15px; background: #4CAF50; color: white;" 
+                                        onclick="quickAddCoins('${doc.id}', '${userData.username}', 100)">+100</button>
+                                <button class="btn" style="padding: 5px 15px; background: #2196F3; color: white;" 
+                                        onclick="quickAddCoins('${doc.id}', '${userData.username}', 500)">+500</button>
+                            </td>
+                        </tr>
+                    `;
+                    
+                    selectHTML += `<option value="${doc.id}">${userData.username} (${userData.email})</option>`;
+                });
+                
+                document.getElementById('usersTableBody').innerHTML = usersHTML;
+                document.getElementById('userSelect').innerHTML = selectHTML;
+            } catch (error) {
+                showMessage('Error loading users: ' + error.message, 'error');
+            }
+        }
+        
+        // Add coins to selected user
+        window.addCoinsToUser = async function() {
+            const userId = document.getElementById('userSelect').value;
+            const amount = parseInt(document.getElementById('coinAmount').value);
+            
+            if (!userId) {
+                showMessage('Please select a user', 'error');
+                return;
+            }
+            
+            if (!amount || amount <= 0) {
+                showMessage('Please enter a valid amount', 'error');
+                return;
+            }
+            
+            try {
+                const userRef = doc(db, 'users', userId);
+                const userDoc = await getDoc(userRef);
+                
+                if (userDoc.exists()) {
+                    const currentCoins = userDoc.data().coins || 0;
+                    const newBalance = currentCoins + amount;
+                    
+                    await updateDoc(userRef, {
+                        coins: newBalance
+                    });
+                    
+                    showMessage(`Successfully added ${amount} coins! New balance: ${newBalance}`, 'success');
+                    document.getElementById('coinAmount').value = '';
+                    await loadAllUsers();
+                }
+            } catch (error) {
+                showMessage('Error adding coins: ' + error.message, 'error');
+            }
+        };
+        
+        // Quick add coins
+        window.quickAddCoins = async function(userId, username, amount) {
+            try {
+                const userRef = doc(db, 'users', userId);
+                const userDoc = await getDoc(userRef);
+                
+                if (userDoc.exists()) {
+                    const currentCoins = userDoc.data().coins || 0;
+                    const newBalance = currentCoins + amount;
+                    
+                    await updateDoc(userRef, {
+                        coins: newBalance
+                    });
+                    
+                    showMessage(`Added ${amount} coins to ${username}! New balance: ${newBalance}`, 'success');
+                    await loadAllUsers();
+                }
+            } catch (error) {
+                showMessage('Error: ' + error.message, 'error');
+            }
+        };
+        
+        // Logout function
+        window.adminLogout = async function() {
+            try {
+                await signOut(auth);
+                localStorage.clear();
+                window.location.href = 'index.html';
+            } catch (error) {
+                alert('Logout error: ' + error.message);
+            }
+        };
+        
+        // Show message
+        function showMessage(message, type) {
+            const msgBox = document.getElementById('messageBox');
+            msgBox.textContent = message;
+            msgBox.className = `message ${type} show`;
+            
+            setTimeout(() => {
+                msgBox.className = 'message';
+            }, 5000);
+        }
+    </script>
+</body>
+</html>
