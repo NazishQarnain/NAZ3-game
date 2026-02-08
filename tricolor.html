@@ -116,8 +116,7 @@
         
         // Deterministic result for all users
         // Query all bets for this round from Firebase
-    const roundId = seed.replace(/`/g, '');
-    const betsQuery = query(collection(db, 'bets'), where('roundId', '==', roundId));
+    const roundId = seed;    const betsQuery = query(collection(db, 'bets'), where('roundId', '==', roundId));
     const betsSnapshot = await getDocs(betsQuery);
     
     // Sum total coins bet for each color
