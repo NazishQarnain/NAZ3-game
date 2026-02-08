@@ -120,17 +120,17 @@
     const betsQuery = query(collection(db, 'bets'), where('roundId', '==', roundId));
     const betsSnapshot = await getDocs(betsQuery);
     
-    // Count bets for each color
-    const betCounts = { orange: 0, white: 0, green: 0 };
+    // Sum total coins bet for each color
+        const betCounts = { orange: 0, white: 0, green: 0 };
     betsSnapshot.forEach((doc) => {
       const betData = doc.data();
       if (betCounts.hasOwnProperty(betData.color)) {
-        betCounts[betData.color]++;
+        betCounts[betData.color] += (betData.betAmount || 15);
       }
     });
     
-    // Find color with least bets
-    const colors = ['orange', 'white', 'green'];
+    // Find color with least total coins bet
+     onst colors = ['orange', 'white', 'green'];
     let winningColor = colors[0];
     let minBets = betCounts[colors[0]];
     
@@ -178,6 +178,7 @@
       userId: user.uid,
       color: color,
       roundId: roundId,
+      betAmount: 15,
       timestamp: serverTimestamp()
     });
         document.getElementById('myBet').textContent = `Your Bet: ${color.toUpperCase()}`;
