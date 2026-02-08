@@ -62,7 +62,7 @@
     let hasBetThisRound = false;
 
     onAuthStateChanged(auth, async (u) => {
-        if (!u) { window.location.href = 'index.html'; return; }
+    // TEMPORARILY DISABLED:         if (!u) { window.location.href = 'index.html'; return; }
         user = u;
         onSnapshot(doc(db, 'users', user.uid), (snap) => {
             if (snap.exists()) {
