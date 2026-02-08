@@ -54,7 +54,7 @@
 <script type="module">
     import { auth, db } from './firebase-config.js';
     import { onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
-    import { doc, getDoc, setDoc, updateDoc, onSnapshot, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+    import { doc, getDoc, setDoc, updateDoc, onSnapshot, serverTimestamp, collection, query, where, getDocs } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
 
     let user = null;
     let userData = null;
@@ -115,10 +115,31 @@
         const seed = `${now.getFullYear()}-${now.getMonth()}-${now.getDate()}-${hour}-${minute}`;
         
         // Deterministic result for all users
-        const colors = ['orange', 'white', 'green'];
-        const hash = Array.from(seed).reduce((a, b) => { a = ((a << 5) - a) + b.charCodeAt(0); return a & a; }, 0);
-        const winningIndex = Math.abs(hash) % 3;
-        const winningColor = colors[winningIndex];
+        // Query all bets for this round from Firebase
+    const roundId = seed.replace(/`/g, '');
+    const betsQuery = query(collection(db, 'bets'), where('roundId', '==', roundId));
+    const betsSnapshot = await getDocs(betsQuery);
+    
+    // Count bets for each color
+    const betCounts = { orange: 0, white: 0, green: 0 };
+    betsSnapshot.forEach((doc) => {
+      const betData = doc.data();
+      if (betCounts.hasOwnProperty(betData.color)) {
+        betCounts[betData.color]++;
+      }
+    });
+    
+    // Find color with least bets
+    const colors = ['orange', 'white', 'green'];
+    let winningColor = colors[0];
+    let minBets = betCounts[colors[0]];
+    
+    for (const color of colors) {
+      if (betCounts[color] < minBets) {
+        minBets = betCounts[color];
+        winningColor = color;
+      }
+    }
         
         const wheel = document.getElementById('colorWheel');
         const angles = { 'orange': 60, 'white': 180, 'green': 300 };
@@ -149,6 +170,16 @@
         currentBet = color;
         const newCoins = userData.coins - 15;
         await updateDoc(doc(db, 'users', user.uid), { coins: newCoins });
+
+    // Store bet in Firebase
+    const now = new Date();
+    const roundId = `${now.getFullYear()}-${now.getMonth()}-${now.getDate()}-${now.getHours()}-${now.getMinutes()}`;
+    await setDoc(doc(db, 'bets', `${roundId}_${user.uid}`), {
+      userId: user.uid,
+      color: color,
+      roundId: roundId,
+      timestamp: serverTimestamp()
+    });
         document.getElementById('myBet').textContent = `Your Bet: ${color.toUpperCase()}`;
     };
 
