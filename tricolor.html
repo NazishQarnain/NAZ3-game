@@ -62,8 +62,15 @@
     let hasBetThisRound = false;
 
     onAuthStateChanged(auth, async (u) => {
-    // TEMPORARILY DISABLED:         if (!u) { window.location.href = 'index.html'; return; }
+    // TEMPORARI Allow view-only mode for testing
         user = u;
+                if (!u) { // No auth user - run in view-only mode
+                                user = { uid: 'guest-viewer' }; // Create temp user object
+                                userData = { username: 'Player', coins: 0 };
+                                document.getElementById('username').textContent = 'Player';
+                                document.getElementById('coinBalance').textContent = '0';
+                                return; // Skip Firebase sync
+                            }
         onSnapshot(doc(db, 'users', user.uid), (snap) => {
             if (snap.exists()) {
                 userData = snap.data();
@@ -162,6 +169,7 @@
     }
 
     window.placeBet = async (color) => {
+                if (user.uid === 'guest-viewer') { alert("Please login to place bets!"); return; }
         if (hasBetThisRound) { alert("Already bet!"); return; }
         if (!userData || userData.coins < 15) { alert("Not enough coins!"); return; }
         
