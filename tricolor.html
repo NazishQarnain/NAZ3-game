@@ -129,6 +129,8 @@
     // Sum total coins bet for each color
         const betCounts = { orange: 0, white: 0, green: 0 };
     betsSnapshot.forEach((doc) => {
+                // Wrap Firebase query in try-catch for guest users
+                try {
       const betData = doc.data();
       if (betCounts.hasOwnProperty(betData.color)) {
         betCounts[betData.color] += (betData.betAmount || 15);
@@ -149,6 +151,11 @@
         
         const wheel = document.getElementById('colorWheel');
         const angles = { 'orange': 60, 'white': 180, 'green': 300 };
+                } catch (error) {
+                    console.log('Firebase error (guest mode):', error);
+                // Use random fallback for guest users
+                winningColor = colors[Math.floor(Math.random() * 3)];
+            }
         const baseRotation = 3600; // 10 full spins
         wheel.style.transition = "transform 4s cubic-bezier(0.17, 0.67, 0.83, 0.67)";
         wheel.style.transform = `rotate(${baseRotation + (360 - angles[winningColor])}deg)`;
@@ -156,8 +163,10 @@
         setTimeout(async () => {
             const resultDiv = document.getElementById('gameResult');
             if (currentBet === winningColor) {
+                            if (user.uid !== 'guest-viewer') {  // Only update coins for authenticated users
                 const newCoins = (userData.coins || 0) + 30;
                 await updateDoc(doc(db, 'users', user.uid), { coins: newCoins });
+                                            }
                 resultDiv.innerHTML = `<div class="result" style="color:green">🎉 WON! +30 Coins</div>`;
             } else if (currentBet) {
                 resultDiv.innerHTML = `<div class="result" style="color:red">😢 LOST! Result was ${winningColor}</div>`;
