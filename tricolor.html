@@ -1,207 +1,365 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tri-Color - NAZ3 Game</title>
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; display: flex; justify-content: center; align-items: center; }
-        .container { width: 90%; max-width: 800px; background: rgba(255, 255, 255, 0.95); border-radius: 20px; box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3); overflow: hidden; }
-        .header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 30px; text-align: center; }
-        .user-info { background: #f5f5f5; padding: 20px; display: flex; justify-content: space-between; align-items: center; }
-        .coin-balance { font-size: 24px; font-weight: bold; color: #667eea; }
-        .btn { padding: 12px 30px; border: none; border-radius: 8px; font-size: 16px; font-weight: 600; cursor: pointer; transition: all 0.3s; }
-        .btn-secondary { background: #e0e0e0; color: #333; }
-        .game-area { padding: 40px; text-align: center; }
-        .color-wheel { width: 300px; height: 300px; margin: 30px auto; border-radius: 50%; background: conic-gradient(from 0deg, #FF9933 0deg 120deg, #FFFFFF 120deg 240deg, #138808 240deg 360deg); position: relative; border: 5px solid white; transition: transform 4s cubic-bezier(0.17, 0.67, 0.83, 0.67); }
-        .wheel-arrow { position: absolute; top: -10px; left: 50%; transform: translateX(-50%); width: 0; height: 0; border-left: 15px solid transparent; border-right: 15px solid transparent; border-top: 25px solid #FF4444; z-index: 10; }
-        .color-buttons { display: flex; gap: 15px; justify-content: center; margin-top: 30px; }
-        .color-btn { padding: 15px 30px; border: none; border-radius: 10px; font-size: 16px; font-weight: 600; cursor: pointer; transition: all 0.3s; color: white; }
-        .color-btn.orange { background: #FF9933; }
-        .color-btn.white { background: #FFFFFF; color: #333; border: 1px solid #ddd; }
-        .color-btn.green { background: #138808; }
-        .timer-container { margin: 20px 0; font-size: 24px; font-weight: bold; color: #764ba2; }
-        .betting-status { margin: 10px 0; font-size: 18px; font-weight: 600; }
-        .result { margin-top: 20px; padding: 15px; border-radius: 8px; font-size: 18px; font-weight: 600; }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tri-Color - NAZ3 Game</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .container {
+      width: 90%;
+      max-width: 800px;
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: 20px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+      overflow: hidden;
+    }
+    .header {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 30px;
+      text-align: center;
+    }
+    .user-info {
+      background: #f5f5f5;
+      padding: 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .coin-balance {
+      font-size: 24px;
+      font-weight: bold;
+      color: #667eea;
+    }
+    .btn {
+      padding: 12px 30px;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    .btn-secondary {
+      background: #e0e0e0;
+      color: #333;
+    }
+    .btn-primary {
+      background: #667eea;
+      color: white;
+    }
+    .btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+    .game-area {
+      padding: 40px 20px 30px;
+      text-align: center;
+    }
+    .color-wheel-wrapper {
+      position: relative;
+      display: inline-block;
+    }
+    .color-wheel {
+      width: 300px;
+      height: 300px;
+      margin: 30px auto;
+      border-radius: 50%;
+      background: conic-gradient(
+        from 0deg,
+        #FF9933 0deg 120deg,
+        #FFFFFF 120deg 240deg,
+        #138808 240deg 360deg
+      );
+      position: relative;
+      border: 5px solid white;
+      transition: transform 4s cubic-bezier(0.17, 0.67, 0.83, 0.67);
+    }
+    .wheel-arrow {
+      position: absolute;
+      top: -10px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 0;
+      height: 0;
+      border-left: 15px solid transparent;
+      border-right: 15px solid transparent;
+      border-top: 25px solid #FF4444;
+      z-index: 10;
+    }
+    .color-buttons {
+      display: flex;
+      gap: 15px;
+      justify-content: center;
+      margin-top: 30px;
+      flex-wrap: wrap;
+    }
+    .color-btn {
+      padding: 15px 30px;
+      border: none;
+      border-radius: 10px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+      color: white;
+      min-width: 110px;
+    }
+    .color-btn.orange { background: #FF9933; }
+    .color-btn.white {
+      background: #FFFFFF;
+      color: #333;
+      border: 1px solid #ddd;
+    }
+    .color-btn.green { background: #138808; }
+    .color-btn.selected {
+      box-shadow: 0 0 0 3px #764ba2;
+      transform: translateY(-2px);
+    }
+    .timer-container {
+      margin: 20px 0 5px;
+      font-size: 24px;
+      font-weight: bold;
+      color: #764ba2;
+    }
+    .round-info {
+      font-size: 14px;
+      color: #666;
+      margin-bottom: 15px;
+    }
+    .betting-status {
+      margin: 10px 0;
+      font-size: 18px;
+      font-weight: 600;
+    }
+    .result {
+      margin-top: 20px;
+      padding: 15px;
+      border-radius: 8px;
+      font-size: 18px;
+      font-weight: 600;
+    }
+    .result.win {
+      background: #e8f5e9;
+      color: #2e7d32;
+    }
+    .result.lose {
+      background: #ffebee;
+      color: #c62828;
+    }
+    .result.info {
+      background: #e3f2fd;
+      color: #1565c0;
+    }
+  </style>
 </head>
 <body>
-<div class="container">
-    <div class="header"><h1>🇮🇳 Live Tri-Color</h1><p>Every minute a new result!</p></div>
+  <div class="container">
+    <div class="header">
+      <h1>🇮🇳 Live Tri-Color</h1>
+      <p>Every minute a new result!</p>
+    </div>
+
     <div class="user-info">
-        <div><h3>Welcome, <span id="username">Player</span>!</h3></div>
-        <div class="coin-balance">💰 <span id="coinBalance">0</span> NAZ</div>
-        <button class="btn btn-secondary" onclick="location.href='index.html'">Back</button>
+      <div>
+        <h3>Welcome, <span id="username">Player</span>!</h3>
+      </div>
+      <div class="coin-balance">
+        💰 <span id="coinBalance">0</span> NAZ
+      </div>
+      <button class="btn btn-secondary" onclick="location.href='index.html'">Back</button>
     </div>
+
     <div class="game-area">
-        <div class="timer-container">Next Result in: <span id="timer">00:00</span></div>
-        <div id="status" class="betting-status">Waiting for round...</div>
-        <div style="position: relative; display: inline-block;">
-            <div id="colorWheel" class="color-wheel"></div>
-            <div class="wheel-arrow"></div>
-        </div>
-        <div class="color-buttons" id="betButtons">
-            <button class="color-btn orange" onclick="placeBet('orange')">🟠 Orange</button>
-            <button class="color-btn white" onclick="placeBet('white')">⚪ White</button>
-            <button class="color-btn green" onclick="placeBet('green')">🟢 Green</button>
-        </div>
-        <div id="gameResult"></div>
-        <div id="myBet" style="margin-top:10px; font-weight:bold;"></div>
+      <div class="timer-container">
+        Time left: <span id="timer">60</span>s
+      </div>
+      <div class="round-info">
+        Select a color before the time is over. Wheel spins at 0s.
+      </div>
+
+      <div class="color-wheel-wrapper">
+        <div class="wheel-arrow"></div>
+        <div id="wheel" class="color-wheel"></div>
+      </div>
+
+      <div class="color-buttons">
+        <button class="color-btn orange" data-color="orange">Orange</button>
+        <button class="color-btn white" data-color="white">White</button>
+        <button class="color-btn green" data-color="green">Green</button>
+      </div>
+
+      <div class="betting-status" id="bettingStatus">
+        No color selected yet.
+      </div>
+
+      <button id="startBtn" class="btn btn-primary" style="margin-top:15px;">
+        Start Round
+      </button>
+
+      <div id="result" class="result info" style="display:none;">
+        Waiting for round to start.
+      </div>
     </div>
-</div>
+  </div>
 
-<script type="module">
-    import { auth, db } from './firebase-config.js';
-    import { onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
-    import { doc, getDoc, setDoc, updateDoc, onSnapshot, serverTimestamp, collection, query, where, getDocs } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+  <script>
+    // Basic local storage user/coin setup
+    const usernameSpan = document.getElementById('username');
+    const coinBalanceSpan = document.getElementById('coinBalance');
 
-    let user = null;
-    let userData = null;
-    let currentBet = null;
-    let hasBetThisRound = false;
-
-    onAuthStateChanged(auth, async (u) => {
-    // TEMPORARI Allow view-only mode for testing
-        user = u;
-                if (!u) { // No auth user - run in view-only mode
-                                user = { uid: 'guest-viewer' }; // Create temp user object
-                                userData = { username: 'Player', coins: 0 };
-                                document.getElementById('username').textContent = 'Player';
-                                document.getElementById('coinBalance').textContent = '0';
-                                return; // Skip Firebase sync
-                            }
-        onSnapshot(doc(db, 'users', user.uid), (snap) => {
-            if (snap.exists()) {
-                userData = snap.data();
-                document.getElementById('username').textContent = userData.username || user.email;
-                document.getElementById('coinBalance').textContent = userData.coins || 0;
-            }
-        });
-    });
-
-    // Sync with server time and 1-minute cycles
-    function updateGame() {
-        const now = new Date();
-        const seconds = now.getSeconds();
-        const timeLeft = 60 - seconds;
-        
-        document.getElementById('timer').textContent = `00:${timeLeft.toString().padStart(2, '0')}`;
-        
-        const statusEl = document.getElementById('status');
-        const buttons = document.querySelectorAll('.color-btn');
-        const wheel = document.getElementById('colorWheel');
-
-        if (seconds < 30) {
-            statusEl.textContent = "Betting Phase: Place your bets!";
-            statusEl.style.color = "green";
-            buttons.forEach(b => b.disabled = false);
-            if (seconds === 0) {
-                hasBetThisRound = false;
-                document.getElementById('myBet').textContent = "";
-                document.getElementById('gameResult').textContent = "";
-                wheel.style.transition = "none";
-                wheel.style.transform = "rotate(0deg)";
-            }
-        } else if (seconds < 40) {
-            statusEl.textContent = "Bets Closed! Generating Result...";
-            statusEl.style.color = "orange";
-            buttons.forEach(b => b.disabled = true);
-            if (seconds === 30) { processResult(); }
-        } else {
-            statusEl.textContent = "Result Announced! Next round soon.";
-            statusEl.style.color = "blue";
-            buttons.forEach(b => b.disabled = true);
-        }
+    function loadUserData() {
+      const name = localStorage.getItem('naz_username') || 'Player';
+      const coins = parseInt(localStorage.getItem('naz_coins') || '100', 10);
+      usernameSpan.textContent = name;
+      coinBalanceSpan.textContent = coins;
     }
 
-    async function processResult() {
-        const now = new Date();
-        const minute = now.getMinutes();
-        const hour = now.getHours();
-        const seed = `${now.getFullYear()}-${now.getMonth()}-${now.getDate()}-${hour}-${minute}`;
-        
-        // Deterministic result for all users
-        // Query all bets for this round from Firebase
-    const roundId = seed;    const betsQuery = query(collection(db, 'bets'), where('roundId', '==', roundId));
-    const betsSnapshot = await getDocs(betsQuery);
-    
-    // Sum total coins bet for each color
-        const betCounts = { orange: 0, white: 0, green: 0 };
-    betsSnapshot.forEach((doc) => {
-                // Wrap Firebase query in try-catch for guest users
-                try {
-      const betData = doc.data();
-      if (betCounts.hasOwnProperty(betData.color)) {
-        betCounts[betData.color] += (betData.betAmount || 15);
-      }
-    });
-    
-    // Find color with least total coins bet
-     const colors = ['orange', 'white', 'green'];
-    let winningColor = colors[0];
-    let minBets = betCounts[colors[0]];
-    
-    for (const color of colors) {
-      if (betCounts[color] < minBets) {
-        minBets = betCounts[color];
-        winningColor = color;
-      }
-    }
-        
-        const wheel = document.getElementById('colorWheel');
-        const angles = { 'orange': 60, 'white': 180, 'green': 300 };
-                } catch (error) {
-                    console.log('Firebase error (guest mode):', error);
-                // Use random fallback for guest users
-                winningColor = colors[Math.floor(Math.random() * 3)];
-            }
-        const baseRotation = 3600; // 10 full spins
-        wheel.style.transition = "transform 4s cubic-bezier(0.17, 0.67, 0.83, 0.67)";
-        wheel.style.transform = `rotate(${baseRotation + (360 - angles[winningColor])}deg)`;
-
-        setTimeout(async () => {
-            const resultDiv = document.getElementById('gameResult');
-            if (currentBet === winningColor) {
-                            if (user.uid !== 'guest-viewer') {  // Only update coins for authenticated users
-                const newCoins = (userData.coins || 0) + 30;
-                await updateDoc(doc(db, 'users', user.uid), { coins: newCoins });
-                                            }
-                resultDiv.innerHTML = `<div class="result" style="color:green">🎉 WON! +30 Coins</div>`;
-            } else if (currentBet) {
-                resultDiv.innerHTML = `<div class="result" style="color:red">😢 LOST! Result was ${winningColor}</div>`;
-            } else {
-                resultDiv.innerHTML = `<div class="result">Result: ${winningColor}</div>`;
-            }
-            currentBet = null;
-        }, 4500);
+    function updateCoins(delta) {
+      let coins = parseInt(localStorage.getItem('naz_coins') || '100', 10);
+      coins += delta;
+      if (coins < 0) coins = 0;
+      localStorage.setItem('naz_coins', coins.toString());
+      coinBalanceSpan.textContent = coins;
     }
 
-    window.placeBet = async (color) => {
-                if (user.uid === 'guest-viewer') { alert("Please login to place bets!"); return; }
-        if (hasBetThisRound) { alert("Already bet!"); return; }
-        if (!userData || userData.coins < 15) { alert("Not enough coins!"); return; }
-        
-        hasBetThisRound = true;
-        currentBet = color;
-        const newCoins = userData.coins - 15;
-        await updateDoc(doc(db, 'users', user.uid), { coins: newCoins });
+    loadUserData();
 
-    // Store bet in Firebase
-    const now = new Date();
-    const roundId = `${now.getFullYear()}-${now.getMonth()}-${now.getDate()}-${now.getHours()}-${now.getMinutes()}`;
-    await setDoc(doc(db, 'bets', `${roundId}_${user.uid}`), {
-      userId: user.uid,
-      color: color,
-      roundId: roundId,
-      betAmount: 15,
-      timestamp: serverTimestamp()
-    });
-        document.getElementById('myBet').textContent = `Your Bet: ${color.toUpperCase()}`;
+    const wheel = document.getElementById('wheel');
+    const timerSpan = document.getElementById('timer');
+    const bettingStatus = document.getElementById('bettingStatus');
+    const resultDiv = document.getElementById('result');
+    const startBtn = document.getElementById('startBtn');
+    const colorButtons = document.querySelectorAll('.color-btn');
+
+    let selectedColor = null;
+    let isRoundActive = false;
+    let timerInterval = null;
+    let currentRotation = 0;
+
+    const colorRanges = {
+      // Degrees range where arrow at top means this segment
+      orange: { start: 0, end: 120 },
+      white:  { start: 120, end: 240 },
+      green:  { start: 240, end: 360 }
     };
 
-    setInterval(updateGame, 1000);
-    updateGame();
-</script>
+    colorButtons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        if (!isRoundActive) {
+          bettingStatus.textContent = 'Start the round first.';
+          return;
+        }
+        colorButtons.forEach(b => b.classList.remove('selected'));
+        btn.classList.add('selected');
+        selectedColor = btn.dataset.color;
+        bettingStatus.textContent = 'Selected: ' + selectedColor.toUpperCase();
+      });
+    });
+
+    function getColorFromAngle(angle) {
+      const a = ((angle % 360) + 360) % 360;
+      for (const [color, range] of Object.entries(colorRanges)) {
+        if (a >= range.start && a < range.end) return color;
+      }
+      return null;
+    }
+
+    function startRound() {
+      if (isRoundActive) return;
+
+      const coins = parseInt(localStorage.getItem('naz_coins') || '0', 10);
+      if (coins < 10) {
+        resultDiv.style.display = 'block';
+        resultDiv.className = 'result lose';
+        resultDiv.textContent = 'Not enough NAZ coins to play (need 10).';
+        return;
+      }
+
+      // Deduct fixed bet (10 NAZ)
+      updateCoins(-10);
+
+      isRoundActive = true;
+      selectedColor = null;
+      colorButtons.forEach(b => b.classList.remove('selected'));
+      timerSpan.textContent = '60';
+      bettingStatus.textContent = 'Round started! Pick your color.';
+      resultDiv.style.display = 'block';
+      resultDiv.className = 'result info';
+      resultDiv.textContent = 'Waiting for spin...';
+      startBtn.disabled = true;
+
+      let timeLeft = 60;
+      timerInterval = setInterval(() => {
+        timeLeft--;
+        timerSpan.textContent = timeLeft;
+        if (timeLeft <= 0) {
+          clearInterval(timerInterval);
+          spinWheel();
+        }
+      }, 1000);
+    }
+
+    function spinWheel() {
+      const extraSpins = 5 * 360;
+      const randomAngle = Math.floor(Math.random() * 360);
+      const targetRotation = currentRotation + extraSpins + randomAngle;
+      currentRotation = targetRotation;
+
+      wheel.style.transform = 'rotate(' + targetRotation + 'deg)';
+
+      setTimeout(() => {
+        finishRound(targetRotation);
+      }, 4100);
+    }
+
+    function finishRound(rotation) {
+      isRoundActive = false;
+      startBtn.disabled = false;
+      const angleAtTop = (-rotation) % 360;
+      const winningColor = getColorFromAngle(angleAtTop);
+
+      if (!selectedColor) {
+        resultDiv.className = 'result lose';
+        resultDiv.textContent =
+          'No color selected. Winning color was ' + winningColor.toUpperCase() + '.';
+        bettingStatus.textContent = 'You missed this round.';
+        return;
+      }
+
+      if (winningColor === selectedColor) {
+        const winAmount = 30; // example: 3x reward
+        updateCoins(winAmount);
+        resultDiv.className = 'result win';
+        resultDiv.textContent =
+          'You WON! Winning color: ' + winningColor.toUpperCase() +
+          '. You received ' + winAmount + ' NAZ.';
+        bettingStatus.textContent = 'Great job!';
+      } else {
+        resultDiv.className = 'result lose';
+        resultDiv.textContent =
+          'You lost! Winning color: ' + winningColor.toUpperCase() +
+          '. You lost 10 NAZ.';
+        bettingStatus.textContent = 'Better luck next round.';
+      }
+    }
+
+    startBtn.addEventListener('click', startRound);
+  </script>
 </body>
 </html>
