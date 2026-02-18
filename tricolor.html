@@ -194,7 +194,9 @@
                 resultDiv.textContent = 'Wheel spinning...';
 
                 setTimeout(async () => {
-                const angleAtTop = (randomAngle + 270) % 360;                    for (const [color, range] of Object.entries(colorRanges)) {
+                                const angleAtTop = (randomAngle + 270) % 360;
+                                    let winningColor = "";
+                                    for (const [color, range] of Object.entries(colorRanges)) {
                         if (angleAtTop >= range.start && angleAtTop < range.end) winningColor = color;
                     }
 
