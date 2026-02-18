@@ -175,15 +175,13 @@
         }
 
         function updateGame() {
-            const now = new Date();
-            const seconds = now.getSeconds();
-            const currentMinute = now.getMinutes();
+            const seconds = now.getUTCSeconds();            const currentMinute = now.getMinutes();
             timerSpan.textContent = 60 - seconds;
+                        const currentMinute = now.getUTCMinutes();
 
             if (seconds === 0 && currentMinute !== lastProcessedMinute) {
                 lastProcessedMinute = currentMinute;
-                const seed = now.getFullYear() + now.getMonth() + now.getDate() + now.getHours() + currentMinute;
-                const randomVal = seededRandom(seed);
+                const seed = now.getUTCFullYear() + now.getUTCMonth() + now.getUTCDate() + now.getUTCHours() + currentMinute;                const randomVal = seededRandom(seed);
                 const randomAngle = Math.floor(randomVal * 360);
                 const targetRotation = currentRotation + (5 * 360) + randomAngle;
                 
