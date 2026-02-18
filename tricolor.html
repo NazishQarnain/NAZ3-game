@@ -175,7 +175,8 @@
         }
 
         function updateGame() {
-            const seconds = now.getUTCSeconds();            const currentMinute = now.getMinutes();
+            const now = new Date();
+            const seconds = now.getUTCSeconds();     
             timerSpan.textContent = 60 - seconds;
                         const currentMinute = now.getUTCMinutes();
 
