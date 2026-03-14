@@ -1,0 +1,98 @@
+:root {
+  --bg-gradient: linear-gradient(135deg, #1e293b, #020617);
+  --primary: #38bdf8;
+  --primary-light: #7dd3fc;
+  --accent: #f97316;
+  --danger: #f97373;
+  --success: #22c55e;
+  --card-bg: rgba(15, 23, 42, 0.96);
+  --border-soft: rgba(148, 163, 184, 0.4);
+  --text-muted: #94a3b8;
+  --orange: #fb923c;
+  --white: #e5e7eb;
+  --green: #22c55e;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Poppins", system-ui, sans-serif;
+}
+
+body {
+  min-height: 100vh;
+  background: radial-gradient(circle at top left, rgba(56, 189, 248, 0.35), transparent 55%),
+              radial-gradient(circle at bottom right, rgba(244, 63, 94, 0.32), transparent 55%),
+              var(--bg-gradient);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 18px;
+  color: #e5e7eb;
+}
+
+/* Common Layout Components */
+.shell, .app-shell, .container {
+  width: 100%;
+  max-width: 1080px;
+  background: var(--card-bg);
+  border-radius: 30px;
+  border: 1px solid var(--border-soft);
+  box-shadow: 0 24px 42px rgba(15, 23, 42, 0.8);
+  padding: 20px;
+  position: relative;
+  overflow: hidden;
+}
+
+.game-shell { max-width: 520px; }
+
+/* Buttons */
+.primary-btn {
+  width: 100%;
+  border-radius: 999px;
+  padding: 10px;
+  font-weight: 600;
+  background: linear-gradient(120deg, var(--primary), var(--primary-light));
+  color: #020617;
+  border: none;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.primary-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 20px rgba(56, 189, 248, 0.4);
+}
+
+.secondary-btn {
+  width: 100%;
+  border-radius: 999px;
+  padding: 8px;
+  background: rgba(15, 23, 42, 0.9);
+  color: #e5e7eb;
+  border: 1px solid var(--border-soft);
+  cursor: pointer;
+}
+
+/* Forms */
+.form-group input {
+  width: 100%;
+  border-radius: 999px;
+  border: 1px solid var(--border-soft);
+  padding: 8px 15px;
+  background: rgba(15, 23, 42, 0.8);
+  color: #fff;
+  margin-bottom: 10px;
+}
+
+/* Status Messages */
+.status {
+  margin-top: 10px;
+  padding: 8px 12px;
+  border-radius: 10px;
+  font-size: 13px;
+}
+
+.win { border: 1px solid var(--success); color: var(--success); }
+.lose { border: 1px solid var(--danger); color: var(--danger); }
