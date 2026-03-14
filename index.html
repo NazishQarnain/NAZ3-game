@@ -28,7 +28,6 @@
     </header>
 
     <div class="app-body">
-      <!-- Auth Card -->
       <div id="authCard" class="card">
         <div class="auth-toggle">
           <button id="loginTab" class="active">Login</button>
@@ -48,7 +47,6 @@
         <div id="authMessage" class="auth-message"></div>
       </div>
 
-      <!-- Game Hub -->
       <div id="gameSection" class="card" style="display:none">
         <div class="hub-header">
           <h2>Game Hub</h2>
@@ -67,7 +65,6 @@
     </div>
   </div>
 
-  <script type="module" src="auth.js"></script>
   <script type="module">
     import { watchAuth, appLogout } from './auth.js';
     import { auth } from './firebase-config.js';
@@ -97,56 +94,38 @@
 
     watchAuth(showGame, showAuth);
 
-    // Tab toggle
     document.getElementById('loginTab').addEventListener('click', () => {
-      document.getElementById('loginTab').classList.add('active');
-      document.getElementById('registerTab').classList.remove('active');
-      document.getElementById('loginSection').classList.add('active');
-      document.getElementById('registerSection').classList.remove('active');
+      loginTab.classList.add('active'); registerTab.classList.remove('active');
+      loginSection.classList.add('active'); registerSection.classList.remove('active');
     });
     document.getElementById('registerTab').addEventListener('click', () => {
-      document.getElementById('registerTab').classList.add('active');
-      document.getElementById('loginTab').classList.remove('active');
-      document.getElementById('registerSection').classList.add('active');
-      document.getElementById('loginSection').classList.remove('active');
+      registerTab.classList.add('active'); loginTab.classList.remove('active');
+      registerSection.classList.add('active'); loginSection.classList.remove('active');
     });
 
-    // Login
     document.getElementById('loginBtn').addEventListener('click', async () => {
       const email = document.getElementById('loginEmail').value.trim();
       const pass = document.getElementById('loginPassword').value;
-      try {
-        await signInWithEmailAndPassword(auth, email, pass);
-      } catch (e) {
-        authMessage.textContent = e.message;
-      }
+      authMessage.textContent = '';
+      try { await signInWithEmailAndPassword(auth, email, pass); }
+      catch (e) { authMessage.textContent = e.message; }
     });
 
-    // Register
     document.getElementById('registerBtn').addEventListener('click', async () => {
       const username = document.getElementById('registerUsername').value.trim();
       const email = document.getElementById('registerEmail').value.trim();
       const pass = document.getElementById('registerPassword').value;
+      authMessage.textContent = '';
       try {
         const cred = await createUserWithEmailAndPassword(auth, email, pass);
         await setDoc(doc(db, 'users', cred.user.uid), { username, email, coins: 100 });
-      } catch (e) {
-        authMessage.textContent = e.message;
-      }
+      } catch (e) { authMessage.textContent = e.message; }
     });
 
-    // Logout
-    window.logout = async () => {
-      await appLogout();
-    };
+    window.logout = async () => { await appLogout(); };
 
-    // Daily Bonus
-    document.getElementById('dailyBonusBtn').addEventListener('click', () => {
-      alert('Daily bonus coming soon!');
-    });
-    document.getElementById('leaderboardBtn').addEventListener('click', () => {
-      alert('Leaderboard coming soon!');
-    });
+    document.getElementById('dailyBonusBtn').addEventListener('click', () => alert('Daily bonus coming soon!'));
+    document.getElementById('leaderboardBtn').addEventListener('click', () => alert('Leaderboard coming soon!'));
   </script>
 </body>
 </html>
