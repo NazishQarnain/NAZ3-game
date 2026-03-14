@@ -104,7 +104,7 @@
                   #020617;
       display: flex;
       align-items: center;
-      justify-content: center;
+      justify-content center;
       font-size: 14px;
       font-weight: 600;
     }
@@ -162,7 +162,7 @@
     .play-card {
       border-radius: 18px;
       border: 1px solid var(--border-soft);
-      background: radial-gradient(circle at top, rgba(56, 189, 248, 0.12), transparent 55%),
+      background: radial-gradient(circle at top, rgba(56, 189, 248, 0.18), transparent 55%),
                   rgba(15, 23, 42, 0.96);
       padding: 14px 12px 12px;
     }
@@ -231,6 +231,7 @@
       margin-top: 6px;
       font-size: 11px;
       color: var(--text-muted);
+      text-align: center;
     }
 
     .controls {
@@ -349,7 +350,7 @@
       <header>
         <div class="title-block">
           <h1>Coin Flip</h1>
-          <p>Bet 5 NAZ. Guess the side. Win 15 NAZ on Heads.</p>
+          <p>Bet 5 NAZ. Heads wins +15 NAZ.</p>
         </div>
         <div class="user-pill">
           <div class="user-avatar" id="userAvatar">P</div>
@@ -368,13 +369,13 @@
           <div class="play-header">
             <div>
               <h2>Flip the Coin</h2>
-              <span>Each flip is an independent 50% chance.</span>
+              <span>Each flip is a fair 50% chance.</span>
             </div>
           </div>
 
           <div class="coin-display">
             <div class="coin" id="coinEmoji">🪙</div>
-            <div class="coin-label">Result updates after the flip animation.</div>
+            <div class="coin-label">Result will show after the flip animation.</div>
           </div>
 
           <div class="controls">
@@ -387,11 +388,11 @@
           <div>
             <div class="rules-title">How Coin Flip Works</div>
             <ul class="rules-list">
-              <li>• Bet <span class="highlight">5 NAZ</span> coins each flip.</li>
-              <li>• We flip a fair virtual coin (50% Heads / 50% Tails).</li>
-              <li>• If it lands on <span class="highlight">Heads</span>, you win +15 NAZ.</li>
+              <li>• Bet <span class="highlight">5 NAZ</span> coins per flip.</li>
+              <li>• Virtual coin: <span class="highlight">50% Heads</span>, 50% Tails.</li>
+              <li>• If it lands on Heads, you win <span class="highlight">+15 NAZ</span>.</li>
               <li>• If it lands on Tails, you lose your 5 NAZ bet.</li>
-              <li>• Your NAZ coins are always stored safely in Firestore.</li>
+              <li>• All NAZ coins are stored securely in Firestore.</li>
             </ul>
           </div>
           <div id="result" class="status info">
@@ -494,7 +495,7 @@
 
       playBtn.disabled = true;
       emoji.classList.remove('spin');
-      void emoji.offsetWidth; // force reflow
+      void emoji.offsetWidth;
       emoji.classList.add('spin');
       emoji.textContent = '🌀';
       setStatus('Flipping the coin...', 'info');
@@ -509,7 +510,7 @@
         if (isHeads) {
           emoji.textContent = '🙂';
           await safeUpdateCoins(15);
-          setStatus('Heads! You Won +15 NAZ Coins.', 'win');
+          setStatus('Heads! You Won +15 NAZ coins.', 'win');
         } else {
           emoji.textContent = '😵';
           setStatus('Tails! You lost your 5 NAZ bet.', 'lose');
