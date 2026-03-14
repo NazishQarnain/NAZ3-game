@@ -1,69 +1,152 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8" />
-    <title>NAZ3 Game - Play & Earn</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="style.css" />
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet" />
+  <meta charset="UTF-8" />
+  <title>NAZ3 Game - Play & Earn</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet" />
 </head>
 <body>
-    <div class="app-shell">
-        <header class="app-header">
-            <div class="brand">
-                <div class="logo-pill"><span>N</span></div>
-                <div class="brand-text">
-                    <h1>NAZ3 Game</h1>
-                    <p>Play & Earn NAZ Coins</p>
-                </div>
-            </div>
-            <div id="userSummary" class="user-summary" style="display:none">
-                <div id="userAvatar" class="user-avatar">P</div>
-                <div class="user-meta">
-                    <span id="currentUsername">Player</span>
-                    <div class="coin-chip"><span class="coin-badge">₦</span> <span id="headerCoins">0</span></div>
-                </div>
-                <button onclick="logout()" class="logout-btn">Logout</button>
-            </div>
-        </header>
-
-        <div class="app-body">
-            <div id="authCard" class="card">
-                <div class="auth-toggle">
-                    <button id="loginTab" class="active">Login</button>
-                    <button id="registerTab">Register</button>
-                </div>
-                <div id="loginSection" class="auth-form active">
-                    <div class="form-group"><input type="email" id="loginEmail" placeholder="Email"></div>
-                    <div class="form-group"><input type="password" id="loginPassword" placeholder="Password"></div>
-                    <button id="loginBtn" class="primary-btn">Login</button>
-                </div>
-                <div id="registerSection" class="auth-form">
-                    <div class="form-group"><input type="text" id="registerUsername" placeholder="Username"></div>
-                    <div class="form-group"><input type="email" id="registerEmail" placeholder="Email"></div>
-                    <div class="form-group"><input type="password" id="registerPassword" placeholder="Password"></div>
-                    <button id="registerBtn" class="primary-btn">Register</button>
-                </div>
-                <div id="authMessage" class="auth-message"></div>
-            </div>
-
-            <div id="gameSection" class="card" style="display:none">
-                <div class="hub-header">
-                    <h2>Game Hub</h2>
-                    <div class="hub-actions">
-                        <button id="dailyBonusBtn" class="chip-btn">Daily Bonus</button>
-                        <button id="leaderboardBtn" class="chip-btn">Leaderboard</button>
-                    </div>
-                </div>
-                <div class="games-grid">
-                    <div class="game-tile" onclick="location.href='dice.html'"><span>🎲 Dice</span></div>
-                    <div class="game-tile" onclick="location.href='coin.html'"><span>🪙 Coin</span></div>
-                    <div class="game-tile" onclick="location.href='lucky.html'"><span>🍀 Lucky</span></div>
-                    <div class="game-tile" onclick="location.href='tricolor.html'"><span>🇮🇳 Tri-Color</span></div>
-                </div>
-            </div>
+  <div class="app-shell">
+    <header class="app-header">
+      <div class="brand">
+        <div class="logo-pill"><span>N</span></div>
+        <div class="brand-text">
+          <h1>NAZ3 Game</h1>
+          <p>Play & Earn NAZ Coins</p>
         </div>
+      </div>
+      <div id="userSummary" class="user-summary" style="display:none">
+        <div id="userAvatar" class="user-avatar">P</div>
+        <div class="user-meta">
+          <span id="currentUsername">Player</span>
+          <div class="coin-chip"><span class="coin-badge">&#8358;</span> <span id="headerCoins">0</span></div>
+        </div>
+        <button onclick="logout()" class="logout-btn">Logout</button>
+      </div>
+    </header>
+
+    <div class="app-body">
+      <!-- Auth Card -->
+      <div id="authCard" class="card">
+        <div class="auth-toggle">
+          <button id="loginTab" class="active">Login</button>
+          <button id="registerTab">Register</button>
+        </div>
+        <div id="loginSection" class="auth-form active">
+          <div class="form-group"><input type="email" id="loginEmail" placeholder="Email"></div>
+          <div class="form-group"><input type="password" id="loginPassword" placeholder="Password"></div>
+          <button id="loginBtn" class="primary-btn">Login</button>
+        </div>
+        <div id="registerSection" class="auth-form">
+          <div class="form-group"><input type="text" id="registerUsername" placeholder="Username"></div>
+          <div class="form-group"><input type="email" id="registerEmail" placeholder="Email"></div>
+          <div class="form-group"><input type="password" id="registerPassword" placeholder="Password"></div>
+          <button id="registerBtn" class="primary-btn">Register</button>
+        </div>
+        <div id="authMessage" class="auth-message"></div>
+      </div>
+
+      <!-- Game Hub -->
+      <div id="gameSection" class="card" style="display:none">
+        <div class="hub-header">
+          <h2>Game Hub</h2>
+          <div class="hub-actions">
+            <button id="dailyBonusBtn" class="chip-btn">Daily Bonus</button>
+            <button id="leaderboardBtn" class="chip-btn">Leaderboard</button>
+          </div>
+        </div>
+        <div class="games-grid">
+          <div class="game-tile" onclick="location.href='dice.html'"><span>🎲 Dice</span></div>
+          <div class="game-tile" onclick="location.href='coin.html'"><span>🪙 Coin</span></div>
+          <div class="game-tile" onclick="location.href='lucky.html'"><span>🍀 Lucky</span></div>
+          <div class="game-tile" onclick="location.href='tricolor.html'"><span>🇮🇳 Tri-Color</span></div>
+        </div>
+      </div>
     </div>
-    <script type="module" src="auth.js"></script>
+  </div>
+
+  <script type="module" src="auth.js"></script>
+  <script type="module">
+    import { watchAuth, appLogout } from './auth.js';
+    import { auth } from './firebase-config.js';
+    import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'https://www.gstatic.com/firebasejs/10.12.3/firebase-auth.js';
+    import { doc, setDoc } from 'https://www.gstatic.com/firebasejs/10.12.3/firebase-firestore.js';
+    import { db } from './firebase-config.js';
+
+    const authCard = document.getElementById('authCard');
+    const gameSection = document.getElementById('gameSection');
+    const userSummary = document.getElementById('userSummary');
+    const authMessage = document.getElementById('authMessage');
+
+    function showGame(userData) {
+      authCard.style.display = 'none';
+      gameSection.style.display = 'block';
+      userSummary.style.display = 'flex';
+      document.getElementById('currentUsername').textContent = userData.username;
+      document.getElementById('headerCoins').textContent = userData.coins;
+      document.getElementById('userAvatar').textContent = userData.username.charAt(0).toUpperCase();
+    }
+
+    function showAuth() {
+      authCard.style.display = 'block';
+      gameSection.style.display = 'none';
+      userSummary.style.display = 'none';
+    }
+
+    watchAuth(showGame, showAuth);
+
+    // Tab toggle
+    document.getElementById('loginTab').addEventListener('click', () => {
+      document.getElementById('loginTab').classList.add('active');
+      document.getElementById('registerTab').classList.remove('active');
+      document.getElementById('loginSection').classList.add('active');
+      document.getElementById('registerSection').classList.remove('active');
+    });
+    document.getElementById('registerTab').addEventListener('click', () => {
+      document.getElementById('registerTab').classList.add('active');
+      document.getElementById('loginTab').classList.remove('active');
+      document.getElementById('registerSection').classList.add('active');
+      document.getElementById('loginSection').classList.remove('active');
+    });
+
+    // Login
+    document.getElementById('loginBtn').addEventListener('click', async () => {
+      const email = document.getElementById('loginEmail').value.trim();
+      const pass = document.getElementById('loginPassword').value;
+      try {
+        await signInWithEmailAndPassword(auth, email, pass);
+      } catch (e) {
+        authMessage.textContent = e.message;
+      }
+    });
+
+    // Register
+    document.getElementById('registerBtn').addEventListener('click', async () => {
+      const username = document.getElementById('registerUsername').value.trim();
+      const email = document.getElementById('registerEmail').value.trim();
+      const pass = document.getElementById('registerPassword').value;
+      try {
+        const cred = await createUserWithEmailAndPassword(auth, email, pass);
+        await setDoc(doc(db, 'users', cred.user.uid), { username, email, coins: 100 });
+      } catch (e) {
+        authMessage.textContent = e.message;
+      }
+    });
+
+    // Logout
+    window.logout = async () => {
+      await appLogout();
+    };
+
+    // Daily Bonus
+    document.getElementById('dailyBonusBtn').addEventListener('click', () => {
+      alert('Daily bonus coming soon!');
+    });
+    document.getElementById('leaderboardBtn').addEventListener('click', () => {
+      alert('Leaderboard coming soon!');
+    });
+  </script>
 </body>
 </html>
