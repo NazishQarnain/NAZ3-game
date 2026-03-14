@@ -1,229 +1,704 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tri-Color - NAZ3 Game</title>
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-        .container {
-            width: 90%;
-            max-width: 800px;
-            background: rgba(255, 255, 255, 0.95);
-            border-radius: 20px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-            overflow: hidden;
-        }
-        .header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 30px;
-            text-align: center;
-        }
-        .user-info {
-            background: #f5f5f5;
-            padding: 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 10px;
-        }
-        .coin-balance { font-size: 24px; font-weight: bold; color: #667eea; }
-        .btn { padding: 12px 30px; border: none; border-radius: 8px; font-size: 16px; font-weight: 600; cursor: pointer; transition: all 0.3s; }
-        .btn-secondary { background: #e0e0e0; color: #333; }
-        .btn-primary { background: #667eea; color: white; }
-        .btn:disabled { opacity: 0.6; cursor: not-allowed; }
-        .game-area { padding: 40px 20px 30px; text-align: center; }
-        .color-wheel-wrapper { position: relative; display: inline-block; }
-        .color-wheel {
-            width: 300px;
-            height: 300px;
-            margin: 30px auto;
-            border-radius: 50%;
-            background: conic-gradient(from 0deg, #FF9933 0deg 120deg, #FFFFFF 120deg 240deg, #138808 240deg 360deg);
-            position: relative;
-            border: 5px solid white;
-            transition: transform 4s cubic-bezier(0.17, 0.67, 0.83, 0.67);
-        }
-        .wheel-arrow {
-            position: absolute;
-            top: -10px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 0; height: 0;
-            border-left: 15px solid transparent;
-            border-right: 15px solid transparent;
-            border-top: 25px solid #FF4444;
-            z-index: 10;
-        }
-        .color-buttons { display: flex; gap: 15px; justify-content: center; margin-top: 30px; flex-wrap: wrap; }
-        .color-btn { padding: 15px 30px; border: none; border-radius: 10px; font-size: 16px; font-weight: 600; cursor: pointer; transition: all 0.3s; color: white; min-width: 110px; }
-        .color-btn.orange { background: #FF9933; }
-        .color-btn.white { background: #FFFFFF; color: #333; border: 1px solid #ddd; }
-        .color-btn.green { background: #138808; }
-        .color-btn.selected { box-shadow: 0 0 0 3px #764ba2; transform: translateY(-2px); }
-        .timer-container { margin: 20px 0 5px; font-size: 24px; font-weight: bold; color: #764ba2; }
-        .round-info { font-size: 14px; color: #666; margin-bottom: 15px; }
-        .betting-status { margin: 10px 0; font-size: 18px; font-weight: 600; }
-        .result { margin-top: 20px; padding: 15px; border-radius: 8px; font-size: 18px; font-weight: 600; }
-        .result.win { background: #e8f5e9; color: #2e7d32; }
-        .result.lose { background: #ffebee; color: #c62828; }
-        .result.info { background: #e3f2fd; color: #1565c0; }
-    </style>
+  <meta charset="UTF-8" />
+  <title>Tri-Color Wheel - NAZ3 Game</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet" />
+
+  <link rel="icon" href="https://img.icons8.com/?size=100&id=UooIO6rrQ8kV&format=png&color=FFFFFF" />
+
+  <style>
+    :root {
+      --bg-gradient: linear-gradient(135deg, #0f172a, #020617);
+      --primary: #38bdf8;
+      --primary-light: #7dd3fc;
+      --success: #22c55e;
+      --danger: #f97373;
+      --card-bg: rgba(15, 23, 42, 0.96);
+      --border-soft: rgba(148, 163, 184, 0.4);
+      --text-muted: #94a3b8;
+      --orange: #fb923c;
+      --white: #e5e7eb;
+      --green: #22c55e;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: "Poppins", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    body {
+      min-height: 100vh;
+      background: radial-gradient(circle at top left, rgba(56, 189, 248, 0.35), transparent 55%),
+                  radial-gradient(circle at bottom right, rgba(34, 197, 94, 0.35), transparent 55%),
+                  var(--bg-gradient);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 18px;
+      color: #e5e7eb;
+    }
+
+    .shell {
+      width: 100%;
+      max-width: 620px;
+      background: var(--card-bg);
+      border-radius: 26px;
+      border: 1px solid var(--border-soft);
+      box-shadow: 0 22px 40px rgba(15, 23, 42, 0.7);
+      padding: 18px 18px 16px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .shell::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at 0 0, rgba(56, 189, 248, 0.2), transparent 60%);
+      opacity: 0.9;
+      pointer-events: none;
+    }
+
+    .inner {
+      position: relative;
+      z-index: 1;
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+
+    .title-block h1 {
+      font-size: 18px;
+      font-weight: 600;
+    }
+
+    .title-block p {
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    .user-pill {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      border: 1px solid var(--border-soft);
+      background: rgba(15, 23, 42, 0.95);
+    }
+
+    .user-avatar {
+      width: 26px;
+      height: 26px;
+      border-radius: 999px;
+      background: radial-gradient(circle at 30% 0, #f97316, transparent 60%),
+                  #020617;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .user-meta {
+      display: flex;
+      flex-direction: column;
+      gap: 1px;
+    }
+
+    .user-meta span {
+      font-size: 10px;
+    }
+
+    .user-meta span b {
+      font-weight: 600;
+    }
+
+    .coin-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 2px 7px;
+      border-radius: 999px;
+      border: 1px solid rgba(56, 189, 248, 0.6);
+      background: rgba(15, 23, 42, 0.98);
+      font-size: 10px;
+    }
+
+    .coin-badge {
+      width: 16px;
+      height: 16px;
+      border-radius: 999px;
+      background: radial-gradient(circle at 30% 0, #facc15, transparent 60%),
+                  #0f172a;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 10px;
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+      gap: 14px;
+      align-items: stretch;
+    }
+
+    @media (max-width: 720px) {
+      .layout {
+        grid-template-columns: minmax(0, 1fr);
+      }
+    }
+
+    .wheel-card {
+      border-radius: 18px;
+      border: 1px solid var(--border-soft);
+      background: radial-gradient(circle at top, rgba(59, 130, 246, 0.2), transparent 55%),
+                  rgba(15, 23, 42, 0.96);
+      padding: 14px 12px 12px;
+    }
+
+    .wheel-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+
+    .wheel-header h2 {
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .wheel-header span {
+      font-size: 10px;
+      color: var(--text-muted);
+    }
+
+    .timer-tag {
+      padding: 3px 8px;
+      border-radius: 999px;
+      font-size: 10px;
+      border: 1px solid rgba(148, 163, 184, 0.6);
+      background: rgba(15, 23, 42, 0.95);
+    }
+
+    .wheel-wrap {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-top: 6px;
+    }
+
+    .wheel-container {
+      position: relative;
+      width: 160px;
+      height: 160px;
+      border-radius: 999px;
+      border: 3px solid rgba(148, 163, 184, 0.6);
+      overflow: hidden;
+      box-shadow: 0 18px 32px rgba(15, 23, 42, 0.8);
+      margin-bottom: 8px;
+    }
+
+    .wheel {
+      width: 100%;
+      height: 100%;
+      border-radius: 999px;
+      position: relative;
+      transform: rotate(0deg);
+      transition: transform 4s cubic-bezier(0.25, 0.8, 0.25, 1);
+    }
+
+    .segment {
+      position: absolute;
+      width: 50%;
+      height: 100%;
+      top: 0;
+      left: 50%;
+      transform-origin: left center;
+    }
+
+    .segment.orange {
+      background: var(--orange);
+      transform: rotate(0deg);
+    }
+
+    .segment.white {
+      background: var(--white);
+      transform: rotate(120deg);
+    }
+
+    .segment.green {
+      background: var(--green);
+      transform: rotate(240deg);
+    }
+
+    .wheel-center {
+      position: absolute;
+      inset: 32px;
+      border-radius: 999px;
+      background: radial-gradient(circle at 30% 0, #f97316, transparent 60%),
+                  radial-gradient(circle at 80% 80%, #22c55e, transparent 60%),
+                  #020617;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      font-weight: 700;
+      color: #fefce8;
+    }
+
+    .pointer {
+      position: absolute;
+      top: -6px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 0;
+      height: 0;
+      border-left: 8px solid transparent;
+      border-right: 8px solid transparent;
+      border-bottom: 12px solid #fef9c3;
+      filter: drop-shadow(0 3px 3px rgba(15, 23, 42, 0.9));
+    }
+
+    .color-buttons {
+      display: flex;
+      gap: 6px;
+      margin-top: 4px;
+    }
+
+    .color-btn {
+      flex: 1;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.6);
+      padding: 6px 0;
+      font-size: 11px;
+      cursor: pointer;
+      background: rgba(15, 23, 42, 0.9);
+      color: #e5e7eb;
+      transition: background 0.15s ease-out, transform 0.15s ease-out, box-shadow 0.15s ease-out;
+    }
+
+    .color-btn.orange {
+      border-color: rgba(248, 153, 74, 0.85);
+    }
+
+    .color-btn.white {
+      border-color: rgba(209, 213, 219, 0.85);
+    }
+
+    .color-btn.green {
+      border-color: rgba(34, 197, 94, 0.85);
+    }
+
+    .color-btn.selected {
+      transform: translateY(-1px);
+      box-shadow: 0 10px 20px rgba(15, 23, 42, 0.7);
+    }
+
+    .color-btn.orange.selected {
+      background: linear-gradient(120deg, #fb923c, #f97316);
+    }
+
+    .color-btn.white.selected {
+      background: linear-gradient(120deg, #e5e7eb, #f9fafb);
+      color: #020617;
+    }
+
+    .color-btn.green.selected {
+      background: linear-gradient(120deg, #22c55e, #16a34a);
+    }
+
+    .secondary-btn {
+      width: 100%;
+      margin-top: 8px;
+      border-radius: 999px;
+      border: 1px solid var(--border-soft);
+      padding: 7px 0;
+      font-size: 11px;
+      background: rgba(15, 23, 42, 0.9);
+      color: #e5e7eb;
+      cursor: pointer;
+      transition: background 0.15s ease-out, transform 0.15s ease-out;
+    }
+
+    .secondary-btn:hover {
+      background: rgba(30, 64, 175, 0.8);
+      transform: translateY(-1px);
+    }
+
+    .rules-card {
+      border-radius: 18px;
+      border: 1px solid var(--border-soft);
+      background: radial-gradient(circle at top right, rgba(248, 250, 252, 0.08), transparent 55%),
+                  rgba(15, 23, 42, 0.96);
+      padding: 12px 11px 11px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .rules-title {
+      font-size: 13px;
+      font-weight: 600;
+      margin-bottom: 3px;
+    }
+
+    .rules-list {
+      list-style: none;
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    .rules-list li + li {
+      margin-top: 4px;
+    }
+
+    .highlight {
+      color: #facc15;
+      font-weight: 500;
+    }
+
+    .status {
+      margin-top: 8px;
+      font-size: 11px;
+      padding: 6px 9px;
+      border-radius: 12px;
+      border: 1px solid transparent;
+      background: rgba(15, 23, 42, 0.95);
+      min-height: 32px;
+      display: flex;
+      align-items: center;
+    }
+
+    .status.win {
+      border-color: rgba(34, 197, 94, 0.6);
+      color: #bbf7d0;
+    }
+
+    .status.lose {
+      border-color: rgba(248, 113, 113, 0.7);
+      color: #fecaca;
+    }
+
+    .status.info {
+      border-color: rgba(148, 163, 184, 0.6);
+      color: #e5e7eb;
+    }
+
+    .status.warning {
+      border-color: rgba(251, 146, 60, 0.7);
+      color: #fed7aa;
+    }
+  </style>
 </head>
 <body>
-    <div class="container">
-        <div class="header">
-            <h1>🇮🇳 Live Tri-Color</h1>
-            <p>Every minute a new result!</p>
+  <div class="shell">
+    <div class="inner">
+      <header>
+        <div class="title-block">
+          <h1>Tri-Color Wheel</h1>
+          <p>Bet 15 NAZ. Choose Orange, White, or Green and spin each minute.</p>
         </div>
-        <div class="user-info">
-            <div><h3>Welcome, <span id="username">Player</span>!</h3></div>
-            <div class="coin-balance">💰 <span id="coinBalance">0</span> NAZ</div>
-            <button class="btn btn-secondary" onclick="location.href='index.html'">Back</button>
+        <div class="user-pill">
+          <div class="user-avatar" id="userAvatar">P</div>
+          <div class="user-meta">
+            <span>Player: <b id="username">Player</b></span>
+            <span class="coin-chip">
+              <span class="coin-badge">₦</span>
+              <span><span id="coinBalance">0</span> NAZ</span>
+            </span>
+          </div>
         </div>
-        <div class="game-area">
-            <div class="timer-container">Time left: <span id="timer">--</span>s</div>
-            <div class="round-info">Select a color before the time is over. Wheel spins every minute.</div>
-            <div class="color-wheel-wrapper">
-                <div class="wheel-arrow"></div>
-                <div id="wheel" class="color-wheel"></div>
+      </header>
+
+      <div class="layout">
+        <section class="wheel-card">
+          <div class="wheel-header">
+            <div>
+              <h2>Live Color Wheel</h2>
+              <span>Each minute has one fixed winning color.</span>
             </div>
+            <div class="timer-tag">
+              Next result in <span id="timer">--</span> sec
+            </div>
+          </div>
+
+          <div class="wheel-wrap">
+            <div class="wheel-container">
+              <div class="pointer"></div>
+              <div class="wheel" id="wheel">
+                <div class="segment orange"></div>
+                <div class="segment white"></div>
+                <div class="segment green"></div>
+              </div>
+              <div class="wheel-center" id="wheelCenter">?</div>
+            </div>
+
             <div class="color-buttons">
-                <button class="color-btn orange" data-color="orange">Orange</button>
-                <button class="color-btn white" data-color="white">White</button>
-                <button class="color-btn green" data-color="green">Green</button>
+              <button class="color-btn orange" id="btnOrange" type="button">Orange</button>
+              <button class="color-btn white" id="btnWhite" type="button">White</button>
+              <button class="color-btn green" id="btnGreen" type="button">Green</button>
             </div>
-            <div class="betting-status" id="bettingStatus">No color selected yet.</div>
-            <div id="result" class="result info" style="display:none;">Waiting for next round...</div>
-        </div>
+
+            <button class="secondary-btn" type="button" onclick="goBack()">Back to Games</button>
+          </div>
+        </section>
+
+        <section class="rules-card">
+          <div>
+            <div class="rules-title">How Tri-Color Wheel Works</div>
+            <ul class="rules-list">
+              <li>• Bet <span class="highlight">15 NAZ</span> by selecting a color.</li>
+              <li>• Each minute has one winning color: Orange, White, or Green.</li>
+              <li>• The wheel uses a deterministic time-based seed for fairness.</li>
+              <li>• If your color matches the minute’s result, you win <span class="highlight">+30 NAZ</span>.</li>
+              <li>• You can place only <span class="highlight">one bet per minute</span>.</li>
+              <li>• Betting closes in the last 10 seconds of the minute.</li>
+            </ul>
+          </div>
+          <div id="bettingStatus" class="status info">
+            Place your bet before the last 10 seconds of the minute.
+          </div>
+          <div id="result" class="status info" style="margin-top: 6px;">
+            Waiting for the next spin result...
+          </div>
+        </section>
+      </div>
     </div>
+  </div>
 
-    <script type="module">
-        import { auth, db } from './firebase-config.js';
-        import { doc, getDoc, updateDoc, onSnapshot } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
-        import { onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
+  <script type="module">
+    import { auth, db } from './firebase-config.js';
+    import {
+      onAuthStateChanged,
+    } from 'https://www.gstatic.com/firebasejs/10.12.3/firebase-auth.js';
+    import {
+      doc,
+      getDoc,
+      updateDoc,
+      onSnapshot
+    } from 'https://www.gstatic.com/firebasejs/10.12.3/firebase-firestore.js';
 
-        const usernameSpan = document.getElementById('username');
-        const coinBalanceSpan = document.getElementById('coinBalance');
-        const wheel = document.getElementById('wheel');
-        const timerSpan = document.getElementById('timer');
-        const bettingStatus = document.getElementById('bettingStatus');
-        const resultDiv = document.getElementById('result');
-        const colorButtons = document.querySelectorAll('.color-btn');
+    const usernameSpan = document.getElementById('username');
+    const coinSpan = document.getElementById('coinBalance');
+    const userAvatar = document.getElementById('userAvatar');
 
-        let currentUser = null;
-        let selectedColor = null;
-        let hasPlacedBet = false;
-        let currentRotation = 0;
-        let lastProcessedMinute = -1;
+    const wheel = document.getElementById('wheel');
+    const wheelCenter = document.getElementById('wheelCenter');
+    const timerSpan = document.getElementById('timer');
+    const bettingStatus = document.getElementById('bettingStatus');
+    const resultDiv = document.getElementById('result');
 
-        const colorRanges = { orange: { start: 0, end: 120 }, white: { start: 120, end: 240 }, green: { start: 240, end: 360 } };
+    const btnOrange = document.getElementById('btnOrange');
+    const btnWhite = document.getElementById('btnWhite');
+    const btnGreen = document.getElementById('btnGreen');
 
-        onAuthStateChanged(auth, (user) => {
-            if (user) {
-                currentUser = user;
-                onSnapshot(doc(db, "users", user.uid), (docSnap) => {
-                    if (docSnap.exists()) {
-                        const data = docSnap.data();
-                        usernameSpan.textContent = data.username || "Player";
-                        coinBalanceSpan.textContent = data.coins || 0;
-                    }
-                });
+    let currentUserData = null;
+    let userRef = null;
+    let hasPlacedBet = false;
+    let selectedColor = null;
+    let currentMinute = null;
+    let lastProcessedMinute = null;
+    let currentAngle = 0;
+    let lastWinningColor = null;
+
+    function setStatus(element, text, type = 'info') {
+      element.textContent = text;
+      element.className = 'status ' + type;
+    }
+
+    function updateUserInfo() {
+      if (!currentUserData) return;
+      const username = currentUserData.username || 'Player';
+      const coins = currentUserData.coins ?? 0;
+
+      usernameSpan.textContent = username;
+      coinSpan.textContent = coins;
+      userAvatar.textContent = username.charAt(0).toUpperCase();
+    }
+
+    async function safeUpdateCoins(delta) {
+      const current = currentUserData.coins ?? 0;
+      const next = current + delta;
+      if (next < 0) {
+        throw new Error('Not enough coins');
+      }
+      await updateDoc(userRef, { coins: next });
+      currentUserData.coins = next;
+      updateUserInfo();
+      return next;
+    }
+
+    function seededRandom(seed) {
+      let value = seed;
+      return function() {
+        value = (value * 9301 + 49297) % 233280;
+        return value / 233280;
+      };
+    }
+
+    function getWinningColorFromAngle(angle) {
+      const normalized = (angle + 270) % 360;
+      if (normalized >= 0 && normalized < 120) return 'orange';
+      if (normalized >= 120 && normalized < 240) return 'white';
+      return 'green';
+    }
+
+    function animateWheelTo(angle) {
+      currentAngle = angle;
+      wheel.style.transform = 'rotate(' + angle + 'deg)';
+    }
+
+    function setSelectedColor(color) {
+      selectedColor = color;
+      hasPlacedBet = true;
+      btnOrange.classList.toggle('selected', color === 'orange');
+      btnWhite.classList.toggle('selected', color === 'white');
+      btnGreen.classList.toggle('selected', color === 'green');
+    }
+
+    async function placeBet(color) {
+      if (!currentUserData || !userRef) return;
+
+      const now = new Date();
+      const seconds = now.getUTCSeconds();
+
+      if (seconds >= 50) {
+        setStatus(bettingStatus, 'Betting is closed for this round. Wait for the next minute.', 'warning');
+        return;
+      }
+
+      if (hasPlacedBet) {
+        setStatus(bettingStatus, 'You have already placed a bet this minute.', 'warning');
+        return;
+      }
+
+      if ((currentUserData.coins ?? 0) < 15) {
+        setStatus(bettingStatus, 'Not enough coins. You need at least 15 NAZ to bet.', 'lose');
+        return;
+      }
+
+      try {
+        await safeUpdateCoins(-15);
+        setSelectedColor(color);
+        setStatus(bettingStatus, 'Bet placed on ' + color.toUpperCase() + '. Wait for the spin result.', 'info');
+      } catch (error) {
+        console.error('Bet error:', error);
+        alert(error.message || 'Unable to place bet. Please try again.');
+      }
+    }
+
+    function updateGame() {
+      const now = new Date();
+      const seconds = now.getUTCSeconds();
+      const minute = now.getUTCMinutes();
+
+      currentMinute = minute;
+      timerSpan.textContent = String(60 - seconds);
+
+      if (seconds >= 50 && !hasPlacedBet) {
+        setStatus(bettingStatus, 'Betting closed. Wait for the next round.', 'warning');
+      } else if (seconds < 50 && !hasPlacedBet) {
+        setStatus(bettingStatus, 'Place your bet before the last 10 seconds of the minute.', 'info');
+      }
+
+      if (seconds === 0 && minute !== lastProcessedMinute) {
+        lastProcessedMinute = minute;
+
+        const seed = now.getUTCFullYear() * 1000000 +
+                     (now.getUTCMonth() + 1) * 10000 +
+                     now.getUTCDate() * 100 +
+                     now.getUTCHours() * 10 +
+                     now.getUTCMinutes();
+
+        const rand = seededRandom(seed)();
+        const randomAngle = rand * 360;
+
+        const spinCount = 5;
+        const finalAngle = currentAngle + spinCount * 360 + randomAngle;
+
+        animateWheelTo(finalAngle);
+
+        setTimeout(async () => {
+          const winningColor = getWinningColorFromAngle(randomAngle);
+          lastWinningColor = winningColor;
+          wheelCenter.textContent = winningColor === 'orange' ? 'O' : winningColor === 'white' ? 'W' : 'G';
+
+          if (!hasPlacedBet) {
+            setStatus(resultDiv, 'Result: ' + winningColor.toUpperCase() + '. You did not place a bet this round.', 'info');
+          } else {
+            if (winningColor === selectedColor) {
+              try {
+                await safeUpdateCoins(30);
+                setStatus(resultDiv, 'Result: ' + winningColor.toUpperCase() + '. You WON +30 NAZ coins!', 'win');
+              } catch (error) {
+                console.error('Win payout error:', error);
+                setStatus(resultDiv, 'Result: ' + winningColor.toUpperCase() + '. You won, but there was an error updating coins.', 'warning');
+              }
             } else {
-                window.location.href = 'index.html';
+              setStatus(resultDiv, 'Result: ' + winningColor.toUpperCase() + '. You lost this round.', 'lose');
             }
-        });
+          }
 
-        colorButtons.forEach(btn => {
-            btn.addEventListener('click', async () => {
-                if (hasPlacedBet) return;
-                const now = new Date();
-                if (now.getSeconds() >= 50) {
-                    bettingStatus.textContent = "Betting closed for this round!";
-                    return;
-                }
-                
-                const userDoc = await getDoc(doc(db, "users", currentUser.uid));
-                const coins = userDoc.data().coins;
-                if (coins < 15) {
-                    bettingStatus.textContent = "Not enough NAZ coins (need 15).";
-                    return;
-                }
+          hasPlacedBet = false;
+          selectedColor = null;
+          btnOrange.classList.remove('selected');
+          btnWhite.classList.remove('selected');
+          btnGreen.classList.remove('selected');
+        }, 4100);
+      }
+    }
 
-                await updateDoc(doc(db, "users", currentUser.uid), { coins: coins - 15 });
-                selectedColor = btn.dataset.color;
-                hasPlacedBet = true;
-                colorButtons.forEach(b => b.classList.remove('selected'));
-                btn.classList.add('selected');
-                bettingStatus.textContent = 'Bet placed on: ' + selectedColor.toUpperCase();
-            });
-        });
+    async function loadUser(user) {
+      userRef = doc(db, 'users', user.uid);
 
-        function seededRandom(seed) {
-            var x = Math.sin(seed++) * 10000;
-            return x - Math.floor(x);
-        }
+      onSnapshot(userRef, (snap) => {
+        if (!snap.exists()) return;
+        currentUserData = { uid: user.uid, ...snap.data() };
+        updateUserInfo();
+      });
+    }
 
-        function updateGame() {
-            const now = new Date();
-            const seconds = now.getUTCSeconds();     
-            timerSpan.textContent = 60 - seconds;
-                        const currentMinute = now.getUTCMinutes();
+    onAuthStateChanged(auth, async (user) => {
+      if (!user) {
+        alert('Please login first!');
+        window.location.href = 'index.html';
+        return;
+      }
 
-            if (seconds === 0 && currentMinute !== lastProcessedMinute) {
-                lastProcessedMinute = currentMinute;
-                const seed = now.getUTCFullYear() + now.getUTCMonth() + now.getUTCDate() + now.getUTCHours() + currentMinute;                const randomVal = seededRandom(seed);
-                const randomAngle = Math.floor(randomVal * 360);
-                const targetRotation = currentRotation + (5 * 360) + randomAngle;
-                
-                currentRotation = targetRotation;
-                wheel.style.transform = `rotate(${targetRotation}deg)`;
-                
-                resultDiv.style.display = 'block';
-                resultDiv.className = 'result info';
-                resultDiv.textContent = 'Wheel spinning...';
+      try {
+        await loadUser(user);
+      } catch (error) {
+        console.error('User load error:', error);
+        alert('Error loading your data. Please try again.');
+        window.location.href = 'index.html';
+      }
+    });
 
-                setTimeout(async () => {
-                                const angleAtTop = (randomAngle + 270) % 360;
-                                    let winningColor = "";
-                                    for (const [color, range] of Object.entries(colorRanges)) {
-                        if (angleAtTop >= range.start && angleAtTop < range.end) winningColor = color;
-                    }
+    btnOrange.addEventListener('click', () => placeBet('orange'));
+    btnWhite.addEventListener('click', () => placeBet('white'));
+    btnGreen.addEventListener('click', () => placeBet('green'));
 
-                    if (hasPlacedBet) {
-                        if (selectedColor === winningColor) {
-                            const userDoc = await getDoc(doc(db, "users", currentUser.uid));
-                            await updateDoc(doc(db, "users", currentUser.uid), { coins: userDoc.data().coins + 30 });
-                            resultDiv.className = 'result win';
-                            resultDiv.textContent = `You WON! Result: ${winningColor.toUpperCase()}. +30 NAZ`;
-                        } else {
-                            resultDiv.className = 'result lose';
-                            resultDiv.textContent = `You lost! Result: ${winningColor.toUpperCase()}.`;
-                        }
-                    } else {
-                        resultDiv.className = 'result info';
-                        resultDiv.textContent = `Round over. Result: ${winningColor.toUpperCase()}.`;
-                    }
-                    
-                    hasPlacedBet = false;
-                    selectedColor = null;
-                    colorButtons.forEach(b => b.classList.remove('selected'));
-                    bettingStatus.textContent = "No color selected yet.";
-                }, 4100);
-            }
-        }
+    setInterval(updateGame, 1000);
 
-        setInterval(updateGame, 1000);
-    </script>
+    window.goBack = function () {
+      window.location.href = 'index.html';
+    };
+  </script>
 </body>
 </html>
