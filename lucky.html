@@ -4,350 +4,14 @@
   <meta charset="UTF-8" />
   <title>Lucky Number - NAZ3 Game</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet" />
-
   <link rel="icon" href="https://img.icons8.com/?size=100&id=945&format=png&color=FFFFFF" />
-
-  <style>
-    :root {
-      --bg-gradient: linear-gradient(135deg, #0f172a, #020617);
-      --primary: #38bdf8;
-      --primary-light: #7dd3fc;
-      --success: #22c55e;
-      --danger: #f97373;
-      --card-bg: rgba(15, 23, 42, 0.96);
-      --border-soft: rgba(148, 163, 184, 0.4);
-      --text-muted: #94a3b8;
-    }
-
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: "Poppins", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-    }
-
-    body {
-      min-height: 100vh;
-      background: radial-gradient(circle at top left, rgba(56, 189, 248, 0.35), transparent 55%),
-                  radial-gradient(circle at bottom right, rgba(244, 63, 94, 0.35), transparent 55%),
-                  var(--bg-gradient);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 18px;
-      color: #e5e7eb;
-    }
-
-    .shell {
-      width: 100%;
-      max-width: 520px;
-      background: var(--card-bg);
-      border-radius: 26px;
-      border: 1px solid var(--border-soft);
-      box-shadow: 0 22px 40px rgba(15, 23, 42, 0.7);
-      padding: 18px 18px 16px;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .shell::before {
-      content: "";
-      position: absolute;
-      inset: 0;
-      background: radial-gradient(circle at 0 0, rgba(56, 189, 248, 0.2), transparent 60%);
-      opacity: 0.9;
-      pointer-events: none;
-    }
-
-    .inner {
-      position: relative;
-      z-index: 1;
-    }
-
-    header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 10px;
-      margin-bottom: 16px;
-    }
-
-    .title-block h1 {
-      font-size: 18px;
-      font-weight: 600;
-    }
-
-    .title-block p {
-      font-size: 11px;
-      color: var(--text-muted);
-    }
-
-    .user-pill {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      padding: 6px 10px;
-      border-radius: 999px;
-      border: 1px solid var(--border-soft);
-      background: rgba(15, 23, 42, 0.95);
-    }
-
-    .user-avatar {
-      width: 26px;
-      height: 26px;
-      border-radius: 999px;
-      background: radial-gradient(circle at 30% 0, #f97316, transparent 60%),
-                  #020617;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 14px;
-      font-weight: 600;
-    }
-
-    .user-meta {
-      display: flex;
-      flex-direction: column;
-      gap: 1px;
-    }
-
-    .user-meta span {
-      font-size: 10px;
-    }
-
-    .user-meta span b {
-      font-weight: 600;
-    }
-
-    .coin-chip {
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
-      padding: 2px 7px;
-      border-radius: 999px;
-      border: 1px solid rgba(56, 189, 248, 0.6);
-      background: rgba(15, 23, 42, 0.98);
-      font-size: 10px;
-    }
-
-    .coin-badge {
-      width: 16px;
-      height: 16px;
-      border-radius: 999px;
-      background: radial-gradient(circle at 30% 0, #facc15, transparent 60%),
-                  #0f172a;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 10px;
-    }
-
-    .layout {
-      display: grid;
-      grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
-      gap: 14px;
-      align-items: stretch;
-    }
-
-    @media (max-width: 640px) {
-      .layout {
-        grid-template-columns: minmax(0, 1fr);
-      }
-    }
-
-    .play-card {
-      border-radius: 18px;
-      border: 1px solid var(--border-soft);
-      background: radial-gradient(circle at top, rgba(244, 63, 94, 0.18), transparent 55%),
-                  rgba(15, 23, 42, 0.96);
-      padding: 14px 12px 12px;
-    }
-
-    .play-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 10px;
-    }
-
-    .play-header h2 {
-      font-size: 14px;
-      font-weight: 600;
-    }
-
-    .play-header span {
-      font-size: 10px;
-      color: var(--text-muted);
-    }
-
-    .number-display {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      margin-top: 6px;
-      margin-bottom: 10px;
-    }
-
-    .lucky-circle {
-      width: 80px;
-      height: 80px;
-      border-radius: 999px;
-      background: radial-gradient(circle at 30% 0, #f97316, transparent 60%),
-                  radial-gradient(circle at 80% 80%, #22c55e, transparent 60%),
-                  #0f172a;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 30px;
-      font-weight: 700;
-      box-shadow: 0 18px 32px rgba(15, 23, 42, 0.8);
-      color: #fefce8;
-      animation-duration: 0.8s;
-      animation-fill-mode: forwards;
-    }
-
-    .lucky-circle.pulse {
-      animation-name: lucky-pulse;
-    }
-
-    @keyframes lucky-pulse {
-      0% {
-        transform: scale(1);
-      }
-      40% {
-        transform: scale(1.12);
-      }
-      70% {
-        transform: scale(0.98);
-      }
-      100% {
-        transform: scale(1.02);
-      }
-    }
-
-    .number-label {
-      margin-top: 6px;
-      font-size: 11px;
-      color: var(--text-muted);
-      text-align: center;
-    }
-
-    .controls {
-      margin-top: 8px;
-    }
-
-    .primary-btn {
-      width: 100%;
-      border-radius: 999px;
-      border: none;
-      padding: 8px 0;
-      font-size: 12px;
-      font-weight: 600;
-      letter-spacing: 0.03em;
-      background: linear-gradient(120deg, var(--primary), var(--primary-light));
-      color: #020617;
-      cursor: pointer;
-      box-shadow: 0 16px 26px rgba(56, 189, 248, 0.45);
-      transition: transform 0.15s ease-out, box-shadow 0.15s ease-out, background 0.15s ease-out;
-    }
-
-    .primary-btn:hover:enabled {
-      transform: translateY(-1px);
-      box-shadow: 0 20px 32px rgba(56, 189, 248, 0.6);
-      background: linear-gradient(120deg, #38bdf8, #0ea5e9);
-    }
-
-    .primary-btn:disabled {
-      opacity: 0.65;
-      cursor: default;
-      box-shadow: none;
-    }
-
-    .secondary-btn {
-      width: 100%;
-      margin-top: 6px;
-      border-radius: 999px;
-      border: 1px solid var(--border-soft);
-      padding: 7px 0;
-      font-size: 11px;
-      background: rgba(15, 23, 42, 0.9);
-      color: #e5e7eb;
-      cursor: pointer;
-      transition: background 0.15s ease-out, transform 0.15s ease-out;
-    }
-
-    .secondary-btn:hover {
-      background: rgba(30, 64, 175, 0.8);
-      transform: translateY(-1px);
-    }
-
-    .rules-card {
-      border-radius: 18px;
-      border: 1px solid var(--border-soft);
-      background: radial-gradient(circle at top right, rgba(248, 250, 252, 0.08), transparent 55%),
-                  rgba(15, 23, 42, 0.96);
-      padding: 12px 11px 11px;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      gap: 8px;
-    }
-
-    .rules-title {
-      font-size: 13px;
-      font-weight: 600;
-      margin-bottom: 3px;
-    }
-
-    .rules-list {
-      list-style: none;
-      font-size: 11px;
-      color: var(--text-muted);
-    }
-
-    .rules-list li + li {
-      margin-top: 4px;
-    }
-
-    .highlight {
-      color: #facc15;
-      font-weight: 500;
-    }
-
-    .status {
-      margin-top: 8px;
-      font-size: 11px;
-      padding: 6px 9px;
-      border-radius: 12px;
-      border: 1px solid transparent;
-      background: rgba(15, 23, 42, 0.95);
-      min-height: 32px;
-      display: flex;
-      align-items: center;
-    }
-
-    .status.win {
-      border-color: rgba(34, 197, 94, 0.6);
-      color: #bbf7d0;
-    }
-
-    .status.lose {
-      border-color: rgba(248, 113, 113, 0.7);
-      color: #fecaca;
-    }
-
-    .status.info {
-      border-color: rgba(148, 163, 184, 0.6);
-      color: #e5e7eb;
-    }
-  </style>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <div class="shell">
+  <div class="shell game-shell">
     <div class="inner">
       <header>
         <div class="title-block">
@@ -355,66 +19,49 @@
           <p>Bet 20 NAZ. 30% chance to win 60 NAZ.</p>
         </div>
         <div class="user-pill">
-          <div class="user-avatar" id="userAvatar">P</div>
+          <div id="userAvatar" class="user-avatar">P</div>
           <div class="user-meta">
             <span>Player: <b id="username">Player</b></span>
-            <span class="coin-chip">
-              <span class="coin-badge">₦</span>
-              <span><span id="coinBalance">0</span> NAZ</span>
-            </span>
+            <div class="coin-chip"><span class="coin-badge">&#8358;</span> <span id="coinBalance">0</span> NAZ</div>
           </div>
         </div>
       </header>
 
       <div class="layout">
-        <section class="play-card">
+        <div class="play-card">
           <div class="play-header">
-            <div>
-              <h2>Pick Your Luck</h2>
-              <span>We generate a random number from 1 to 10.</span>
-            </div>
+            <h2>Pick Your Luck</h2>
+            <span>We generate a random number from 1 to 10.</span>
           </div>
-
           <div class="number-display">
-            <div class="lucky-circle" id="luckyCircle">?</div>
-            <div class="number-label" id="numberLabel">Click "Play Lucky" to reveal a number.</div>
+            <div id="luckyCircle" class="lucky-circle">?</div>
+            <p id="numberLabel" class="number-label">Click "Play Lucky" to reveal a number.</p>
           </div>
-
           <div class="controls">
-            <button id="playBtn" class="primary-btn" type="button">Play Lucky (Bet 20 NAZ)</button>
-            <button class="secondary-btn" type="button" onclick="goBack()">Back to Games</button>
+            <button id="playBtn" class="primary-btn">Play Lucky (Bet 20 NAZ)</button>
+            <button onclick="goBack()" class="secondary-btn">Back to Games</button>
           </div>
-        </section>
+        </div>
 
-        <section class="rules-card">
-          <div>
-            <div class="rules-title">How Lucky Number Works</div>
-            <ul class="rules-list">
-              <li>• Bet <span class="highlight">20 NAZ</span> coins per round.</li>
-              <li>• System picks a random number between <span class="highlight">1 and 10</span>.</li>
-              <li>• You have a <span class="highlight">30% chance</span> to win.</li>
-              <li>• On win, you earn <span class="highlight">+60 NAZ</span> coins.</li>
-              <li>• On loss, you lose your 20 NAZ bet only.</li>
-            </ul>
-          </div>
-          <div id="result" class="status info">
-            Ready to test your luck. Press "Play Lucky" to start.
-          </div>
-        </section>
+        <div class="rules-card">
+          <p class="rules-title">How Lucky Number Works</p>
+          <ul class="rules-list">
+            <li>• Bet <span class="highlight">20 NAZ</span> coins per round.</li>
+            <li>• System picks a random number between <span class="highlight">1 and 10</span>.</li>
+            <li>• You have a <span class="highlight">30% chance</span> to win.</li>
+            <li>• On win, you earn <span class="highlight">+60 NAZ</span> coins.</li>
+            <li>• On loss, you lose your 20 NAZ bet only.</li>
+          </ul>
+          <div id="result" class="status info">Ready to test your luck. Press "Play Lucky" to start.</div>
+        </div>
       </div>
     </div>
   </div>
 
   <script type="module">
     import { auth, db } from './firebase-config.js';
-    import {
-      onAuthStateChanged,
-    } from 'https://www.gstatic.com/firebasejs/10.12.3/firebase-auth.js';
-    import {
-      doc,
-      getDoc,
-      updateDoc
-    } from 'https://www.gstatic.com/firebasejs/10.12.3/firebase-firestore.js';
+    import { onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.12.3/firebase-auth.js';
+    import { doc, getDoc, updateDoc } from 'https://www.gstatic.com/firebasejs/10.12.3/firebase-firestore.js';
 
     const usernameSpan = document.getElementById('username');
     const coinSpan = document.getElementById('coinBalance');
@@ -423,9 +70,7 @@
     const userAvatar = document.getElementById('userAvatar');
     const luckyCircle = document.getElementById('luckyCircle');
     const numberLabel = document.getElementById('numberLabel');
-
-    let currentUserData = null;
-    let userRef = null;
+    let currentUserData = null, userRef = null;
 
     function setStatus(text, type = 'info') {
       resultDiv.textContent = text;
@@ -434,68 +79,45 @@
 
     function updateUserInfo() {
       if (!currentUserData) return;
-      const username = currentUserData.username || 'Player';
-      const coins = currentUserData.coins ?? 0;
-
-      usernameSpan.textContent = username;
-      coinSpan.textContent = coins;
-      userAvatar.textContent = username.charAt(0).toUpperCase();
+      const name = currentUserData.username || 'Player';
+      usernameSpan.textContent = name;
+      coinSpan.textContent = currentUserData.coins ?? 0;
+      userAvatar.textContent = name.charAt(0).toUpperCase();
     }
 
     async function loadUserData(user) {
       userRef = doc(db, 'users', user.uid);
       const snap = await getDoc(userRef);
-      if (!snap.exists()) {
-        alert('User data not found. Please contact support.');
-        return false;
-      }
-
+      if (!snap.exists()) { alert('User data not found.'); return false; }
       currentUserData = { uid: user.uid, ...snap.data() };
       updateUserInfo();
       return true;
     }
 
     onAuthStateChanged(auth, async (user) => {
-      if (!user) {
-        alert('Please login first!');
-        window.location.href = 'index.html';
-        return;
-      }
-
+      if (!user) { alert('Please login first!'); return window.location.href = 'index.html'; }
       try {
-        const ok = await loadUserData(user);
-        if (!ok) {
-          window.location.href = 'index.html';
-        }
-      } catch (error) {
-        console.error('Error loading user:', error);
-        alert('Error loading your data. Please try again.');
+        if (!await loadUserData(user)) window.location.href = 'index.html';
+      } catch (e) {
+        console.error(e);
+        alert('Error loading data. Please try again.');
         window.location.href = 'index.html';
       }
     });
 
     async function safeUpdateCoins(delta) {
-      const current = currentUserData.coins ?? 0;
-      const next = current + delta;
-
-      if (next < 0) {
-        throw new Error('Not enough coins');
-      }
-
+      const next = (currentUserData.coins ?? 0) + delta;
+      if (next < 0) throw new Error('Not enough coins');
       await updateDoc(userRef, { coins: next });
       currentUserData.coins = next;
       updateUserInfo();
-      return next;
     }
 
     async function playLucky() {
       if (!currentUserData || !userRef) return;
-
       if ((currentUserData.coins ?? 0) < 20) {
-        setStatus('Not enough coins. You need at least 20 NAZ to play.', 'lose');
-        return;
+        return setStatus('Not enough coins. Need at least 20 NAZ.', 'lose');
       }
-
       playBtn.disabled = true;
       luckyCircle.classList.remove('pulse');
       void luckyCircle.offsetWidth;
@@ -503,40 +125,25 @@
       luckyCircle.textContent = '?';
       numberLabel.textContent = 'Picking your lucky number...';
       setStatus('Drawing a random number...', 'info');
-
       try {
         await safeUpdateCoins(-20);
-
-        await new Promise((resolve) => setTimeout(resolve, 900));
-
-        const luckyNumber = Math.floor(Math.random() * 10) + 1;
+        await new Promise(r => setTimeout(r, 900));
+        const num = Math.floor(Math.random() * 10) + 1;
         const won = Math.random() < 0.3;
-
-        luckyCircle.textContent = luckyNumber;
-        numberLabel.textContent = 'Your lucky number: ' + luckyNumber;
-
-        if (won) {
-          await safeUpdateCoins(60);
-          setStatus('You are lucky! You won +60 NAZ coins.', 'win');
-        } else {
-          setStatus('Not lucky this time. You lost your 20 NAZ bet.', 'lose');
-        }
-      } catch (error) {
-        console.error('Lucky error:', error);
-        alert(error.message || 'Something went wrong. Please try again.');
+        luckyCircle.textContent = num;
+        numberLabel.textContent = 'Your lucky number: ' + num;
+        if (won) { await safeUpdateCoins(60); setStatus('You are lucky! Won +60 NAZ coins.', 'win'); }
+        else setStatus('Not lucky this time. Lost 20 NAZ bet.', 'lose');
+      } catch (e) {
+        console.error(e);
+        alert(e.message || 'Something went wrong.');
       } finally {
-        setTimeout(() => {
-          playBtn.disabled = false;
-          luckyCircle.classList.remove('pulse');
-        }, 200);
+        setTimeout(() => { playBtn.disabled = false; luckyCircle.classList.remove('pulse'); }, 200);
       }
     }
 
     playBtn.addEventListener('click', playLucky);
-
-    window.goBack = function () {
-      window.location.href = 'index.html';
-    };
+    window.goBack = () => window.location.href = 'index.html';
   </script>
 </body>
 </html>
