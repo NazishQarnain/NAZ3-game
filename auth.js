@@ -1,159 +1,55 @@
-// Firebase Authentication Module
+// auth.js
 import { auth, db } from './firebase-config.js';
-import { 
-    signInWithEmailAndPassword, 
-    createUserWithEmailAndPassword,
-    onAuthStateChanged,
-    signOut 
-} from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
-import { 
-    doc, 
-    setDoc, 
-    getDoc,
-    updateDoc 
-} from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+import {
+  onAuthStateChanged,
+  signOut
+} from 'https://www.gstatic.com/firebasejs/10.12.3/firebase-auth.js';
+import {
+  doc,
+  getDoc
+} from 'https://www.gstatic.com/firebasejs/10.12.3/firebase-firestore.js';
 
-// Check if user is already logged in
-onAuthStateChanged(auth, async (user) => {
-    if (user) {
-        // User is signed in
-        const userDoc = await getDoc(doc(db, 'users', user.uid));
-        if (userDoc.exists()) {
-            const userData = userDoc.data();
-            localStorage.setItem('currentUser', user.email);
-            localStorage.setItem('nazCoins', userData.coins || 200);
-            localStorage.setItem('firebaseUID', user.uid);
-            
-            // If on login page, redirect to games
-            if (window.location.pathname.includes('index.html')) {
-
-                                window.location.reload();
-            }
-        }
+export function watchAuth(onUserReady, onLoggedOut) {
+  onAuthStateChanged(auth, async (user) => {
+    if (!user) {
+      localStorage.removeItem('currentUser');
+      localStorage.removeItem('nazCoins');
+      localStorage.removeItem('firebaseUID');
+      if (typeof onLoggedOut === 'function') onLoggedOut();
+      return;
     }
-});
 
-// Login functionality
-const loginBtn = document.getElementById('loginBtn');
-if (loginBtn) {
-    loginBtn.addEventListener('click', async () => {
-        const email = document.getElementById('loginUsername').value;
-        const password = document.getElementById('loginPassword').value;
-        
-        if (!email || !password) {
-            alert('Please enter both username and password');
-            return;
-        }
-        
-        try {
-            const userCredential = await signInWithEmailAndPassword(auth, email, password);
-            const user = userCredential.user;
-            
-            // Get user data from Firestore
-            const userDoc = await getDoc(doc(db, 'users', user.uid));
-            if (userDoc.exists()) {
-                const userData = userDoc.data();
-                localStorage.setItem('currentUser', userData.username);
-                localStorage.setItem('nazCoins', userData.coins);
-                localStorage.setItem('firebaseUID', user.uid);
-                                window.location.reload();
-                
-            }
-        } catch (error) {
-            if (error.code === 'auth/user-not-found') {
-                try {
-                    const username = document.getElementById('loginUsername').value;
-                    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-                    const user = userCredential.user;
-                    
-                    // Create user document in Firestore
-                    await setDoc(doc(db, 'users', user.uid), {
-                        username: username,
-                        email: email,
-                        coins: 200,
-                        createdAt: new Date().toISOString()
-                    });
-                    
-                    localStorage.setItem('currentUser', username);
-                    localStorage.setItem('nazCoins', '200');
-                    localStorage.setItem('firebaseUID', user.uid);
-                                    window.location.reload();
-
-                } catch (regError) {
-                    alert('Registration failed: ' + regError.message);
-                }            
-                            } else {
-                alert('Login failed: ' + error.message);
-            }        }
-    });
-}
-
-// Update coins in Firebase when changed
-export async function updateCoins(newBalance) {
-    const uid = localStorage.getItem('firebaseUID');
-    if (uid) {
-        try {
-            await updateDoc(doc(db, 'users', uid), {
-                coins: newBalance
-            });
-            localStorage.setItem('nazCoins', newBalance);
-        } catch (error) {
-            console.error('Failed to update coins:', error);
-        }
-    }
-}
-
-// Logout functionality  
-window.logout = async function() {
     try {
+      const userRef = doc(db, 'users', user.uid);
+      const snap = await getDoc(userRef);
+      if (!snap.exists()) {
         await signOut(auth);
-        localStorage.clear();
-        window.location.href = 'index.html';
-    } catch (error) {
-        console.error('Logout error:', error);
-    }
-};
-
-// Global functions for HTML onclick handlers
-window.showLogin = function() {
-    document.getElementById('loginSection').classList.add('active');
-    document.getElementById('registerSection').classList.remove('active');
-};
-
-window.showRegister = function() {
-    document.getElementById('registerSection').classList.add('active');
-    document.getElementById('loginSection').classList.remove('active');
-};
-
-window.register = async function() {
-    const username = document.getElementById('regUsername').value.trim();
-    const email = document.getElementById('regEmail').value.trim();
-    const password = document.getElementById('regPassword').value;
-
-    if (!username || !email || !password) {
-        alert('Please fill in all fields!');
+        if (typeof onLoggedOut === 'function') onLoggedOut();
         return;
+      }
+
+      const data = snap.data();
+      const userData = {
+        uid: user.uid,
+        username: data.username || user.email.split('@')[0],
+        coins: data.coins ?? 100
+      };
+
+      localStorage.setItem('currentUser', userData.username);
+      localStorage.setItem('nazCoins', userData.coins);
+      localStorage.setItem('firebaseUID', user.uid);
+
+      if (typeof onUserReady === 'function') onUserReady(userData, userRef);
+    } catch (e) {
+      console.error('Auth helper error:', e);
+      if (typeof onLoggedOut === 'function') onLoggedOut();
     }
+  });
+}
 
-    try {
-        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-        const user = userCredential.user;
-
-        // Create user document in Firestore
-        await setDoc(doc(db, 'users', user.uid), {
-            username: username,
-            email: email,
-            coins: 200,
-            createdAt: new Date().toISOString()
-        });
-
-        alert('Registration successful! You can now login.');
-        showLogin();
-    } catch (error) {
-        if (error.code === 'auth/email-already-in-use') {
-            alert('Email already registered. Please login.');
-        } else {
-            alert('Registration failed: ' + error.message);
-        }
-    }
-};
+export async function appLogout() {
+  await signOut(auth);
+  localStorage.removeItem('currentUser');
+  localStorage.removeItem('nazCoins');
+  localStorage.removeItem('firebaseUID');
+}
