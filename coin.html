@@ -1,536 +1,109 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>Coin Flip - NAZ3 Game</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet" />
-
-  <link rel="icon" href="https://img.icons8.com/?size=100&id=11243&format=png&color=FFFFFF" />
-
-  <style>
-    :root {
-      --bg-gradient: linear-gradient(135deg, #0f172a, #020617);
-      --primary: #38bdf8;
-      --primary-light: #7dd3fc;
-      --success: #22c55e;
-      --danger: #f97373;
-      --card-bg: rgba(15, 23, 42, 0.96);
-      --border-soft: rgba(148, 163, 184, 0.4);
-      --text-muted: #94a3b8;
-    }
-
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: "Poppins", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-    }
-
-    body {
-      min-height: 100vh;
-      background: radial-gradient(circle at top left, rgba(56, 189, 248, 0.35), transparent 55%),
-                  radial-gradient(circle at bottom right, rgba(244, 63, 94, 0.35), transparent 55%),
-                  var(--bg-gradient);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 18px;
-      color: #e5e7eb;
-    }
-
-    .shell {
-      width: 100%;
-      max-width: 480px;
-      background: var(--card-bg);
-      border-radius: 26px;
-      border: 1px solid var(--border-soft);
-      box-shadow: 0 22px 40px rgba(15, 23, 42, 0.7);
-      padding: 18px 18px 16px;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .shell::before {
-      content: "";
-      position: absolute;
-      inset: 0;
-      background: radial-gradient(circle at 0 0, rgba(56, 189, 248, 0.2), transparent 60%);
-      opacity: 0.9;
-      pointer-events: none;
-    }
-
-    .inner {
-      position: relative;
-      z-index: 1;
-    }
-
-    header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 10px;
-      margin-bottom: 16px;
-    }
-
-    .title-block h1 {
-      font-size: 18px;
-      font-weight: 600;
-    }
-
-    .title-block p {
-      font-size: 11px;
-      color: var(--text-muted);
-    }
-
-    .user-pill {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      padding: 6px 10px;
-      border-radius: 999px;
-      border: 1px solid var(--border-soft);
-      background: rgba(15, 23, 42, 0.95);
-    }
-
-    .user-avatar {
-      width: 26px;
-      height: 26px;
-      border-radius: 999px;
-      background: radial-gradient(circle at 30% 0, #f97316, transparent 60%),
-                  #020617;
-      display: flex;
-      align-items: center;
-      justify-content center;
-      font-size: 14px;
-      font-weight: 600;
-    }
-
-    .user-meta {
-      display: flex;
-      flex-direction: column;
-      gap: 1px;
-    }
-
-    .user-meta span {
-      font-size: 10px;
-    }
-
-    .user-meta span b {
-      font-weight: 600;
-    }
-
-    .coin-chip {
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
-      padding: 2px 7px;
-      border-radius: 999px;
-      border: 1px solid rgba(56, 189, 248, 0.6);
-      background: rgba(15, 23, 42, 0.98);
-      font-size: 10px;
-    }
-
-    .coin-badge {
-      width: 16px;
-      height: 16px;
-      border-radius: 999px;
-      background: radial-gradient(circle at 30% 0, #facc15, transparent 60%),
-                  #0f172a;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 10px;
-    }
-
-    .layout {
-      display: grid;
-      grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
-      gap: 14px;
-      align-items: stretch;
-    }
-
-    @media (max-width: 640px) {
-      .layout {
-        grid-template-columns: minmax(0, 1fr);
-      }
-    }
-
-    .play-card {
-      border-radius: 18px;
-      border: 1px solid var(--border-soft);
-      background: radial-gradient(circle at top, rgba(56, 189, 248, 0.18), transparent 55%),
-                  rgba(15, 23, 42, 0.96);
-      padding: 14px 12px 12px;
-    }
-
-    .play-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 10px;
-    }
-
-    .play-header h2 {
-      font-size: 14px;
-      font-weight: 600;
-    }
-
-    .play-header span {
-      font-size: 10px;
-      color: var(--text-muted);
-    }
-
-    .coin-display {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      margin-top: 6px;
-      margin-bottom: 10px;
-    }
-
-    .coin {
-      width: 72px;
-      height: 72px;
-      border-radius: 999px;
-      background: radial-gradient(circle at 30% 0, #facc15, transparent 60%),
-                  radial-gradient(circle at 80% 80%, #22c55e, transparent 60%),
-                  #0f172a;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 32px;
-      box-shadow: 0 18px 32px rgba(15, 23, 42, 0.8);
-      animation-duration: 0.7s;
-      animation-fill-mode: forwards;
-    }
-
-    .coin.spin {
-      animation-name: coin-spin;
-    }
-
-    @keyframes coin-spin {
-      0% {
-        transform: translateY(0) rotateY(0deg);
-      }
-      30% {
-        transform: translateY(-8px) rotateY(180deg);
-      }
-      60% {
-        transform: translateY(0) rotateY(360deg);
-      }
-      100% {
-        transform: translateY(0) rotateY(540deg);
-      }
-    }
-
-    .coin-label {
-      margin-top: 6px;
-      font-size: 11px;
-      color: var(--text-muted);
-      text-align: center;
-    }
-
-    .controls {
-      margin-top: 8px;
-    }
-
-    .primary-btn {
-      width: 100%;
-      border-radius: 999px;
-      border: none;
-      padding: 8px 0;
-      font-size: 12px;
-      font-weight: 600;
-      letter-spacing: 0.03em;
-      background: linear-gradient(120deg, var(--primary), var(--primary-light));
-      color: #020617;
-      cursor: pointer;
-      box-shadow: 0 16px 26px rgba(56, 189, 248, 0.45);
-      transition: transform 0.15s ease-out, box-shadow 0.15s ease-out, background 0.15s ease-out;
-    }
-
-    .primary-btn:hover:enabled {
-      transform: translateY(-1px);
-      box-shadow: 0 20px 32px rgba(56, 189, 248, 0.6);
-      background: linear-gradient(120deg, #38bdf8, #0ea5e9);
-    }
-
-    .primary-btn:disabled {
-      opacity: 0.65;
-      cursor: default;
-      box-shadow: none;
-    }
-
-    .secondary-btn {
-      width: 100%;
-      margin-top: 6px;
-      border-radius: 999px;
-      border: 1px solid var(--border-soft);
-      padding: 7px 0;
-      font-size: 11px;
-      background: rgba(15, 23, 42, 0.9);
-      color: #e5e7eb;
-      cursor: pointer;
-      transition: background 0.15s ease-out, transform 0.15s ease-out;
-    }
-
-    .secondary-btn:hover {
-      background: rgba(30, 64, 175, 0.8);
-      transform: translateY(-1px);
-    }
-
-    .rules-card {
-      border-radius: 18px;
-      border: 1px solid var(--border-soft);
-      background: radial-gradient(circle at top right, rgba(248, 250, 252, 0.08), transparent 55%),
-                  rgba(15, 23, 42, 0.96);
-      padding: 12px 11px 11px;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      gap: 8px;
-    }
-
-    .rules-title {
-      font-size: 13px;
-      font-weight: 600;
-      margin-bottom: 3px;
-    }
-
-    .rules-list {
-      list-style: none;
-      font-size: 11px;
-      color: var(--text-muted);
-    }
-
-    .rules-list li + li {
-      margin-top: 4px;
-    }
-
-    .highlight {
-      color: #facc15;
-      font-weight: 500;
-    }
-
-    .status {
-      margin-top: 8px;
-      font-size: 11px;
-      padding: 6px 9px;
-      border-radius: 12px;
-      border: 1px solid transparent;
-      background: rgba(15, 23, 42, 0.95);
-      min-height: 32px;
-      display: flex;
-      align-items: center;
-    }
-
-    .status.win {
-      border-color: rgba(34, 197, 94, 0.6);
-      color: #bbf7d0;
-    }
-
-    .status.lose {
-      border-color: rgba(248, 113, 113, 0.7);
-      color: #fecaca;
-    }
-
-    .status.info {
-      border-color: rgba(148, 163, 184, 0.6);
-      color: #e5e7eb;
-    }
-  </style>
+    <meta charset="UTF-8" />
+    <title>Coin Flip - NAZ3 Game</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="style.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet" />
 </head>
 <body>
-  <div class="shell">
-    <div class="inner">
-      <header>
-        <div class="title-block">
-          <h1>Coin Flip</h1>
-          <p>Bet 5 NAZ. Heads wins +15 NAZ.</p>
-        </div>
-        <div class="user-pill">
-          <div class="user-avatar" id="userAvatar">P</div>
-          <div class="user-meta">
-            <span>Player: <b id="username">Player</b></span>
-            <span class="coin-chip">
-              <span class="coin-badge">₦</span>
-              <span><span id="coinBalance">0</span> NAZ</span>
-            </span>
-          </div>
-        </div>
-      </header>
-
-      <div class="layout">
-        <section class="play-card">
-          <div class="play-header">
-            <div>
-              <h2>Flip the Coin</h2>
-              <span>Each flip is a fair 50% chance.</span>
+    <div class="shell game-shell">
+        <header>
+            <div class="title-block">
+                <h1>Coin Flip</h1>
+                <p>Bet 5 NAZ. Heads wins +15.</p>
             </div>
-          </div>
+            <div class="user-pill">
+                <div id="userAvatar" class="user-avatar">P</div>
+                <div class="user-meta">
+                    <span id="username">Player</span>
+                    <div class="coin-chip"><span class="coin-badge">₦</span> <span id="coinBalance">0</span></div>
+                </div>
+            </div>
+        </header>
 
-          <div class="coin-display">
-            <div class="coin" id="coinEmoji">🪙</div>
-            <div class="coin-label">Result will show after the flip animation.</div>
-          </div>
+        <div class="layout">
+            <div class="play-card">
+                <div class="coin-display">
+                    <div id="coinEmoji" class="coin">🪙</div>
+                    <p class="coin-label">Heads wins</p>
+                </div>
+                <button id="playBtn" class="primary-btn">Flip (5 NAZ)</button>
+                <button onclick="goBack()" class="secondary-btn">Back</button>
+            </div>
 
-          <div class="controls">
-            <button id="playBtn" class="primary-btn" type="button">Play Now (Bet 5 NAZ)</button>
-            <button class="secondary-btn" type="button" onclick="goBack()">Back to Games</button>
-          </div>
-        </section>
-
-        <section class="rules-card">
-          <div>
-            <div class="rules-title">How Coin Flip Works</div>
-            <ul class="rules-list">
-              <li>• Bet <span class="highlight">5 NAZ</span> coins per flip.</li>
-              <li>• Virtual coin: <span class="highlight">50% Heads</span>, 50% Tails.</li>
-              <li>• If it lands on Heads, you win <span class="highlight">+15 NAZ</span>.</li>
-              <li>• If it lands on Tails, you lose your 5 NAZ bet.</li>
-              <li>• All NAZ coins are stored securely in Firestore.</li>
-            </ul>
-          </div>
-          <div id="result" class="status info">
-            Ready to flip. Click "Play Now" to start.
-          </div>
-        </section>
-      </div>
+            <div class="rules-card">
+                <p class="rules-title">Rules</p>
+                <ul class="rules-list">
+                    <li>50% Heads / 50% Tails</li>
+                    <li>Win: <span class="highlight">+15 NAZ</span></li>
+                </ul>
+                <div id="result" class="status info">Ready to flip</div>
+            </div>
+        </div>
     </div>
-  </div>
 
-  <script type="module">
-    import { auth, db } from './firebase-config.js';
-    import {
-      onAuthStateChanged,
-    } from 'https://www.gstatic.com/firebasejs/10.12.3/firebase-auth.js';
-    import {
-      doc,
-      getDoc,
-      updateDoc
-    } from 'https://www.gstatic.com/firebasejs/10.12.3/firebase-firestore.js';
+    <script type="module">
+        import { auth, db } from './firebase-config.js';
+        import { onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.12.3/firebase-auth.js';
+        import { doc, getDoc, updateDoc } from 'https://www.gstatic.com/firebasejs/10.12.3/firebase-firestore.js';
 
-    const usernameSpan = document.getElementById('username');
-    const coinSpan = document.getElementById('coinBalance');
-    const resultDiv = document.getElementById('result');
-    const emoji = document.getElementById('coinEmoji');
-    const playBtn = document.getElementById('playBtn');
-    const userAvatar = document.getElementById('userAvatar');
+        const coinSpan = document.getElementById('coinBalance');
+        const resultDiv = document.getElementById('result');
+        const emoji = document.getElementById('coinEmoji');
+        const playBtn = document.getElementById('playBtn');
+        let currentUserData = null;
+        let userRef = null;
 
-    let currentUserData = null;
-    let userRef = null;
+        const setStatus = (text, type = 'info') => {
+            resultDiv.textContent = text;
+            resultDiv.className = 'status ' + type;
+        };
 
-    function setStatus(text, type = 'info') {
-      resultDiv.textContent = text;
-      resultDiv.className = 'status ' + type;
-    }
+        onAuthStateChanged(auth, async (user) => {
+            if (!user) return window.location.href = 'index.html';
+            userRef = doc(db, 'users', user.uid);
+            const snap = await getDoc(userRef);
+            if (snap.exists()) {
+                currentUserData = snap.data();
+                document.getElementById('username').textContent = currentUserData.username || 'Player';
+                coinSpan.textContent = currentUserData.coins || 0;
+                document.getElementById('userAvatar').textContent = (currentUserData.username || 'P')[0].toUpperCase();
+            }
+        });
 
-    function updateUserInfo() {
-      if (!currentUserData) return;
-      const username = currentUserData.username || 'Player';
-      const coins = currentUserData.coins ?? 0;
+        playBtn.addEventListener('click', async () => {
+            if (currentUserData.coins < 5) return setStatus('Not enough coins!', 'lose');
+            playBtn.disabled = true;
+            emoji.classList.add('spin');
+            setStatus('Flipping...', 'info');
+            
+            try {
+                const newCoins = currentUserData.coins - 5;
+                await updateDoc(userRef, { coins: newCoins });
+                currentUserData.coins = newCoins;
+                coinSpan.textContent = newCoins;
 
-      usernameSpan.textContent = username;
-      coinSpan.textContent = coins;
-      userAvatar.textContent = username.charAt(0).toUpperCase();
-    }
-
-    async function loadUserData(user) {
-      userRef = doc(db, 'users', user.uid);
-      const snap = await getDoc(userRef);
-      if (!snap.exists()) {
-        alert('User data not found. Please contact support.');
-        return false;
-      }
-
-      currentUserData = { uid: user.uid, ...snap.data() };
-      updateUserInfo();
-      return true;
-    }
-
-    onAuthStateChanged(auth, async (user) => {
-      if (!user) {
-        alert('Please login first!');
-        window.location.href = 'index.html';
-        return;
-      }
-
-      try {
-        const ok = await loadUserData(user);
-        if (!ok) {
-          window.location.href = 'index.html';
-        }
-      } catch (error) {
-        console.error('Error loading user:', error);
-        alert('Error loading your data. Please try again.');
-        window.location.href = 'index.html';
-      }
-    });
-
-    async function safeUpdateCoins(delta) {
-      const current = currentUserData.coins ?? 0;
-      const next = current + delta;
-
-      if (next < 0) {
-        throw new Error('Not enough coins');
-      }
-
-      await updateDoc(userRef, { coins: next });
-      currentUserData.coins = next;
-      updateUserInfo();
-      return next;
-    }
-
-    async function flipCoin() {
-      if (!currentUserData || !userRef) return;
-
-      if ((currentUserData.coins ?? 0) < 5) {
-        setStatus('Not enough coins to play. You need at least 5 NAZ.', 'lose');
-        return;
-      }
-
-      playBtn.disabled = true;
-      emoji.classList.remove('spin');
-      void emoji.offsetWidth;
-      emoji.classList.add('spin');
-      emoji.textContent = '🌀';
-      setStatus('Flipping the coin...', 'info');
-
-      try {
-        await safeUpdateCoins(-5);
-
-        await new Promise((resolve) => setTimeout(resolve, 800));
-
-        const isHeads = Math.random() < 0.5;
-
-        if (isHeads) {
-          emoji.textContent = '🙂';
-          await safeUpdateCoins(15);
-          setStatus('Heads! You Won +15 NAZ coins.', 'win');
-        } else {
-          emoji.textContent = '😵';
-          setStatus('Tails! You lost your 5 NAZ bet.', 'lose');
-        }
-      } catch (error) {
-        console.error('Flip error:', error);
-        alert(error.message || 'Something went wrong. Please try again.');
-      } finally {
-        setTimeout(() => {
-          playBtn.disabled = false;
-          emoji.classList.remove('spin');
-        }, 200);
-      }
-    }
-
-    playBtn.addEventListener('click', flipCoin);
-
-    window.goBack = function () {
-      window.location.href = 'index.html';
-    };
-  </script>
+                await new Promise(r => setTimeout(r, 800));
+                const win = Math.random() < 0.5;
+                if (win) {
+                    const winTotal = currentUserData.coins + 15;
+                    await updateDoc(userRef, { coins: winTotal });
+                    currentUserData.coins = winTotal;
+                    coinSpan.textContent = winTotal;
+                    emoji.textContent = '🙂';
+                    setStatus('Heads! Won +15', 'win');
+                } else {
+                    emoji.textContent = '😵';
+                    setStatus('Tails! Lost 5', 'lose');
+                }
+            } finally {
+                playBtn.disabled = false;
+                emoji.classList.remove('spin');
+            }
+        });
+        window.goBack = () => location.href = 'index.html';
+    </script>
 </body>
 </html>
