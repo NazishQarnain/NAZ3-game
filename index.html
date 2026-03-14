@@ -499,13 +499,6 @@
       border: 1px solid rgba(52, 211, 153, 0.75);
       margin-top: 4px;
     }
-
-    #loginSection {
-      display: block;
-    }
-    #gameSection {
-      display: none;
-    }
   </style>
 </head>
 <body>
@@ -580,7 +573,7 @@
         </div>
       </section>
 
-      <section class="hub-card" id="gameSection">
+      <section class="hub-card" id="gameSection" style="display:none;">
         <div class="hub-header">
           <div class="hub-header-left">
             <h2>Game Hub</h2>
@@ -659,10 +652,11 @@
       doc,
       getDoc,
       setDoc,
-      Timestamp,
-      updateDoc
+      updateDoc,
+      Timestamp
     } from 'https://www.gstatic.com/firebasejs/10.12.3/firebase-firestore.js';
 
+    // DOM refs
     const loginTab = document.getElementById('loginTab');
     const registerTab = document.getElementById('registerTab');
     const loginSection = document.getElementById('loginSection');
@@ -679,42 +673,39 @@
 
     const loginBtn = document.getElementById('loginBtn');
     const registerBtn = document.getElementById('registerBtn');
-
     const dailyBonusBtn = document.getElementById('dailyBonusBtn');
     const leaderboardBtn = document.getElementById('leaderboardBtn');
 
     let currentUserRef = null;
     let currentUserData = null;
 
-    function setAuthMessage(text, type = 'error') {
+    const showMessage = (text = '', type = 'error') => {
       if (!text) {
         authMessage.style.display = 'none';
+        authMessage.textContent = '';
+        authMessage.className = 'auth-message';
         return;
       }
       authMessage.textContent = text;
       authMessage.className = 'auth-message ' + type;
-    }
+    };
 
-    function switchToLogin() {
-      loginTab.classList.add('active');
-      registerTab.classList.remove('active');
-      loginSection.classList.add('active');
-      registerSection.classList.remove('active');
-      setAuthMessage('');
-    }
+    const setAuthView = (mode) => {
+      if (mode === 'login') {
+        loginTab.classList.add('active');
+        registerTab.classList.remove('active');
+        loginSection.classList.add('active');
+        registerSection.classList.remove('active');
+      } else {
+        registerTab.classList.add('active');
+        loginTab.classList.remove('active');
+        registerSection.classList.add('active');
+        loginSection.classList.remove('active');
+      }
+      showMessage('');
+    };
 
-    function switchToRegister() {
-      registerTab.classList.add('active');
-      loginTab.classList.remove('active');
-      registerSection.classList.add('active');
-      loginSection.classList.remove('active');
-      setAuthMessage('');
-    }
-
-    loginTab.addEventListener('click', switchToLogin);
-    registerTab.addEventListener('click', switchToRegister);
-
-    function updateUserUI(userData) {
+    const updateUserUI = (userData) => {
       if (!userData) {
         userSummary.style.display = 'none';
         authCard.style.display = 'block';
@@ -732,65 +723,33 @@
       userSummary.style.display = 'flex';
       authCard.style.display = 'none';
       gameSection.style.display = 'block';
-    }
+    };
 
-    async function canClaimDailyBonus(userData) {
+    const canClaimDailyBonus = (userData) => {
       const last = userData.lastDailyBonus;
       if (!last) return true;
       const lastDate = last.toDate ? last.toDate() : new Date(last);
-      const now = new Date();
-      return now.toDateString() !== lastDate.toDateString();
-    }
+      const today = new Date();
+      return today.toDateString() !== lastDate.toDateString();
+    };
 
-    async function refreshDailyBonusButton() {
+    const refreshDailyBonusButton = () => {
       if (!currentUserData) {
         dailyBonusBtn.disabled = true;
         dailyBonusBtn.textContent = 'Daily Bonus';
         return;
       }
-      const allowed = await canClaimDailyBonus(currentUserData);
-      if (allowed) {
+      if (canClaimDailyBonus(currentUserData)) {
         dailyBonusBtn.disabled = false;
         dailyBonusBtn.textContent = 'Claim Daily Bonus';
       } else {
         dailyBonusBtn.disabled = true;
         dailyBonusBtn.textContent = 'Daily Bonus Claimed';
       }
-    }
+    };
 
-    dailyBonusBtn.addEventListener('click', async () => {
-      if (!currentUserRef || !currentUserData) return;
-
-      try {
-        const allowed = await canClaimDailyBonus(currentUserData);
-        if (!allowed) {
-          alert('You already claimed today’s bonus. Come back tomorrow!');
-          return;
-        }
-
-        const bonus = 20;
-        const newCoins = (currentUserData.coins ?? 0) + bonus;
-
-        await updateDoc(currentUserRef, {
-          coins: newCoins,
-          lastDailyBonus: Timestamp.now()
-        });
-
-        currentUserData.coins = newCoins;
-        currentUserData.lastDailyBonus = Timestamp.now();
-        headerCoinsSpan.textContent = newCoins;
-
-        alert('Daily bonus claimed! +20 NAZ added.');
-        await refreshDailyBonusButton();
-      } catch (e) {
-        console.error('Daily bonus error:', e);
-        alert('Unable to claim bonus. Please try again.');
-      }
-    });
-
-    leaderboardBtn.addEventListener('click', () => {
-      window.location.href = 'leaderboard.html';
-    });
+    loginTab.addEventListener('click', () => setAuthView('login'));
+    registerTab.addEventListener('click', () => setAuthView('register'));
 
     onAuthStateChanged(auth, async (user) => {
       if (!user) {
@@ -800,6 +759,7 @@
         localStorage.removeItem('nazCoins');
         localStorage.removeItem('firebaseUID');
         updateUserUI(null);
+        showMessage('');
         return;
       }
 
@@ -810,6 +770,7 @@
         if (!snap.exists()) {
           await signOut(auth);
           updateUserUI(null);
+          showMessage('Profile not found. Please register again.', 'error');
           return;
         }
 
@@ -827,10 +788,10 @@
         localStorage.setItem('firebaseUID', user.uid);
 
         updateUserUI(currentUserData);
-        await refreshDailyBonusButton();
-      } catch (error) {
-        console.error('Error fetching user data:', error);
-        setAuthMessage('Error loading your profile. Please try again.', 'error');
+        refreshDailyBonusButton();
+      } catch (err) {
+        console.error('Error fetching user data:', err);
+        showMessage('Error loading your profile. Please try again.', 'error');
       }
     });
 
@@ -839,7 +800,7 @@
       const password = document.getElementById('loginPassword').value.trim();
 
       if (!email || !password) {
-        setAuthMessage('Please enter both email and password.', 'error');
+        showMessage('Please enter both email and password.', 'error');
         return;
       }
 
@@ -851,7 +812,7 @@
 
         if (!snap.exists()) {
           await signOut(auth);
-          setAuthMessage('Account data not found. Please register again.', 'error');
+          showMessage('Account data not found. Please register again.', 'error');
           return;
         }
 
@@ -868,17 +829,17 @@
         localStorage.setItem('nazCoins', currentUserData.coins);
         localStorage.setItem('firebaseUID', user.uid);
 
-        setAuthMessage('Login successful! You can now play games.', 'success');
+        showMessage('Login successful! You can now play games.', 'success');
         updateUserUI(currentUserData);
-        await refreshDailyBonusButton();
-      } catch (error) {
-        console.error('Login error:', error);
-        if (error.code === 'auth/user-not-found') {
-          setAuthMessage('No account with this email. Use Register tab.', 'error');
-        } else if (error.code === 'auth/wrong-password') {
-          setAuthMessage('Incorrect password. Please try again.', 'error');
+        refreshDailyBonusButton();
+      } catch (err) {
+        console.error('Login error:', err);
+        if (err.code === 'auth/user-not-found') {
+          showMessage('No account with this email. Use Register tab.', 'error');
+        } else if (err.code === 'auth/wrong-password') {
+          showMessage('Incorrect password. Please try again.', 'error');
         } else {
-          setAuthMessage('Login failed. ' + (error.message || ''), 'error');
+          showMessage('Login failed. ' + (err.message || ''), 'error');
         }
       }
     });
@@ -889,15 +850,15 @@
       const password = document.getElementById('registerPassword').value.trim();
 
       if (!username || !email || !password) {
-        setAuthMessage('Please fill all fields to register.', 'error');
+        showMessage('Please fill all fields to register.', 'error');
         return;
       }
 
       try {
         const cred = await createUserWithEmailAndPassword(auth, email, password);
         const user = cred.user;
-
         const userRef = doc(db, 'users', user.uid);
+
         await setDoc(userRef, {
           username,
           email,
@@ -918,16 +879,53 @@
         localStorage.setItem('nazCoins', 100);
         localStorage.setItem('firebaseUID', user.uid);
 
-        setAuthMessage('Registration successful! You can now play games.', 'success');
+        showMessage('Registration successful! You can now play games.', 'success');
         updateUserUI(currentUserData);
-        await refreshDailyBonusButton();
-      } catch (error) {
-        console.error('Register error:', error);
-        setAuthMessage('Registration failed. ' + (error.message || ''), 'error');
+        refreshDailyBonusButton();
+      } catch (err) {
+        console.error('Register error:', err);
+        if (err.code === 'auth/email-already-in-use') {
+          showMessage('Email already in use. Try logging in.', 'error');
+        } else {
+          showMessage('Registration failed. ' + (err.message || ''), 'error');
+        }
       }
     });
 
-    window.logout = async function () {
+    dailyBonusBtn.addEventListener('click', async () => {
+      if (!currentUserRef || !currentUserData) return;
+
+      if (!canClaimDailyBonus(currentUserData)) {
+        alert('You already claimed today’s bonus. Come back tomorrow!');
+        return;
+      }
+
+      try {
+        const bonus = 20;
+        const newCoins = (currentUserData.coins ?? 0) + bonus;
+
+        await updateDoc(currentUserRef, {
+          coins: newCoins,
+          lastDailyBonus: Timestamp.now()
+        });
+
+        currentUserData.coins = newCoins;
+        currentUserData.lastDailyBonus = Timestamp.now();
+        headerCoinsSpan.textContent = newCoins;
+
+        alert('Daily bonus claimed! +20 NAZ added.');
+        refreshDailyBonusButton();
+      } catch (err) {
+        console.error('Daily bonus error:', err);
+        alert('Unable to claim bonus. Please try again.');
+      }
+    });
+
+    leaderboardBtn.addEventListener('click', () => {
+      window.location.href = 'leaderboard.html';
+    });
+
+    window.logout = async () => {
       try {
         await signOut(auth);
         localStorage.removeItem('currentUser');
@@ -936,8 +934,8 @@
         currentUserRef = null;
         currentUserData = null;
         updateUserUI(null);
-      } catch (error) {
-        console.error('Logout error:', error);
+      } catch (err) {
+        console.error('Logout error:', err);
         alert('Logout failed. Please try again.');
       }
     };
