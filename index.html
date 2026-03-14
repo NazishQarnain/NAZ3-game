@@ -5,30 +5,22 @@
   <title>NAZ3 Game - Play & Earn NAZ Coins</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <!-- Fonts & Icons (same as your current setup) -->
+  <!-- Fonts & Icon -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet" />
-
   <link rel="icon" href="https://img.icons8.com/?size=100&id=11243&format=png&color=FFFFFF" />
 
   <style>
-    /* ====== GLOBAL STYLES ====== */
     :root {
-      --bg-gradient: linear-gradient(135deg, #1e293b, #0f172a);
+      --bg-gradient: linear-gradient(135deg, #1e293b, #020617);
       --primary: #38bdf8;
       --primary-light: #7dd3fc;
       --accent: #f97316;
       --danger: #f97373;
-      --success: #22c55e;
-      --card-bg: rgba(15, 23, 42, 0.9);
-      --border-color: rgba(148, 163, 184, 0.4);
+      --card-bg: rgba(15, 23, 42, 0.96);
+      --border-soft: rgba(148, 163, 184, 0.4);
       --text-muted: #94a3b8;
-      --shadow: 0 20px 35px rgba(15, 23, 42, 0.7);
-      --radius-lg: 18px;
-      --radius-full: 999px;
-      --transition-fast: 0.2s ease-out;
-      --transition-med: 0.3s ease-out;
     }
 
     * {
@@ -40,25 +32,24 @@
 
     body {
       min-height: 100vh;
-      background: var(--bg-gradient);
-      color: #e5e7eb;
+      background: radial-gradient(circle at top left, rgba(56, 189, 248, 0.35), transparent 55%),
+                  radial-gradient(circle at bottom right, rgba(244, 63, 94, 0.32), transparent 55%),
+                  var(--bg-gradient);
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 16px;
+      padding: 18px;
+      color: #e5e7eb;
     }
 
-    /* ====== LAYOUT ====== */
     .app-shell {
       width: 100%;
       max-width: 1080px;
-      background: radial-gradient(circle at top left, rgba(59, 130, 246, 0.4), transparent 60%),
-                  radial-gradient(circle at top right, rgba(244, 63, 94, 0.4), transparent 55%),
-                  var(--card-bg);
-      border-radius: 28px;
-      box-shadow: var(--shadow);
-      border: 1px solid rgba(148, 163, 184, 0.4);
-      padding: 20px 22px 22px;
+      background: var(--card-bg);
+      border-radius: 30px;
+      border: 1px solid var(--border-soft);
+      box-shadow: 0 24px 42px rgba(15, 23, 42, 0.8);
+      padding: 20px 22px 18px;
       position: relative;
       overflow: hidden;
     }
@@ -67,8 +58,10 @@
       content: "";
       position: absolute;
       inset: 0;
-      background: linear-gradient(135deg, rgba(148, 163, 184, 0.1), transparent 45%, rgba(56, 189, 248, 0.25));
-      mix-blend-mode: screen;
+      background:
+        radial-gradient(circle at 0 0, rgba(56, 189, 248, 0.16), transparent 55%),
+        radial-gradient(circle at 100% 0, rgba(248, 113, 113, 0.18), transparent 55%);
+      opacity: 0.9;
       pointer-events: none;
     }
 
@@ -78,7 +71,6 @@
       z-index: 1;
     }
 
-    /* ====== HEADER ====== */
     .app-header {
       display: flex;
       align-items: center;
@@ -94,21 +86,24 @@
     }
 
     .logo-pill {
-      width: 40px;
-      height: 40px;
-      border-radius: 16px;
-      background: radial-gradient(circle at 30% 0%, #fbbf24, transparent 60%),
-                  radial-gradient(circle at 80% 80%, #22c55e, transparent 55%),
-                  #0f172a;
+      width: 44px;
+      height: 44px;
+      border-radius: 18px;
+      background:
+        radial-gradient(circle at 30% 0, #facc15, transparent 60%),
+        radial-gradient(circle at 80% 90%, #22c55e, transparent 55%),
+        #020617;
       display: flex;
       align-items: center;
       justify-content: center;
-      box-shadow: 0 0 0 1px rgba(148, 163, 184, 0.3), 0 10px 18px rgba(15, 23, 42, 0.6);
+      box-shadow:
+        0 0 0 1px rgba(148, 163, 184, 0.4),
+        0 12px 20px rgba(15, 23, 42, 0.7);
     }
 
     .logo-pill span {
       font-weight: 700;
-      font-size: 20px;
+      font-size: 22px;
       color: #f9fafb;
     }
 
@@ -128,18 +123,19 @@
       align-items: center;
       gap: 12px;
       border-radius: 999px;
-      border: 1px solid rgba(148, 163, 184, 0.4);
+      border: 1px solid var(--border-soft);
       padding: 8px 10px;
-      background: linear-gradient(120deg, rgba(15, 23, 42, 0.9), rgba(15, 23, 42, 0.7));
+      background: rgba(15, 23, 42, 0.95);
     }
 
     .user-avatar {
       width: 30px;
       height: 30px;
       border-radius: 999px;
-      background: radial-gradient(circle at 30% 0%, #f97316, transparent 60%),
-                  radial-gradient(circle at 80% 80%, #22c55e, transparent 50%),
-                  #020617;
+      background:
+        radial-gradient(circle at 30% 0, #f97316, transparent 60%),
+        radial-gradient(circle at 80% 80%, #22c55e, transparent 60%),
+        #020617;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -158,18 +154,14 @@
       font-size: 11px;
     }
 
-    .user-meta span b {
-      font-weight: 600;
-    }
-
     .coin-chip {
       display: inline-flex;
       align-items: center;
       gap: 4px;
       padding: 3px 8px;
       border-radius: 999px;
-      background: rgba(15, 23, 42, 0.95);
-      border: 1px solid rgba(56, 189, 248, 0.45);
+      border: 1px solid rgba(56, 189, 248, 0.6);
+      background: rgba(15, 23, 42, 1);
       font-size: 11px;
     }
 
@@ -177,8 +169,9 @@
       width: 18px;
       height: 18px;
       border-radius: 999px;
-      background: radial-gradient(circle at 30% 0%, #facc15, transparent 60%),
-                  #0f172a;
+      background:
+        radial-gradient(circle at 30% 0, #facc15, transparent 60%),
+        #0f172a;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -193,53 +186,41 @@
       background: linear-gradient(120deg, #991b1b, #b91c1c);
       color: #fee2e2;
       cursor: pointer;
-      transition: transform var(--transition-fast), box-shadow var(--transition-fast), background var(--transition-fast);
-      box-shadow: 0 14px 26px rgba(127, 29, 29, 0.55);
+      transition: transform .15s ease-out, box-shadow .15s ease-out, background .15s ease-out;
+      box-shadow: 0 14px 26px rgba(127, 29, 29, 0.6);
       white-space: nowrap;
     }
 
     .logout-btn:hover {
       transform: translateY(-1px);
       background: linear-gradient(120deg, #b91c1c, #ef4444);
-      box-shadow: 0 18px 32px rgba(127, 29, 29, 0.65);
+      box-shadow: 0 18px 32px rgba(127, 29, 29, 0.7);
     }
 
-    /* ====== BODY LAYOUT ====== */
     .app-body {
       display: grid;
-      grid-template-columns: minmax(0, 320px) minmax(0, 1fr);
+      grid-template-columns: minmax(0, 340px) minmax(0, 1fr);
       gap: 18px;
       align-items: flex-start;
     }
 
-    @media (max-width: 840px) {
+    @media (max-width: 860px) {
       .app-body {
         grid-template-columns: minmax(0, 1fr);
       }
-
       .user-summary {
         display: none;
       }
     }
 
-    /* ====== AUTH CARD ====== */
     .card {
-      background: linear-gradient(145deg, rgba(15, 23, 42, 0.98), rgba(15, 23, 42, 0.92));
+      background: rgba(15, 23, 42, 0.98);
       border-radius: 22px;
-      border: 1px solid rgba(148, 163, 184, 0.4);
+      border: 1px solid var(--border-soft);
       padding: 16px 16px 14px;
-      box-shadow: 0 18px 28px rgba(15, 23, 42, 0.6);
+      box-shadow: 0 18px 28px rgba(15, 23, 42, 0.7);
       position: relative;
       overflow: hidden;
-    }
-
-    .card::before {
-      content: "";
-      position: absolute;
-      inset: 0;
-      background: radial-gradient(circle at 0 0, rgba(56, 189, 248, 0.18), transparent 55%);
-      opacity: 0.8;
-      pointer-events: none;
     }
 
     .card-inner {
@@ -267,10 +248,10 @@
     .auth-toggle {
       display: flex;
       gap: 6px;
-      background: rgba(15, 23, 42, 0.9);
+      background: rgba(15, 23, 42, 0.96);
       border-radius: 999px;
       padding: 2px;
-      border: 1px solid rgba(148, 163, 184, 0.4);
+      border: 1px solid var(--border-soft);
       margin-bottom: 10px;
     }
 
@@ -283,15 +264,15 @@
       cursor: pointer;
       background: transparent;
       color: var(--text-muted);
-      transition: background var(--transition-med), color var(--transition-med), transform var(--transition-fast);
+      transition: background .25s ease-out, color .25s ease-out, transform .15s ease-out;
     }
 
     .auth-toggle button.active {
       background: linear-gradient(120deg, var(--primary), var(--primary-light));
-      color: #0b1120;
+      color: #020617;
       font-weight: 600;
       transform: translateY(-1px);
-      box-shadow: 0 10px 18px rgba(56, 189, 248, 0.5);
+      box-shadow: 0 10px 20px rgba(56, 189, 248, 0.5);
     }
 
     .auth-form {
@@ -317,19 +298,19 @@
     .form-group input {
       width: 100%;
       border-radius: 999px;
-      border: 1px solid rgba(148, 163, 184, 0.4);
+      border: 1px solid var(--border-soft);
       padding: 7px 10px;
       font-size: 12px;
-      background: rgba(15, 23, 42, 0.95);
+      background: rgba(15, 23, 42, 0.98);
       color: #e5e7eb;
       outline: none;
-      transition: border-color var(--transition-fast), box-shadow var(--transition-fast), background var(--transition-fast);
+      transition: border-color .15s ease-out, box-shadow .15s ease-out, background .15s ease-out;
     }
 
     .form-group input:focus {
       border-color: rgba(56, 189, 248, 0.8);
       box-shadow: 0 0 0 1px rgba(56, 189, 248, 0.7);
-      background: rgba(15, 23, 42, 1);
+      background: #020617;
     }
 
     .primary-btn {
@@ -339,18 +320,18 @@
       padding: 8px 0;
       font-size: 12px;
       font-weight: 600;
-      letter-spacing: 0.03em;
+      letter-spacing: .03em;
       background: linear-gradient(120deg, var(--primary), var(--primary-light));
       color: #020617;
       cursor: pointer;
       margin-top: 4px;
-      box-shadow: 0 14px 28px rgba(56, 189, 248, 0.45);
-      transition: transform var(--transition-fast), box-shadow var(--transition-fast), background var(--transition-fast);
+      box-shadow: 0 16px 28px rgba(56, 189, 248, 0.45);
+      transition: transform .15s ease-out, box-shadow .15s ease-out, background .15s ease-out;
     }
 
     .primary-btn:hover {
       transform: translateY(-1px);
-      box-shadow: 0 18px 32px rgba(56, 189, 248, 0.6);
+      box-shadow: 0 20px 34px rgba(56, 189, 248, 0.6);
       background: linear-gradient(120deg, #38bdf8, #0ea5e9);
     }
 
@@ -366,29 +347,28 @@
       padding: 6px 10px;
       border-radius: 12px;
       border: 1px solid transparent;
-      background: rgba(15, 23, 42, 0.9);
+      background: rgba(15, 23, 42, 0.98);
       display: none;
     }
 
     .auth-message.error {
       display: block;
-      border-color: rgba(248, 113, 113, 0.65);
-      color: #fecaca;
+      border-color: rgba(248, 113, 113, 0.7);
+      color: #fee2e2;
     }
 
     .auth-message.success {
       display: block;
-      border-color: rgba(34, 197, 94, 0.65);
+      border-color: rgba(34, 197, 94, 0.7);
       color: #bbf7d0;
     }
 
-    /* ====== GAME HUB CARD ====== */
     .hub-card {
-      background: linear-gradient(145deg, rgba(15, 23, 42, 0.98), rgba(15, 23, 42, 0.92));
+      background: rgba(15, 23, 42, 0.98);
       border-radius: 22px;
-      border: 1px solid rgba(148, 163, 184, 0.4);
+      border: 1px solid var(--border-soft);
       padding: 16px 16px 14px;
-      box-shadow: 0 18px 28px rgba(15, 23, 42, 0.6);
+      box-shadow: 0 18px 28px rgba(15, 23, 42, 0.7);
     }
 
     .hub-header {
@@ -417,16 +397,16 @@
 
     .chip-btn {
       border-radius: 999px;
-      border: 1px solid rgba(148, 163, 184, 0.55);
+      border: 1px solid rgba(148, 163, 184, 0.7);
       padding: 4px 10px;
       font-size: 10px;
-      background: rgba(15, 23, 42, 0.95);
+      background: rgba(15, 23, 42, 0.98);
       color: #e5e7eb;
       cursor: pointer;
       display: inline-flex;
       align-items: center;
       gap: 5px;
-      transition: background var(--transition-fast), border-color var(--transition-fast), transform var(--transition-fast);
+      transition: background .15s ease-out, border-color .15s ease-out, transform .15s ease-out;
     }
 
     .chip-btn:hover {
@@ -439,7 +419,9 @@
       width: 16px;
       height: 16px;
       border-radius: 999px;
-      background: radial-gradient(circle at 30% 0, #facc15, transparent 60%), #0f172a;
+      background:
+        radial-gradient(circle at 30% 0, #facc15, transparent 60%),
+        #0f172a;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -463,24 +445,25 @@
       position: relative;
       border-radius: 16px;
       overflow: hidden;
-      background: radial-gradient(circle at 10% 0%, rgba(52, 211, 153, 0.4), transparent 55%),
-                  radial-gradient(circle at 80% 100%, rgba(59, 130, 246, 0.45), transparent 55%),
-                  #020617;
+      background:
+        radial-gradient(circle at 10% 0%, rgba(52, 211, 153, 0.4), transparent 55%),
+        radial-gradient(circle at 80% 100%, rgba(59, 130, 246, 0.5), transparent 55%),
+        #020617;
       min-height: 104px;
       cursor: pointer;
       border: 1px solid rgba(148, 163, 184, 0.35);
-      box-shadow: 0 14px 22px rgba(15, 23, 42, 0.55);
+      box-shadow: 0 16px 26px rgba(15, 23, 42, 0.6);
       display: flex;
       flex-direction: column;
       justify-content: space-between;
       padding: 8px 10px;
-      transition: transform var(--transition-med), box-shadow var(--transition-med), border-color var(--transition-med);
+      transition: transform .2s ease-out, box-shadow .2s ease-out, border-color .2s ease-out;
     }
 
     .game-tile:hover {
       transform: translateY(-4px);
-      box-shadow: 0 20px 30px rgba(15, 23, 42, 0.7);
-      border-color: rgba(56, 189, 248, 0.8);
+      box-shadow: 0 22px 32px rgba(15, 23, 42, 0.75);
+      border-color: rgba(56, 189, 248, 0.9);
     }
 
     .game-icon {
@@ -495,7 +478,7 @@
       width: 22px;
       height: 22px;
       border-radius: 999px;
-      background: rgba(15, 23, 42, 0.8);
+      background: rgba(15, 23, 42, 0.9);
       padding: 2px;
     }
 
@@ -512,16 +495,14 @@
       font-size: 10px;
       border-radius: 999px;
       padding: 2px 8px;
-      background: rgba(15, 23, 42, 0.85);
-      border: 1px solid rgba(52, 211, 153, 0.6);
+      background: rgba(15, 23, 42, 0.9);
+      border: 1px solid rgba(52, 211, 153, 0.75);
       margin-top: 4px;
     }
 
-    /* ====== AUTH / GAME SECTIONS ====== */
     #loginSection {
       display: block;
     }
-
     #gameSection {
       display: none;
     }
@@ -529,20 +510,16 @@
 </head>
 <body>
   <div class="app-shell">
-    <!-- HEADER -->
     <header class="app-header">
       <div class="brand">
-        <div class="logo-pill">
-          <span>N</span>
-        </div>
+        <div class="logo-pill"><span>N</span></div>
         <div class="brand-text">
           <h1>NAZ3 Game</h1>
-          <p>Play. Win. Grow your NAZ coin stack.</p>
+          <p>Play games and grow your NAZ coin stack.</p>
         </div>
       </div>
-
-      <div class="user-summary" id="userSummary" style="display: none;">
-        <div class="user-avatar" id="userAvatar">N</div>
+      <div class="user-summary" id="userSummary" style="display:none;">
+        <div class="user-avatar" id="userAvatar">P</div>
         <div class="user-meta">
           <span>Hello, <b id="currentUsername">Player</b></span>
           <span class="coin-chip">
@@ -554,9 +531,7 @@
       </div>
     </header>
 
-    <!-- BODY -->
     <main class="app-body">
-      <!-- AUTH COLUMN -->
       <section class="card" id="authCard">
         <div class="card-inner">
           <div class="card-title-row">
@@ -573,7 +548,6 @@
 
           <div id="authMessage" class="auth-message"></div>
 
-          <!-- LOGIN FORM -->
           <div id="loginSection" class="auth-form active">
             <div class="form-group">
               <label for="loginEmail">Email</label>
@@ -584,10 +558,9 @@
               <input type="password" id="loginPassword" placeholder="••••••••" />
             </div>
             <button class="primary-btn" id="loginBtn" type="button">Login</button>
-            <p class="hint-text">New here? Use the Register tab to create a free NAZ account.</p>
+            <p class="hint-text">New here? Use the Register tab to create a free account.</p>
           </div>
 
-          <!-- REGISTER FORM -->
           <div id="registerSection" class="auth-form">
             <div class="form-group">
               <label for="registerUsername">Username</label>
@@ -602,17 +575,16 @@
               <input type="password" id="registerPassword" placeholder="Create a password" />
             </div>
             <button class="primary-btn" id="registerBtn" type="button">Register</button>
-            <p class="hint-text">You’ll start with <b>100 NAZ coins</b> to try all games.</p>
+            <p class="hint-text">You start with <b>100 NAZ coins</b> to try all games.</p>
           </div>
         </div>
       </section>
 
-      <!-- GAME HUB COLUMN -->
       <section class="hub-card" id="gameSection">
         <div class="hub-header">
           <div class="hub-header-left">
             <h2>Game Hub</h2>
-            <p>Choose any game below and grow your NAZ coins.</p>
+            <p>Choose a game and start playing with your NAZ coins.</p>
           </div>
           <div class="hub-actions">
             <button class="chip-btn" id="dailyBonusBtn" type="button">
@@ -635,9 +607,7 @@
               </div>
               <div class="game-meta">Bet 10 NAZ · Roll 4+</div>
             </div>
-            <div class="game-badge">
-              🎲 High risk / high reward
-            </div>
+            <div class="game-badge">🎲 High risk / reward</div>
           </div>
 
           <div class="game-tile" onclick="window.location.href='coin.html'">
@@ -648,9 +618,7 @@
               </div>
               <div class="game-meta">Bet 5 NAZ · 50% chance</div>
             </div>
-            <div class="game-badge">
-              🪙 Quick flip game
-            </div>
+            <div class="game-badge">🪙 Quick flip game</div>
           </div>
 
           <div class="game-tile" onclick="window.location.href='lucky.html'">
@@ -661,42 +629,38 @@
               </div>
               <div class="game-meta">Bet 20 NAZ · 30% win</div>
             </div>
-            <div class="game-badge">
-              🍀 Big win potential
-            </div>
+            <div class="game-badge">🍀 Big win potential</div>
           </div>
 
           <div class="game-tile" onclick="window.location.href='tricolor.html'">
             <div>
               <div class="game-icon">
-                <img src="https://img.icons8.com/?size=100&id=UooIO6rrQ8kV&format=png&color=FFFFFF" alt="Tri-color" />
+                <img src="https://img.icons8.com/?size=100&id=UooIO6rrQ8kV&format=png&color=FFFFFF" alt="Tri-Color" />
                 <span>Tri-Color Wheel</span>
               </div>
               <div class="game-meta">Bet 15 NAZ · Time-based</div>
             </div>
-            <div class="game-badge">
-              🇮🇳 Live spinning wheel
-            </div>
+            <div class="game-badge">🇮🇳 Live color wheel</div>
           </div>
         </div>
       </section>
     </main>
   </div>
 
-  <!-- AUTH + UI LOGIC -->
   <script type="module">
     import { auth, db } from './firebase-config.js';
     import {
       signInWithEmailAndPassword,
       createUserWithEmailAndPassword,
       onAuthStateChanged,
-      signOut,
+      signOut
     } from 'https://www.gstatic.com/firebasejs/10.12.3/firebase-auth.js';
     import {
       doc,
       getDoc,
       setDoc,
-      serverTimestamp,
+      Timestamp,
+      updateDoc
     } from 'https://www.gstatic.com/firebasejs/10.12.3/firebase-firestore.js';
 
     const loginTab = document.getElementById('loginTab');
@@ -718,6 +682,9 @@
 
     const dailyBonusBtn = document.getElementById('dailyBonusBtn');
     const leaderboardBtn = document.getElementById('leaderboardBtn');
+
+    let currentUserRef = null;
+    let currentUserData = null;
 
     function setAuthMessage(text, type = 'error') {
       if (!text) {
@@ -767,13 +734,72 @@
       gameSection.style.display = 'block';
     }
 
-    // Auth state listener
+    async function canClaimDailyBonus(userData) {
+      const last = userData.lastDailyBonus;
+      if (!last) return true;
+      const lastDate = last.toDate ? last.toDate() : new Date(last);
+      const now = new Date();
+      return now.toDateString() !== lastDate.toDateString();
+    }
+
+    async function refreshDailyBonusButton() {
+      if (!currentUserData) {
+        dailyBonusBtn.disabled = true;
+        dailyBonusBtn.textContent = 'Daily Bonus';
+        return;
+      }
+      const allowed = await canClaimDailyBonus(currentUserData);
+      if (allowed) {
+        dailyBonusBtn.disabled = false;
+        dailyBonusBtn.textContent = 'Claim Daily Bonus';
+      } else {
+        dailyBonusBtn.disabled = true;
+        dailyBonusBtn.textContent = 'Daily Bonus Claimed';
+      }
+    }
+
+    dailyBonusBtn.addEventListener('click', async () => {
+      if (!currentUserRef || !currentUserData) return;
+
+      try {
+        const allowed = await canClaimDailyBonus(currentUserData);
+        if (!allowed) {
+          alert('You already claimed today’s bonus. Come back tomorrow!');
+          return;
+        }
+
+        const bonus = 20;
+        const newCoins = (currentUserData.coins ?? 0) + bonus;
+
+        await updateDoc(currentUserRef, {
+          coins: newCoins,
+          lastDailyBonus: Timestamp.now()
+        });
+
+        currentUserData.coins = newCoins;
+        currentUserData.lastDailyBonus = Timestamp.now();
+        headerCoinsSpan.textContent = newCoins;
+
+        alert('Daily bonus claimed! +20 NAZ added.');
+        await refreshDailyBonusButton();
+      } catch (e) {
+        console.error('Daily bonus error:', e);
+        alert('Unable to claim bonus. Please try again.');
+      }
+    });
+
+    leaderboardBtn.addEventListener('click', () => {
+      window.location.href = 'leaderboard.html';
+    });
+
     onAuthStateChanged(auth, async (user) => {
       if (!user) {
-        updateUserUI(null);
+        currentUserRef = null;
+        currentUserData = null;
         localStorage.removeItem('currentUser');
         localStorage.removeItem('nazCoins');
         localStorage.removeItem('firebaseUID');
+        updateUserUI(null);
         return;
       }
 
@@ -788,24 +814,26 @@
         }
 
         const data = snap.data();
-        const userData = {
+        currentUserRef = userRef;
+        currentUserData = {
           uid: user.uid,
           username: data.username || user.email.split('@')[0],
           coins: data.coins ?? 100,
+          lastDailyBonus: data.lastDailyBonus || null
         };
 
-        localStorage.setItem('currentUser', userData.username);
-        localStorage.setItem('nazCoins', userData.coins);
+        localStorage.setItem('currentUser', currentUserData.username);
+        localStorage.setItem('nazCoins', currentUserData.coins);
         localStorage.setItem('firebaseUID', user.uid);
 
-        updateUserUI(userData);
+        updateUserUI(currentUserData);
+        await refreshDailyBonusButton();
       } catch (error) {
         console.error('Error fetching user data:', error);
         setAuthMessage('Error loading your profile. Please try again.', 'error');
       }
     });
 
-    // Login
     loginBtn.addEventListener('click', async () => {
       const email = document.getElementById('loginEmail').value.trim();
       const password = document.getElementById('loginPassword').value.trim();
@@ -828,22 +856,25 @@
         }
 
         const data = snap.data();
-        const userData = {
+        currentUserRef = userRef;
+        currentUserData = {
           uid: user.uid,
           username: data.username || email.split('@')[0],
           coins: data.coins ?? 100,
+          lastDailyBonus: data.lastDailyBonus || null
         };
 
-        localStorage.setItem('currentUser', userData.username);
-        localStorage.setItem('nazCoins', userData.coins);
+        localStorage.setItem('currentUser', currentUserData.username);
+        localStorage.setItem('nazCoins', currentUserData.coins);
         localStorage.setItem('firebaseUID', user.uid);
 
-        setAuthMessage('Login successful! Redirecting...', 'success');
-        updateUserUI(userData);
+        setAuthMessage('Login successful! You can now play games.', 'success');
+        updateUserUI(currentUserData);
+        await refreshDailyBonusButton();
       } catch (error) {
         console.error('Login error:', error);
         if (error.code === 'auth/user-not-found') {
-          setAuthMessage('No account found with this email. Use Register tab.', 'error');
+          setAuthMessage('No account with this email. Use Register tab.', 'error');
         } else if (error.code === 'auth/wrong-password') {
           setAuthMessage('Incorrect password. Please try again.', 'error');
         } else {
@@ -852,7 +883,6 @@
       }
     });
 
-    // Register
     registerBtn.addEventListener('click', async () => {
       const username = document.getElementById('registerUsername').value.trim();
       const email = document.getElementById('registerEmail').value.trim();
@@ -872,38 +902,39 @@
           username,
           email,
           coins: 100,
-          createdAt: serverTimestamp(),
+          createdAt: Timestamp.now(),
+          lastDailyBonus: null
         });
+
+        currentUserRef = userRef;
+        currentUserData = {
+          uid: user.uid,
+          username,
+          coins: 100,
+          lastDailyBonus: null
+        };
 
         localStorage.setItem('currentUser', username);
         localStorage.setItem('nazCoins', 100);
         localStorage.setItem('firebaseUID', user.uid);
 
         setAuthMessage('Registration successful! You can now play games.', 'success');
-        updateUserUI({ uid: user.uid, username, coins: 100 });
+        updateUserUI(currentUserData);
+        await refreshDailyBonusButton();
       } catch (error) {
         console.error('Register error:', error);
         setAuthMessage('Registration failed. ' + (error.message || ''), 'error');
       }
     });
 
-    // Daily bonus (placeholder – logic add later)
-    dailyBonusBtn.addEventListener('click', () => {
-      alert('Daily bonus feature coming soon!');
-    });
-
-    // Leaderboard (placeholder – link to future page)
-    leaderboardBtn.addEventListener('click', () => {
-      window.location.href = 'leaderboard.html';
-    });
-
-    // Logout global
     window.logout = async function () {
       try {
         await signOut(auth);
         localStorage.removeItem('currentUser');
         localStorage.removeItem('nazCoins');
         localStorage.removeItem('firebaseUID');
+        currentUserRef = null;
+        currentUserData = null;
         updateUserUI(null);
       } catch (error) {
         console.error('Logout error:', error);
