@@ -12,7 +12,11 @@
         <header>
             <div class="title-block">
                 <h1>Coin Flip</h1>
-                <p>Bet 5 NAZ. Heads wins +15.</p>
+            <p>Bet <span id="betDesc">5</span> NAZ. Heads wins +<span id="winDesc">15</span>.</p>                            <div class="bet-input-group">
+              <label for="betAmount">Bet Amount:</label>
+              <input type="number" id="betAmount" min="1" value="5" />
+              <span>NAZ</span>
+            </div>
             </div>
             <div class="user-pill">
                 <div id="userAvatar" class="user-avatar">P</div>
@@ -37,8 +41,7 @@
                 <p class="rules-title">Rules</p>
                 <ul class="rules-list">
                     <li>50% Heads / 50% Tails</li>
-                    <li>Win: <span class="highlight">+15 NAZ</span></li>
-                </ul>
+              <li>Win: <span class="highlight">+<span id="winRule">15</span> NAZ</span></li>                </ul>
                 <div id="result" class="status info">Ready to flip</div>
             </div>
         </div>
@@ -55,6 +58,23 @@
         const playBtn = document.getElementById('playBtn');
         let currentUserData = null;
         let userRef = null;
+          const betInput = document.getElementById('betAmount');
+  const betDisplay = document.getElementById('betDisplay');
+  const betDesc = document.getElementById('betDesc');
+  const winDesc = document.getElementById('winDesc');
+  const winRule = document.getElementById('winRule');
+
+  function updateBetDisplay() {
+    const bet = parseInt(betInput.value) || 5;
+    const win = bet * 3;
+    betDisplay.textContent = bet;
+    betDesc.textContent = bet;
+    winDesc.textContent = win;
+    winRule.textContent = win;
+  }
+
+  betInput.addEventListener('input', updateBetDisplay);
+  updateBetDisplay();
 
         const setStatus = (text, type = 'info') => {
             resultDiv.textContent = text;
@@ -74,30 +94,27 @@
         });
 
         playBtn.addEventListener('click', async () => {
-            if (currentUserData.coins < 5) return setStatus('Not enough coins!', 'lose');
+            if (currentUserData.coins < parseInt(betInput.value)) return setStatus('Not enough coins!', 'lose');
             playBtn.disabled = true;
             emoji.classList.add('spin');
             setStatus('Flipping...', 'info');
             
             try {
-                const newCoins = currentUserData.coins - 5;
-                await updateDoc(userRef, { coins: newCoins });
+      const betAmount = parseInt(betInput.value) || 5;
+      const newCoins = currentUserData.coins - betAmount;                await updateDoc(userRef, { coins: newCoins });
                 currentUserData.coins = newCoins;
                 coinSpan.textContent = newCoins;
 
                 await new Promise(r => setTimeout(r, 800));
                 const win = Math.random() < 0.5;
                 if (win) {
-                    const winTotal = currentUserData.coins + 15;
-                    await updateDoc(userRef, { coins: winTotal });
+        const winTotal = currentUserData.coins + (betAmount * 3);                    await updateDoc(userRef, { coins: winTotal });
                     currentUserData.coins = winTotal;
                     coinSpan.textContent = winTotal;
                     emoji.textContent = '🙂';
-                    setStatus('Heads! Won +15', 'win');
-                } else {
+        setStatus('Heads! Won +' + (betAmount * 3), 'win');                } else {
                     emoji.textContent = '😵';
-                    setStatus('Tails! Lost 5', 'lose');
-                }
+        setStatus('Tails! Lost ' + betAmount, 'lose');                }
             } finally {
                 playBtn.disabled = false;
                 emoji.classList.remove('spin');
