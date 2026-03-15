@@ -66,11 +66,11 @@
   </div>
 
   <script type="module">
-    import { watchAuth, appLogout } from './auth.js';
-    import { auth } from './firebase-config.js';
+    import { watchAuth, appLogout } from './js/auth.js';
+    import { auth } from './js/firebase-config.js';
     import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'https://www.gstatic.com/firebasejs/10.12.3/firebase-auth.js';
     import { doc, setDoc } from 'https://www.gstatic.com/firebasejs/10.12.3/firebase-firestore.js';
-    import { db } from './firebase-config.js';
+    import { db } from './js/firebase-config.js';
 
     const authCard = document.getElementById('authCard');
     const gameSection = document.getElementById('gameSection');
