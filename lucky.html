@@ -16,8 +16,12 @@
       <header>
         <div class="title-block">
           <h1>Lucky Number</h1>
-          <p>Bet 20 NAZ. 30% chance to win 60 NAZ.</p>
-        </div>
+          <p>Bet <span id="betDesc">20</span> NAZ. 30% chance to win <span id="winDesc">60</span> NAZ.</p>
+          <div class="bet-input-group">
+            <label for="betAmount">Bet Amount:</label>
+            <input type="number" id="betAmount" min="1" value="20" />
+            <span>NAZ</span>
+          </div>        </div>
         <div class="user-pill">
           <div id="userAvatar" class="user-avatar">P</div>
           <div class="user-meta">
@@ -38,7 +42,7 @@
             <p id="numberLabel" class="number-label">Click "Play Lucky" to reveal a number.</p>
           </div>
           <div class="controls">
-            <button id="playBtn" class="primary-btn">Play Lucky (Bet 20 NAZ)</button>
+            <button id="playBtn" class="primary-btn">Play Lucky (Bet <span id="betDisplay">20</span> NAZ)</button>
             <button onclick="goBack()" class="secondary-btn">Back to Games</button>
           </div>
         </div>
@@ -46,15 +50,12 @@
         <div class="rules-card">
           <p class="rules-title">How Lucky Number Works</p>
           <ul class="rules-list">
-            <li>• Bet <span class="highlight">20 NAZ</span> coins per round.</li>
-            <li>• System picks a random number between <span class="highlight">1 and 10</span>.</li>
+            <li>• Bet <span class="highlight" id="betRule1">20 NAZ</span> coins per round.</li>            <li>• System picks a random number between <span class="highlight">1 and 10</span>.</li>
             <li>• You have a <span class="highlight">30% chance</span> to win.</li>
-            <li>• On win, you earn <span class="highlight">+60 NAZ</span> coins.</li>
-            <li>• On loss, you lose your 20 NAZ bet only.</li>
+            <li>• On win, you earn <span class="highlight" id="winRule">+60 NAZ</span> coins.</li>            <li>• On loss, you lose your 20 NAZ bet only.</li>
           </ul>
           <div id="result" class="status info">Ready to test your luck. Press "Play Lucky" to start.</div>
-        </div>
-      </div>
+            <li>• On loss, you lose your <span id="betRule2">20</span> NAZ bet only.</li>      </div>
     </div>
   </div>
 
@@ -71,6 +72,27 @@
     const luckyCircle = document.getElementById('luckyCircle');
     const numberLabel = document.getElementById('numberLabel');
     let currentUserData = null, userRef = null;
+      const betInput = document.getElementById('betAmount');
+  const betDisplay = document.getElementById('betDisplay');
+  const betDesc = document.getElementById('betDesc');
+  const winDesc = document.getElementById('winDesc');
+  const betRule1 = document.getElementById('betRule1');
+  const betRule2 = document.getElementById('betRule2');
+  const winRule = document.getElementById('winRule');
+
+  function updateBetDisplay() {
+    const bet = parseInt(betInput.value) || 20;
+    const win = bet * 3;
+    betDisplay.textContent = bet;
+    betDesc.textContent = bet;
+    winDesc.textContent = win;
+    betRule1.textContent = bet + ' NAZ';
+    betRule2.textContent = bet;
+    winRule.textContent = '+' + win + ' NAZ';
+  }
+
+  betInput.addEventListener('input', updateBetDisplay);
+  updateBetDisplay();
 
     function setStatus(text, type = 'info') {
       resultDiv.textContent = text;
@@ -114,10 +136,9 @@
     }
 
     async function playLucky() {
-      if (!currentUserData || !userRef) return;
-      if ((currentUserData.coins ?? 0) < 20) {
-        return setStatus('Not enough coins. Need at least 20 NAZ.', 'lose');
-      }
+    const betAmount = parseInt(betInput.value) || 20;
+    if ((currentUserData.coins ?? 0) < betAmount) {      if ((currentUserData.coins ?? 0) < 20) {
+      return setStatus('Not enough coins. Need at least ' + betAmount + ' NAZ.', 'lose');      }
       playBtn.disabled = true;
       luckyCircle.classList.remove('pulse');
       void luckyCircle.offsetWidth;
@@ -126,16 +147,13 @@
       numberLabel.textContent = 'Picking your lucky number...';
       setStatus('Drawing a random number...', 'info');
       try {
-        await safeUpdateCoins(-20);
-        await new Promise(r => setTimeout(r, 900));
+      await safeUpdateCoins(-betAmount);        await new Promise(r => setTimeout(r, 900));
         const num = Math.floor(Math.random() * 10) + 1;
         const won = Math.random() < 0.3;
         luckyCircle.textContent = num;
         numberLabel.textContent = 'Your lucky number: ' + num;
-        if (won) { await safeUpdateCoins(60); setStatus('You are lucky! Won +60 NAZ coins.', 'win'); }
-        else setStatus('Not lucky this time. Lost 20 NAZ bet.', 'lose');
-      } catch (e) {
-        console.error(e);
+      if (won) { await safeUpdateCoins(betAmount * 3); setStatus('You are lucky! Won +' + (betAmount * 3) + ' NAZ coins.', 'win'); }        else setStatus('Not lucky this time. Lost 20 NAZ bet.', 'lose');
+      else setStatus('Not lucky this time. Lost ' + betAmount + ' NAZ bet.', 'lose');        console.error(e);
         alert(e.message || 'Something went wrong.');
       } finally {
         setTimeout(() => { playBtn.disabled = false; luckyCircle.classList.remove('pulse'); }, 200);
