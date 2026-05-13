@@ -40,10 +40,9 @@
       <section class="prediction-panel">
         <div class="period-box">
           <div>
-            <span class="muted-label">Period</span>
+            <span class="muted-label">Live Result</span>
             <div class="period-row">
-              <strong id="periodNumber">-</strong>
-              <button class="copy-btn" id="copyPeriodBtn" type="button">⧉</button>
+              <strong id="liveResultText">WAITING</strong>
             </div>
           </div>
 
@@ -55,7 +54,7 @@
 
         <div class="result-strip">
           <div id="recentDots" class="recent-dots"></div>
-          <button class="view-all-btn" type="button">View All →</button>
+          <button class="view-all-btn" type="button">Live</button>
         </div>
       </section>
 
@@ -129,7 +128,7 @@
       <section class="prediction-panel">
         <div class="section-head small-section-head">
           <h3>Recent Results</h3>
-          <button class="view-all-btn" type="button">View All →</button>
+          <button class="view-all-btn" type="button">Live</button>
         </div>
         <div id="recentResultRow" class="recent-result-row"></div>
       </section>
@@ -144,7 +143,6 @@
           <table class="history-table">
             <thead>
               <tr>
-                <th>Period</th>
                 <th>Color</th>
                 <th>Bet</th>
                 <th>Multiplier</th>
@@ -194,7 +192,7 @@
 
     const walletBalance = document.getElementById('walletBalance');
     const availableBalance = document.getElementById('availableBalance');
-    const periodNumber = document.getElementById('periodNumber');
+    const liveResultText = document.getElementById('liveResultText');
     const timerText = document.getElementById('timerText');
     const recentDots = document.getElementById('recentDots');
     const recentResultRow = document.getElementById('recentResultRow');
@@ -235,6 +233,14 @@
           <small>${i}</small>
         </div>
       `).join('');
+    }
+
+    function updateLiveResult(result) {
+      liveResultText.textContent = (result || 'WAITING').toUpperCase();
+      liveResultText.style.color =
+        result === 'green' ? '#2fff63' :
+        result === 'orange' ? '#ff8d1b' :
+        result === 'white' ? '#ffffff' : '#f8fafc';
     }
 
     function startTimer(endsAt) {
@@ -279,7 +285,7 @@
 
     async function renderMyBets() {
       if (!currentUser?.uid) {
-        historyTableBody.innerHTML = `<tr><td colspan="5" style="text-align:center;color:#94a3b8;">Login required.</td></tr>`;
+        historyTableBody.innerHTML = `<tr><td colspan="4" style="text-align:center;color:#94a3b8;">Login required.</td></tr>`;
         return;
       }
 
@@ -291,16 +297,15 @@
       const snap = await getDocs(q);
       const rows = [];
       snap.forEach((d) => rows.push(d.data()));
-      rows.sort((a, b) => String(b.period).localeCompare(String(a.period)));
+      rows.sort((a, b) => Number(b.createdAt?.seconds || 0) - Number(a.createdAt?.seconds || 0));
 
       if (!rows.length) {
-        historyTableBody.innerHTML = `<tr><td colspan="5" style="text-align:center;color:#94a3b8;">No bets placed yet.</td></tr>`;
+        historyTableBody.innerHTML = `<tr><td colspan="4" style="text-align:center;color:#94a3b8;">No bets placed yet.</td></tr>`;
         return;
       }
 
       historyTableBody.innerHTML = rows.slice(0, 10).map((item) => `
         <tr>
-          <td>${item.period}</td>
           <td><span class="dot ${item.color}"></span></td>
           <td>₹ ${item.bet}</td>
           <td>${Number(item.multiplier || 2).toFixed(2)}x</td>
@@ -313,14 +318,14 @@
 
     onSnapshot(gameRef, (snap) => {
       if (!snap.exists()) {
-        periodNumber.textContent = '-';
+        liveResultText.textContent = 'WAITING';
         timerText.textContent = '00 : 00';
         setStatus('Game state not available.', 'warning');
         return;
       }
 
       currentRound = snap.data();
-      periodNumber.textContent = currentRound.period || '-';
+      updateLiveResult(currentRound.currentResult || '');
       renderResults(currentRound.lastResults || []);
       startTimer(currentRound.endsAt || 0);
     });
@@ -341,15 +346,6 @@
 
     document.getElementById('clearBetBtn').addEventListener('click', () => {
       betAmount.value = '';
-    });
-
-    document.getElementById('copyPeriodBtn').addEventListener('click', async () => {
-      try {
-        await navigator.clipboard.writeText(periodNumber.textContent);
-        setStatus('Period copied.', 'success');
-      } catch {
-        setStatus('Copy failed.', 'warning');
-      }
     });
 
     document.getElementById('refreshBtn').addEventListener('click', () => {
@@ -384,18 +380,6 @@
         return;
       }
 
-      const existingQuery = query(
-        collection(db, 'tricolorBets'),
-        where('uid', '==', currentUser.uid),
-        where('period', '==', currentRound.period)
-      );
-
-      const existing = await getDocs(existingQuery);
-      if (!existing.empty) {
-        setStatus('You already placed a bet for this period.', 'warning');
-        return;
-      }
-
       await updateDoc(doc(db, 'users', currentUser.uid), {
         coins: Number(currentUserData.coins || 0) - amount
       });
@@ -403,7 +387,6 @@
       await addDoc(collection(db, 'tricolorBets'), {
         uid: currentUser.uid,
         username: currentUserData.username || 'Player',
-        period: currentRound.period,
         color: selectedColor,
         bet: amount,
         multiplier: 2,
