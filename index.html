@@ -261,7 +261,10 @@
   <script type="module">
     import { watchAuth, appLogout } from './js/auth.js';
     import { auth, db } from './js/firebase-config.js';
-    import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'https://www.gstatic.com/firebasejs/10.12.3/firebase-auth.js';
+    import {
+      createUserWithEmailAndPassword,
+      signInWithEmailAndPassword
+    } from 'https://www.gstatic.com/firebasejs/10.12.3/firebase-auth.js';
     import { doc, setDoc } from 'https://www.gstatic.com/firebasejs/10.12.3/firebase-firestore.js';
 
     const loginTab = document.getElementById('loginTab');
@@ -377,7 +380,10 @@
     });
 
     playNowBtn.addEventListener('click', () => {
-      document.querySelector('.section-block')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      document.querySelector('.section-block')?.scrollIntoView({
+        behavior: 'smooth',
+        block: 'start'
+      });
     });
 
     document.querySelectorAll('[data-link]').forEach((button) => {
