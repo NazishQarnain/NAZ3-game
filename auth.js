@@ -1,4 +1,3 @@
-// auth.js
 import { auth, db } from './firebase-config.js';
 import {
   onAuthStateChanged,
@@ -15,16 +14,22 @@ export function watchAuth(onUserReady, onLoggedOut) {
       localStorage.removeItem('currentUser');
       localStorage.removeItem('nazCoins');
       localStorage.removeItem('firebaseUID');
-      if (typeof onLoggedOut === 'function') onLoggedOut();
+
+      if (typeof onLoggedOut === 'function') {
+        onLoggedOut();
+      }
       return;
     }
 
     try {
       const userRef = doc(db, 'users', user.uid);
       const snap = await getDoc(userRef);
+
       if (!snap.exists()) {
         await signOut(auth);
-        if (typeof onLoggedOut === 'function') onLoggedOut();
+        if (typeof onLoggedOut === 'function') {
+          onLoggedOut();
+        }
         return;
       }
 
@@ -36,13 +41,17 @@ export function watchAuth(onUserReady, onLoggedOut) {
       };
 
       localStorage.setItem('currentUser', userData.username);
-      localStorage.setItem('nazCoins', userData.coins);
+      localStorage.setItem('nazCoins', String(userData.coins));
       localStorage.setItem('firebaseUID', user.uid);
 
-      if (typeof onUserReady === 'function') onUserReady(userData, userRef);
+      if (typeof onUserReady === 'function') {
+        onUserReady(userData, userRef);
+      }
     } catch (e) {
       console.error('Auth helper error:', e);
-      if (typeof onLoggedOut === 'function') onLoggedOut();
+      if (typeof onLoggedOut === 'function') {
+        onLoggedOut();
+      }
     }
   });
 }
