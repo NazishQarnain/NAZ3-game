@@ -2,311 +2,421 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Tri-Color Wheel - NAZ3 Game</title>
+  <title>Color Prediction - NAZ3 Game</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet" />
-
-  <link rel="icon" href="https://img.icons8.com/?size=100&id=UooIO6rrQ8kV&format=png&color=FFFFFF" />
-      <link rel="stylesheet" href="css/style.css" />
-
-  
+  <meta name="description" content="Predict the next color and win rewards in NAZ3 Game." />
+  <link rel="stylesheet" href="style.css" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap"
+    rel="stylesheet"
+  />
 </head>
 <body>
-  <div class="shell">
-    <div class="inner">
-      <header>
-        <div class="title-block">
-          <h1>Tri-Color Wheel</h1>
-          <p>Bet 15 NAZ. Choose Orange, White, or Green and spin each minute.</p>
-        </div>
-        <div class="user-pill">
-          <div class="user-avatar" id="userAvatar">P</div>
-          <div class="user-meta">
-            <span>Player: <b id="username">Player</b></span>
-            <span class="coin-chip">
-              <span class="coin-badge">₦</span>
-              <span><span id="coinBalance">0</span> NAZ</span>
-            </span>
+  <div class="mobile-app-shell color-page-shell">
+    <header class="mobile-topbar color-topbar">
+      <div class="topbar-left">
+        <button class="icon-btn" type="button" onclick="location.href='index.html'" aria-label="Back">‹</button>
+        <div class="brand brand-inline">
+          <div class="brand-mark">N</div>
+          <div class="brand-title-wrap">
+            <h1>NAZ3-GAME</h1>
+            <span>Color Prediction</span>
           </div>
         </div>
-      </header>
-
-      <div class="layout">
-        <section class="wheel-card">
-          <div class="wheel-header">
-            <div>
-              <h2>Live Color Wheel</h2>
-              <span>Each minute has one fixed winning color.</span>
-            </div>
-            <div class="timer-tag">
-              Next result in <span id="timer">--</span> sec
-            </div>
-          </div>
-
-          <div class="wheel-wrap">
-            <div class="wheel-container">
-              <div class="pointer"></div>
-              <div class="wheel" id="wheel">
-                <div class="segment orange"></div>
-                <div class="segment white"></div>
-                <div class="segment green"></div>
-              </div>
-              <div class="wheel-center" id="wheelCenter">?</div>
-            </div>
-
-            <div class="color-buttons">
-              <button class="color-btn orange" id="btnOrange" type="button">Orange</button>
-              <button class="color-btn white" id="btnWhite" type="button">White</button>
-              <button class="color-btn green" id="btnGreen" type="button">Green</button>
-            </div>
-
-            <button class="secondary-btn" type="button" onclick="goBack()">Back to Games</button>
-          </div>
-        </section>
-
-        <section class="rules-card">
-          <div>
-            <div class="rules-title">How Tri-Color Wheel Works</div>
-            <ul class="rules-list">
-              <li>• Bet <span class="highlight">15 NAZ</span> by selecting a color.</li>
-              <li>• Each minute has one winning color: Orange, White, or Green.</li>
-              <li>• The wheel uses a deterministic time-based seed for fairness.</li>
-              <li>• If your color matches the minute’s result, you win <span class="highlight">+30 NAZ</span>.</li>
-              <li>• You can place only <span class="highlight">one bet per minute</span>.</li>
-              <li>• Betting closes in the last 10 seconds of the minute.</li>
-            </ul>
-          </div>
-          <div id="bettingStatus" class="status info">
-            Place your bet before the last 10 seconds of the minute.
-          </div>
-          <div id="result" class="status info" style="margin-top: 6px;">
-            Waiting for the next spin result...
-          </div>
-        </section>
       </div>
-    </div>
+
+      <div class="topbar-right">
+        <button class="wallet-pill" type="button">
+          <span class="wallet-icon">💳</span>
+          <span id="walletBalance">₹ 0.00</span>
+          <span class="wallet-plus">+</span>
+        </button>
+        <button class="icon-btn" type="button" aria-label="History">⟲</button>
+      </div>
+    </header>
+
+    <main class="app-main color-prediction-page">
+      <section class="section-head compact-head">
+        <h3>COLOR PREDICTION</h3>
+        <button class="view-all-btn" type="button">How to play?</button>
+      </section>
+
+      <section class="prediction-panel">
+        <div class="period-box">
+          <div>
+            <span class="muted-label">Period</span>
+            <div class="period-row">
+              <strong id="periodNumber">20240527000156</strong>
+              <button class="copy-btn" id="copyPeriodBtn" type="button">⧉</button>
+            </div>
+          </div>
+
+          <div class="timer-box">
+            <span class="muted-label">Time Remaining</span>
+            <strong id="timerText">00 : 26</strong>
+          </div>
+        </div>
+
+        <div class="result-strip">
+          <div id="recentDots" class="recent-dots"></div>
+          <button class="view-all-btn" type="button">View All →</button>
+        </div>
+      </section>
+
+      <section class="predict-section">
+        <h4>Predict the next color</h4>
+
+        <div class="predict-options">
+          <button class="predict-color-card orange active" type="button" data-color="orange">
+            <span class="predict-orb"></span>
+            <span class="predict-label">Orange</span>
+          </button>
+
+          <button class="predict-color-card white" type="button" data-color="white">
+            <span class="predict-orb"></span>
+            <span class="predict-label">White</span>
+          </button>
+
+          <button class="predict-color-card green" type="button" data-color="green">
+            <span class="predict-orb"></span>
+            <span class="predict-label">Green</span>
+          </button>
+        </div>
+      </section>
+
+      <section class="bet-panel">
+        <div class="bet-topline">
+          <div>
+            <span class="muted-label">Bet Amount</span>
+          </div>
+          <div class="available-balance">
+            Available Balance: <strong id="availableBalance">₹ 0.00</strong>
+          </div>
+        </div>
+
+        <div class="bet-controls">
+          <div class="amount-input-wrap">
+            <span>₹</span>
+            <input type="number" id="betAmount" min="1" placeholder="Enter amount" value="50" />
+          </div>
+
+          <button class="amount-chip dark" type="button" id="clearBetBtn">Clear</button>
+          <button class="amount-chip" type="button" data-add="10">+10</button>
+          <button class="amount-chip" type="button" data-add="50">+50</button>
+          <button class="amount-chip" type="button" data-add="100">+100</button>
+          <button class="amount-chip" type="button" data-add="500">+500</button>
+        </div>
+      </section>
+
+      <section class="multiplier-panel">
+        <div class="section-mini-head">Win Multiplier</div>
+
+        <div class="multiplier-grid">
+          <div class="multiplier-box">
+            <span class="dot orange"></span>
+            <small>Orange</small>
+            <strong>2.00x</strong>
+          </div>
+
+          <div class="multiplier-box">
+            <span class="dot white"></span>
+            <small>White</small>
+            <strong>2.00x</strong>
+          </div>
+
+          <div class="multiplier-box">
+            <span class="dot green"></span>
+            <small>Green</small>
+            <strong>2.00x</strong>
+          </div>
+        </div>
+
+        <button id="placeBetBtn" class="place-bet-btn" type="button">PLACE BET</button>
+
+        <div id="betStatus" class="secure-line">🛡 Fair Game • 100% Secure</div>
+      </section>
+
+      <section class="prediction-panel">
+        <div class="section-head small-section-head">
+          <h3>Recent Results</h3>
+          <button class="view-all-btn" type="button">View All →</button>
+        </div>
+
+        <div id="recentResultRow" class="recent-result-row"></div>
+      </section>
+
+      <section class="history-panel">
+        <div class="history-tabs">
+          <button class="history-tab active" type="button">Game History</button>
+          <button class="history-tab" type="button">My Bets</button>
+        </div>
+
+        <div class="history-table-wrap">
+          <table class="history-table">
+            <thead>
+              <tr>
+                <th>Period</th>
+                <th>Color</th>
+                <th>Bet</th>
+                <th>Multiplier</th>
+                <th>Result</th>
+              </tr>
+            </thead>
+            <tbody id="historyTableBody"></tbody>
+          </table>
+        </div>
+      </section>
+    </main>
   </div>
 
   <script type="module">
-            import { auth, db } from './js/firebase-config.js';
-    import {
-      onAuthStateChanged,
-    } from 'https://www.gstatic.com/firebasejs/10.12.3/firebase-auth.js';
+    import { watchAuth } from './auth.js';
+    import { db } from './firebase-config.js';
     import {
       doc,
-      getDoc,
-      updateDoc,
-      onSnapshot
+      onSnapshot,
+      updateDoc
     } from 'https://www.gstatic.com/firebasejs/10.12.3/firebase-firestore.js';
 
-    const usernameSpan = document.getElementById('username');
-    const coinSpan = document.getElementById('coinBalance');
-    const userAvatar = document.getElementById('userAvatar');
+    const walletBalance = document.getElementById('walletBalance');
+    const availableBalance = document.getElementById('availableBalance');
+    const periodNumber = document.getElementById('periodNumber');
+    const timerText = document.getElementById('timerText');
+    const recentDots = document.getElementById('recentDots');
+    const recentResultRow = document.getElementById('recentResultRow');
+    const historyTableBody = document.getElementById('historyTableBody');
+    const betAmount = document.getElementById('betAmount');
+    const betStatus = document.getElementById('betStatus');
+    const placeBetBtn = document.getElementById('placeBetBtn');
 
-    const wheel = document.getElementById('wheel');
-    const wheelCenter = document.getElementById('wheelCenter');
-    const timerSpan = document.getElementById('timer');
-    const bettingStatus = document.getElementById('bettingStatus');
-    const resultDiv = document.getElementById('result');
-
-    const btnOrange = document.getElementById('btnOrange');
-    const btnWhite = document.getElementById('btnWhite');
-    const btnGreen = document.getElementById('btnGreen');
-
+    let currentUser = null;
     let currentUserData = null;
     let userRef = null;
-    let hasPlacedBet = false;
-    let selectedColor = null;
-    let currentMinute = null;
-    let lastProcessedMinute = null;
-    let currentAngle = 0;
-    let lastWinningColor = null;
+    let selectedColor = 'orange';
+    let placedForPeriod = false;
+    let activePeriod = '';
+    let currentResultHistory = ['green', 'white', 'orange', 'green', 'white', 'orange', 'green', 'white', 'green', 'orange'];
+    let myHistory = [];
 
-    function setStatus(element, text, type = 'info') {
-      element.textContent = text;
-      element.className = 'status ' + type;
+    function formatMoney(value) {
+      return `₹ ${Number(value || 0).toLocaleString('en-IN', {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+      })}`;
     }
 
-    function updateUserInfo() {
-      if (!currentUserData) return;
-      const username = currentUserData.username || 'Player';
-      const coins = currentUserData.coins ?? 0;
-
-      usernameSpan.textContent = username;
-      coinSpan.textContent = coins;
-      userAvatar.textContent = username.charAt(0).toUpperCase();
+    function setBalance(coins) {
+      walletBalance.textContent = formatMoney(coins);
+      availableBalance.textContent = formatMoney(coins);
     }
 
-    async function safeUpdateCoins(delta) {
-      const current = currentUserData.coins ?? 0;
-      const next = current + delta;
-      if (next < 0) {
-        throw new Error('Not enough coins');
-      }
-      await updateDoc(userRef, { coins: next });
-      currentUserData.coins = next;
-      updateUserInfo();
-      return next;
+    function setStatus(message, type = 'normal') {
+      betStatus.textContent = message;
+      betStatus.className = `secure-line ${type}`;
     }
 
-    function seededRandom(seed) {
-      let value = seed;
-      return function() {
-        value = (value * 9301 + 49297) % 233280;
-        return value / 233280;
-      };
-    }
-
-    function getWinningColorFromAngle(angle) {
-      const normalized = (angle + 270) % 360;
-      if (normalized >= 0 && normalized < 120) return 'orange';
-      if (normalized >= 120 && normalized < 240) return 'white';
-      return 'green';
-    }
-
-    function animateWheelTo(angle) {
-      currentAngle = angle;
-      wheel.style.transform = 'rotate(' + angle + 'deg)';
-    }
-
-    function setSelectedColor(color) {
-      selectedColor = color;
-      hasPlacedBet = true;
-      btnOrange.classList.toggle('selected', color === 'orange');
-      btnWhite.classList.toggle('selected', color === 'white');
-      btnGreen.classList.toggle('selected', color === 'green');
-    }
-
-    async function placeBet(color) {
-      if (!currentUserData || !userRef) return;
-
+    function getCurrentPeriod() {
       const now = new Date();
-      const seconds = now.getUTCSeconds();
+      return `${now.getUTCFullYear()}${String(now.getUTCMonth() + 1).padStart(2, '0')}${String(now.getUTCDate()).padStart(2, '0')}${String(now.getUTCHours()).padStart(2, '0')}${String(now.getUTCMinutes()).padStart(2, '0')}`;
+    }
 
-      if (seconds >= 50) {
-        setStatus(bettingStatus, 'Betting is closed for this round. Wait for the next minute.', 'warning');
+    function getRemainingSeconds() {
+      const now = new Date();
+      return 60 - now.getUTCSeconds();
+    }
+
+    function getWinningColor(period) {
+      const seed = [...period].reduce((sum, ch) => sum + Number(ch), 0);
+      const colors = ['orange', 'white', 'green'];
+      return colors[seed % colors.length];
+    }
+
+    function renderRecentDots() {
+      recentDots.innerHTML = currentResultHistory.map((color) =>
+        `<span class="dot ${color}"></span>`
+      ).join('');
+    }
+
+    function renderRecentResultRow() {
+      recentResultRow.innerHTML = currentResultHistory.map((color, index) => `
+        <div class="result-ball-wrap">
+          <span class="dot ${color} lg"></span>
+          <small>${index}</small>
+        </div>
+      `).join('');
+    }
+
+    function renderHistory() {
+      if (!myHistory.length) {
+        historyTableBody.innerHTML = `
+          <tr>
+            <td colspan="5" style="text-align:center;color:#94a3b8;">No bets placed yet.</td>
+          </tr>
+        `;
         return;
       }
 
-      if (hasPlacedBet) {
-        setStatus(bettingStatus, 'You have already placed a bet this minute.', 'warning');
-        return;
-      }
+      historyTableBody.innerHTML = myHistory.slice().reverse().map((item) => `
+        <tr>
+          <td>${item.period}</td>
+          <td><span class="dot ${item.color}"></span></td>
+          <td>₹ ${item.bet}</td>
+          <td>2.00x</td>
+          <td class="${item.result === 'Won' ? 'won-text' : 'lost-text'}">${item.result}</td>
+        </tr>
+      `).join('');
+    }
 
-      if ((currentUserData.coins ?? 0) < 15) {
-        setStatus(bettingStatus, 'Not enough coins. You need at least 15 NAZ to bet.', 'lose');
-        return;
-      }
+    function syncPeriodUI() {
+      activePeriod = getCurrentPeriod();
+      periodNumber.textContent = activePeriod;
 
-      try {
-        await safeUpdateCoins(-15);
-        setSelectedColor(color);
-        setStatus(bettingStatus, 'Bet placed on ' + color.toUpperCase() + '. Wait for the spin result.', 'info');
-      } catch (error) {
-        console.error('Bet error:', error);
-        alert(error.message || 'Unable to place bet. Please try again.');
+      const secs = getRemainingSeconds();
+      timerText.textContent = `00 : ${String(secs).padStart(2, '0')}`;
+
+      if (secs <= 10 && !placedForPeriod) {
+        setStatus('Betting closes in the last 10 seconds. Hurry up.', 'warning');
+      } else if (!placedForPeriod) {
+        setStatus('🛡 Fair Game • 100% Secure', 'normal');
       }
     }
 
-    function updateGame() {
-      const now = new Date();
-      const seconds = now.getUTCSeconds();
-      const minute = now.getUTCMinutes();
+    function handlePeriodRollover() {
+      const latestPeriod = getCurrentPeriod();
 
-      currentMinute = minute;
-      timerSpan.textContent = String(60 - seconds);
+      if (latestPeriod !== activePeriod) {
+        const previousPeriod = activePeriod;
+        activePeriod = latestPeriod;
+        periodNumber.textContent = activePeriod;
 
-      if (seconds >= 50 && !hasPlacedBet) {
-        setStatus(bettingStatus, 'Betting closed. Wait for the next round.', 'warning');
-      } else if (seconds < 50 && !hasPlacedBet) {
-        setStatus(bettingStatus, 'Place your bet before the last 10 seconds of the minute.', 'info');
-      }
+        if (placedForPeriod && myHistory.length) {
+          const lastBet = myHistory[myHistory.length - 1];
+          if (lastBet.period === previousPeriod && lastBet.result === 'Pending') {
+            const winningColor = getWinningColor(previousPeriod);
+            const didWin = lastBet.color === winningColor;
+            lastBet.result = didWin ? 'Won' : 'Lost';
 
-      if (seconds === 0 && minute !== lastProcessedMinute) {
-        lastProcessedMinute = minute;
-
-        const seed = now.getUTCFullYear() * 1000000 +
-                     (now.getUTCMonth() + 1) * 10000 +
-                     now.getUTCDate() * 100 +
-                     now.getUTCHours() * 10 +
-                     now.getUTCMinutes();
-
-        const rand = seededRandom(seed)();
-        const randomAngle = rand * 360;
-
-        const spinCount = 5;
-        const finalAngle = currentAngle + spinCount * 360 + randomAngle;
-
-        animateWheelTo(finalAngle);
-
-        setTimeout(async () => {
-          const winningColor = getWinningColorFromAngle(randomAngle);
-          lastWinningColor = winningColor;
-          wheelCenter.textContent = winningColor === 'orange' ? 'O' : winningColor === 'white' ? 'W' : 'G';
-
-          if (!hasPlacedBet) {
-            setStatus(resultDiv, 'Result: ' + winningColor.toUpperCase() + '. You did not place a bet this round.', 'info');
-          } else {
-            if (winningColor === selectedColor) {
-              try {
-                await safeUpdateCoins(30);
-                setStatus(resultDiv, 'Result: ' + winningColor.toUpperCase() + '. You WON +30 NAZ coins!', 'win');
-              } catch (error) {
-                console.error('Win payout error:', error);
-                setStatus(resultDiv, 'Result: ' + winningColor.toUpperCase() + '. You won, but there was an error updating coins.', 'warning');
-              }
-            } else {
-              setStatus(resultDiv, 'Result: ' + winningColor.toUpperCase() + '. You lost this round.', 'lose');
+            if (didWin && userRef && currentUserData) {
+              const updated = Number(currentUserData.coins || 0) + (lastBet.bet * 2);
+              updateDoc(userRef, { coins: updated });
             }
-          }
 
-          hasPlacedBet = false;
-          selectedColor = null;
-          btnOrange.classList.remove('selected');
-          btnWhite.classList.remove('selected');
-          btnGreen.classList.remove('selected');
-        }, 4100);
+            currentResultHistory = [winningColor, ...currentResultHistory].slice(0, 10);
+            renderRecentDots();
+            renderRecentResultRow();
+            renderHistory();
+          }
+        }
+
+        placedForPeriod = false;
+        setStatus('🛡 Fair Game • 100% Secure', 'normal');
       }
     }
 
-    async function loadUser(user) {
-      userRef = doc(db, 'users', user.uid);
-
-      onSnapshot(userRef, (snap) => {
-        if (!snap.exists()) return;
-        currentUserData = { uid: user.uid, ...snap.data() };
-        updateUserInfo();
-      });
-    }
-
-    onAuthStateChanged(auth, async (user) => {
-      if (!user) {
-        alert('Please login first!');
-        window.location.href = 'index.html';
+    async function placeBet() {
+      if (!currentUserData || !userRef) {
+        setStatus('Please login first.', 'warning');
         return;
       }
 
+      const secs = getRemainingSeconds();
+      const amount = Math.max(1, Number(betAmount.value) || 0);
+
+      if (secs <= 10) {
+        setStatus('Betting is closed for this round.', 'warning');
+        return;
+      }
+
+      if (placedForPeriod) {
+        setStatus('You already placed a bet for this period.', 'warning');
+        return;
+      }
+
+      if (!amount || amount < 1) {
+        setStatus('Please enter a valid bet amount.', 'warning');
+        return;
+      }
+
+      if (amount > Number(currentUserData.coins || 0)) {
+        setStatus('Not enough balance.', 'warning');
+        return;
+      }
+
+      const updatedCoins = Number(currentUserData.coins || 0) - amount;
+
       try {
-        await loadUser(user);
-      } catch (error) {
-        console.error('User load error:', error);
-        alert('Error loading your data. Please try again.');
-        window.location.href = 'index.html';
+        await updateDoc(userRef, { coins: updatedCoins });
+
+        myHistory.push({
+          period: activePeriod,
+          color: selectedColor,
+          bet: amount,
+          result: 'Pending'
+        });
+
+        placedForPeriod = true;
+        setStatus(`Bet placed on ${selectedColor.toUpperCase()} for ₹ ${amount}.`, 'success');
+        renderHistory();
+      } catch (e) {
+        setStatus(e.message || 'Failed to place bet.', 'warning');
+      }
+    }
+
+    document.querySelectorAll('.predict-color-card').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        selectedColor = btn.dataset.color;
+        document.querySelectorAll('.predict-color-card').forEach((item) => item.classList.remove('active'));
+        btn.classList.add('active');
+      });
+    });
+
+    document.querySelectorAll('[data-add]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        betAmount.value = Number(betAmount.value || 0) + Number(btn.dataset.add);
+      });
+    });
+
+    document.getElementById('clearBetBtn').addEventListener('click', () => {
+      betAmount.value = '';
+    });
+
+    document.getElementById('copyPeriodBtn').addEventListener('click', async () => {
+      try {
+        await navigator.clipboard.writeText(periodNumber.textContent);
+        setStatus('Period copied.', 'success');
+      } catch {
+        setStatus('Copy failed.', 'warning');
       }
     });
 
-    btnOrange.addEventListener('click', () => placeBet('orange'));
-    btnWhite.addEventListener('click', () => placeBet('white'));
-    btnGreen.addEventListener('click', () => placeBet('green'));
+    placeBetBtn.addEventListener('click', placeBet);
 
-    setInterval(updateGame, 1000);
+    watchAuth(
+      (userData, ref) => {
+        currentUser = userData;
+        currentUserData = userData;
+        userRef = ref || doc(db, 'users', userData.uid);
 
-    window.goBack = function () {
-      window.location.href = 'index.html';
-    };
+        onSnapshot(userRef, (snap) => {
+          if (!snap.exists()) return;
+          currentUserData = { uid: userData.uid, ...snap.data() };
+          setBalance(currentUserData.coins || 0);
+        });
+      },
+      () => {
+        location.href = 'index.html';
+      }
+    );
+
+    setInterval(() => {
+      syncPeriodUI();
+      handlePeriodRollover();
+    }, 1000);
+
+    renderRecentDots();
+    renderRecentResultRow();
+    renderHistory();
+    syncPeriodUI();
   </script>
 </body>
 </html>
