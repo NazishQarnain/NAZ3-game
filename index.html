@@ -4,8 +4,9 @@
   <meta charset="UTF-8" />
   <title>NAZ3 Game - Play & Earn</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Play mini games, earn NAZ Coins, and track your progress in NAZ3 Game." />
   <link rel="stylesheet" href="css/style.css" />
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
 </head>
 <body>
   <div class="app-shell">
@@ -14,76 +15,172 @@
         <div class="logo-pill"><span>N</span></div>
         <div class="brand-text">
           <h1>NAZ3 Game</h1>
-          <p>Play & Earn NAZ Coins</p>
+          <p>Play mini games. Earn coins. Build your streak.</p>
         </div>
       </div>
+
       <div id="userSummary" class="user-summary" style="display:none">
         <div id="userAvatar" class="user-avatar">P</div>
         <div class="user-meta">
           <span id="currentUsername">Player</span>
-          <div class="coin-chip"><span class="coin-badge">&#8358;</span> <span id="headerCoins">0</span></div>
+          <div class="coin-chip">
+            <span class="coin-badge">₦</span>
+            <span id="headerCoins">0</span>
+          </div>
         </div>
-        <button onclick="logout()" class="logout-btn">Logout</button>
+        <button id="logoutBtn" class="logout-btn">Logout</button>
       </div>
     </header>
 
-    <div class="app-body">
-      <div id="authCard" class="card">
-        <div class="auth-toggle">
-          <button id="loginTab" class="active">Login</button>
-          <button id="registerTab">Register</button>
-        </div>
-        <div id="loginSection" class="auth-form active">
-          <div class="form-group"><input type="email" id="loginEmail" placeholder="Email"></div>
-          <div class="form-group"><input type="password" id="loginPassword" placeholder="Password"></div>
-          <button id="loginBtn" class="primary-btn">Login</button>
-        </div>
-        <div id="registerSection" class="auth-form">
-          <div class="form-group"><input type="text" id="registerUsername" placeholder="Username"></div>
-          <div class="form-group"><input type="email" id="registerEmail" placeholder="Email"></div>
-          <div class="form-group"><input type="password" id="registerPassword" placeholder="Password"></div>
-          <button id="registerBtn" class="primary-btn">Register</button>
-        </div>
-        <div id="authMessage" class="auth-message"></div>
-      </div>
+    <main class="app-body">
+      <section class="hero-panel card">
+        <div class="hero-copy">
+          <span class="eyebrow">NAZ Coin Arcade</span>
+          <h2>Win coins across quick games and grow your player profile.</h2>
+          <p>
+            Jump into Dice, Coin, Lucky, and Tri-Color. Sign in to save progress,
+            track your balance, and unlock future rewards.
+          </p>
 
-      <div id="gameSection" class="card" style="display:none">
-        <div class="hub-header">
-          <h2>Game Hub</h2>
-          <div class="hub-actions">
-            <button id="dailyBonusBtn" class="chip-btn">Daily Bonus</button>
-            <button id="leaderboardBtn" class="chip-btn">Leaderboard</button>
+          <div class="hero-stats">
+            <div class="stat-box">
+              <strong>4</strong>
+              <span>Mini games</span>
+            </div>
+            <div class="stat-box">
+              <strong>100</strong>
+              <span>Starter coins</span>
+            </div>
+            <div class="stat-box">
+              <strong>1</strong>
+              <span>Player wallet</span>
+            </div>
           </div>
         </div>
-        <div class="games-grid">
-          <div class="game-tile" onclick="location.href='dice.html'"><span>🎲 Dice</span></div>
-          <div class="game-tile" onclick="location.href='coin.html'"><span>🪙 Coin</span></div>
-          <div class="game-tile" onclick="location.href='lucky.html'"><span>🍀 Lucky</span></div>
-          <div class="game-tile" onclick="location.href='tricolor.html'"><span>🇮🇳 Tri-Color</span></div>
+
+        <div id="authCard" class="card auth-card">
+          <div class="auth-toggle">
+            <button id="loginTab" class="active" type="button">Login</button>
+            <button id="registerTab" type="button">Register</button>
+          </div>
+
+          <div id="loginSection" class="auth-form active">
+            <div class="form-group">
+              <label for="loginEmail">Email</label>
+              <input type="email" id="loginEmail" placeholder="Enter your email" />
+            </div>
+            <div class="form-group">
+              <label for="loginPassword">Password</label>
+              <input type="password" id="loginPassword" placeholder="Enter your password" />
+            </div>
+            <button id="loginBtn" class="primary-btn" type="button">Login to dashboard</button>
+          </div>
+
+          <div id="registerSection" class="auth-form">
+            <div class="form-group">
+              <label for="registerUsername">Username</label>
+              <input type="text" id="registerUsername" placeholder="Choose a username" />
+            </div>
+            <div class="form-group">
+              <label for="registerEmail">Email</label>
+              <input type="email" id="registerEmail" placeholder="Enter your email" />
+            </div>
+            <div class="form-group">
+              <label for="registerPassword">Password</label>
+              <input type="password" id="registerPassword" placeholder="Create a password" />
+            </div>
+            <button id="registerBtn" class="primary-btn" type="button">Create account</button>
+          </div>
+
+          <div id="authMessage" class="auth-message" aria-live="polite"></div>
         </div>
-      </div>
-    </div>
+      </section>
+
+      <section id="gameSection" class="card dashboard-card" style="display:none">
+        <div class="hub-header">
+          <div>
+            <span class="eyebrow">Player dashboard</span>
+            <h2>Game Hub</h2>
+          </div>
+
+          <div class="hub-actions">
+            <button id="dailyBonusBtn" class="chip-btn" type="button">Daily Bonus</button>
+            <button id="leaderboardBtn" class="chip-btn" type="button">Leaderboard</button>
+          </div>
+        </div>
+
+        <div class="games-grid">
+          <button class="game-tile" type="button" data-link="dice.html">
+            <span class="game-icon">🎲</span>
+            <strong>Dice</strong>
+            <small>Roll and win coins</small>
+          </button>
+
+          <button class="game-tile" type="button" data-link="coin.html">
+            <span class="game-icon">🪙</span>
+            <strong>Coin</strong>
+            <small>Pick heads or tails</small>
+          </button>
+
+          <button class="game-tile" type="button" data-link="lucky.html">
+            <span class="game-icon">🍀</span>
+            <strong>Lucky</strong>
+            <small>Try your chance</small>
+          </button>
+
+          <button class="game-tile" type="button" data-link="tricolor.html">
+            <span class="game-icon">🇮🇳</span>
+            <strong>Tri-Color</strong>
+            <small>Choose the winning color</small>
+          </button>
+        </div>
+      </section>
+    </main>
   </div>
 
   <script type="module">
     import { watchAuth, appLogout } from './js/auth.js';
-    import { auth } from './js/firebase-config.js';
+    import { auth, db } from './js/firebase-config.js';
     import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'https://www.gstatic.com/firebasejs/10.12.3/firebase-auth.js';
     import { doc, setDoc } from 'https://www.gstatic.com/firebasejs/10.12.3/firebase-firestore.js';
-    import { db } from './js/firebase-config.js';
 
     const authCard = document.getElementById('authCard');
     const gameSection = document.getElementById('gameSection');
     const userSummary = document.getElementById('userSummary');
     const authMessage = document.getElementById('authMessage');
+    const loginTab = document.getElementById('loginTab');
+    const registerTab = document.getElementById('registerTab');
+    const loginSection = document.getElementById('loginSection');
+    const registerSection = document.getElementById('registerSection');
+    const currentUsername = document.getElementById('currentUsername');
+    const headerCoins = document.getElementById('headerCoins');
+    const userAvatar = document.getElementById('userAvatar');
+    const logoutBtn = document.getElementById('logoutBtn');
 
-    function showGame(userData) {
+    function setMessage(message = '', type = '') {
+      authMessage.textContent = message;
+      authMessage.className = `auth-message ${type}`.trim();
+    }
+
+    function switchTab(isLogin) {
+      loginTab.classList.toggle('active', isLogin);
+      registerTab.classList.toggle('active', !isLogin);
+      loginSection.classList.toggle('active', isLogin);
+      registerSection.classList.toggle('active', !isLogin);
+      setMessage('');
+    }
+
+    function showGame(userData = {}) {
       authCard.style.display = 'none';
       gameSection.style.display = 'block';
       userSummary.style.display = 'flex';
-      document.getElementById('currentUsername').textContent = userData.username;
-      document.getElementById('headerCoins').textContent = userData.coins;
-      document.getElementById('userAvatar').textContent = userData.username.charAt(0).toUpperCase();
+
+      const username = userData.username || 'Player';
+      const coins = Number(userData.coins ?? 0);
+
+      currentUsername.textContent = username;
+      headerCoins.textContent = coins;
+      userAvatar.textContent = username.charAt(0).toUpperCase();
     }
 
     function showAuth() {
@@ -92,40 +189,81 @@
       userSummary.style.display = 'none';
     }
 
-    watchAuth(showGame, showAuth);
-
-    document.getElementById('loginTab').addEventListener('click', () => {
-      loginTab.classList.add('active'); registerTab.classList.remove('active');
-      loginSection.classList.add('active'); registerSection.classList.remove('active');
-    });
-    document.getElementById('registerTab').addEventListener('click', () => {
-      registerTab.classList.add('active'); loginTab.classList.remove('active');
-      registerSection.classList.add('active'); loginSection.classList.remove('active');
-    });
+    loginTab.addEventListener('click', () => switchTab(true));
+    registerTab.addEventListener('click', () => switchTab(false));
 
     document.getElementById('loginBtn').addEventListener('click', async () => {
       const email = document.getElementById('loginEmail').value.trim();
       const pass = document.getElementById('loginPassword').value;
-      authMessage.textContent = '';
-      try { await signInWithEmailAndPassword(auth, email, pass); }
-      catch (e) { authMessage.textContent = e.message; }
+
+      if (!email || !pass) {
+        setMessage('Please enter email and password.', 'error');
+        return;
+      }
+
+      setMessage('');
+      try {
+        await signInWithEmailAndPassword(auth, email, pass);
+        setMessage('Login successful.', 'success');
+      } catch (e) {
+        setMessage(e.message || 'Login failed.', 'error');
+      }
     });
 
     document.getElementById('registerBtn').addEventListener('click', async () => {
       const username = document.getElementById('registerUsername').value.trim();
       const email = document.getElementById('registerEmail').value.trim();
       const pass = document.getElementById('registerPassword').value;
-      authMessage.textContent = '';
+
+      if (!username || !email || !pass) {
+        setMessage('Please fill all fields.', 'error');
+        return;
+      }
+
+      if (pass.length < 6) {
+        setMessage('Password must be at least 6 characters.', 'error');
+        return;
+      }
+
+      setMessage('');
       try {
         const cred = await createUserWithEmailAndPassword(auth, email, pass);
-        await setDoc(doc(db, 'users', cred.user.uid), { username, email, coins: 100 });
-      } catch (e) { authMessage.textContent = e.message; }
+        await setDoc(doc(db, 'users', cred.user.uid), {
+          username,
+          email,
+          coins: 100,
+          createdAt: new Date().toISOString()
+        });
+        setMessage('Registration successful.', 'success');
+      } catch (e) {
+        setMessage(e.message || 'Registration failed.', 'error');
+      }
     });
 
-    window.logout = async () => { await appLogout(); };
+    logoutBtn.addEventListener('click', async () => {
+      try {
+        await appLogout();
+      } catch (e) {
+        setMessage(e.message || 'Logout failed.', 'error');
+      }
+    });
 
-    document.getElementById('dailyBonusBtn').addEventListener('click', () => alert('Daily bonus coming soon!'));
-    document.getElementById('leaderboardBtn').addEventListener('click', () => alert('Leaderboard coming soon!'));
+    document.getElementById('dailyBonusBtn').addEventListener('click', () => {
+      alert('Daily bonus system is coming soon.');
+    });
+
+    document.getElementById('leaderboardBtn').addEventListener('click', () => {
+      alert('Leaderboard will be available soon.');
+    });
+
+    document.querySelectorAll('.game-tile').forEach((button) => {
+      button.addEventListener('click', () => {
+        const { link } = button.dataset;
+        if (link) location.href = link;
+      });
+    });
+
+    watchAuth(showGame, showAuth);
   </script>
 </body>
 </html>
