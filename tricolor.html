@@ -158,16 +158,14 @@
 
   <script type="module">
     import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.3/firebase-app.js';
-    import {
-      getAuth,
-      onAuthStateChanged
-    } from 'https://www.gstatic.com/firebasejs/10.12.3/firebase-auth.js';
+    import { getAuth, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.12.3/firebase-auth.js';
     import {
       getFirestore,
       doc,
       getDoc,
       onSnapshot,
       updateDoc,
+      setDoc,
       addDoc,
       collection,
       serverTimestamp,
@@ -206,7 +204,9 @@
     let currentUserData = null;
     let currentRound = null;
     let timerId = null;
+    let masterLoopId = null;
     let selectedColor = 'orange';
+    let isUpdatingRound = false;
 
     function formatMoney(value) {
       return `₹ ${Number(value || 0).toLocaleString('en-IN', {
@@ -236,11 +236,18 @@
     }
 
     function updateLiveResult(result) {
-      liveResultText.textContent = (result || 'WAITING').toUpperCase();
-      liveResultText.style.color =
-        result === 'green' ? '#2fff63' :
-        result === 'orange' ? '#ff8d1b' :
-        result === 'white' ? '#ffffff' : '#f8fafc';
+      const value = (result || 'WAITING').toUpperCase();
+      liveResultText.textContent = value;
+
+      if (result === 'green') {
+        liveResultText.style.color = '#22c55e';
+      } else if (result === 'orange') {
+        liveResultText.style.color = '#f97316';
+      } else if (result === 'white') {
+        liveResultText.style.color = '#f8fafc';
+      } else {
+        liveResultText.style.color = '';
+      }
     }
 
     function startTimer(endsAt) {
@@ -248,7 +255,11 @@
 
       function tick() {
         const left = Math.max(0, Math.floor((Number(endsAt || 0) - Date.now()) / 1000));
-        timerText.textContent = `00 : ${String(left).padStart(2, '0')}`;
+        const minutes = Math.floor(left / 60);
+        const seconds = left % 60;
+
+        timerText.textContent =
+          `${String(minutes).padStart(2, '0')} : ${String(seconds).padStart(2, '0')}`;
 
         if (!currentRound || currentRound.status !== 'open' || left <= 10) {
           setStatus('Betting closes in the last 10 seconds. Hurry up.', 'warning');
@@ -289,11 +300,7 @@
         return;
       }
 
-      const q = query(
-        collection(db, 'tricolorBets'),
-        where('uid', '==', currentUser.uid)
-      );
-
+      const q = query(collection(db, 'tricolorBets'), where('uid', '==', currentUser.uid));
       const snap = await getDocs(q);
       const rows = [];
       snap.forEach((d) => rows.push(d.data()));
@@ -314,6 +321,56 @@
           </td>
         </tr>
       `).join('');
+    }
+
+    async function createInitialRoundIfMissing() {
+      const snap = await getDoc(gameRef);
+      if (snap.exists()) return;
+
+      const now = Date.now();
+      await setDoc(gameRef, {
+        currentResult: 'green',
+        endsAt: now + 60000,
+        status: 'open',
+        lastResults: ['green'],
+        updatedAt: now
+      });
+    }
+
+    async function autoRotateRound() {
+      if (isUpdatingRound) return;
+      if (!currentRound) return;
+
+      const left = Math.max(0, Math.floor((Number(currentRound.endsAt || 0) - Date.now()) / 1000));
+      if (left > 0) return;
+
+      isUpdatingRound = true;
+      try {
+        const colors = ['green', 'orange', 'white'];
+        const randomColor = colors[Math.floor(Math.random() * colors.length)];
+        const nextEndsAt = Date.now() + 60000;
+        const oldResults = Array.isArray(currentRound.lastResults) ? currentRound.lastResults : [];
+        const updatedResults = [randomColor, ...oldResults].slice(0, 10);
+
+        await updateDoc(gameRef, {
+          currentResult: randomColor,
+          endsAt: nextEndsAt,
+          status: 'open',
+          lastResults: updatedResults,
+          updatedAt: Date.now()
+        });
+      } catch (error) {
+        console.error('Auto round update failed:', error);
+      } finally {
+        setTimeout(() => {
+          isUpdatingRound = false;
+        }, 1500);
+      }
+    }
+
+    function startMasterLoop() {
+      clearInterval(masterLoopId);
+      masterLoopId = setInterval(autoRotateRound, 1000);
     }
 
     onSnapshot(gameRef, (snap) => {
@@ -406,6 +463,8 @@
 
       currentUser = user;
       await loadUser(user.uid);
+      await createInitialRoundIfMissing();
+      startMasterLoop();
     });
   </script>
 </body>
