@@ -258,8 +258,7 @@
         const minutes = Math.floor(left / 60);
         const seconds = left % 60;
 
-        timerText.textContent =
-          `${String(minutes).padStart(2, '0')} : ${String(seconds).padStart(2, '0')}`;
+        timerText.textContent = `${String(minutes).padStart(2, '0')} : ${String(seconds).padStart(2, '0')}`;
 
         if (!currentRound || currentRound.status !== 'open' || left <= 10) {
           setStatus('Betting closes in the last 10 seconds. Hurry up.', 'warning');
