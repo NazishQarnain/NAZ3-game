@@ -4,138 +4,258 @@
   <meta charset="UTF-8" />
   <title>NAZ3 Game - Play & Earn</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Play mini games, earn NAZ Coins, and track your progress in NAZ3 Game." />
+  <meta
+    name="description"
+    content="Play games, win NAZ coins, track your wallet, and explore rewards in NAZ3 Game."
+  />
   <link rel="stylesheet" href="style.css" />
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap"
+    rel="stylesheet"
+  />
 </head>
 <body>
-  <div class="app-shell">
-    <header class="app-header">
-      <div class="brand">
-        <div class="logo-pill"><span>N</span></div>
-        <div class="brand-text">
-          <h1>NAZ3 Game</h1>
-          <p>Play mini games. Earn coins. Build your streak.</p>
+  <div class="mobile-app-shell">
+    <header class="mobile-topbar">
+      <div class="topbar-left">
+        <button class="icon-btn" id="menuBtn" type="button" aria-label="Open menu">☰</button>
+        <div class="brand brand-inline">
+          <div class="brand-mark">N</div>
+          <div class="brand-title-wrap">
+            <h1>NAZ3-GAME</h1>
+            <span>Play • Win • Earn</span>
+          </div>
         </div>
       </div>
 
-      <div id="userSummary" class="user-summary" style="display:none">
-        <div id="userAvatar" class="user-avatar">P</div>
-        <div class="user-meta">
-          <span id="currentUsername">Player</span>
-          <div class="coin-chip">
-            <span class="coin-badge">₦</span>
-            <span id="headerCoins">0</span>
-          </div>
-        </div>
-        <button id="logoutBtn" class="logout-btn">Logout</button>
+      <div class="topbar-right">
+        <button class="wallet-pill" id="walletBtn" type="button">
+          <span class="wallet-icon">💳</span>
+          <span id="walletBalance">₹ 0.00</span>
+          <span class="wallet-plus">+</span>
+        </button>
+        <button class="icon-btn notify-btn" type="button" aria-label="Notifications">
+          🔔
+          <span class="notify-dot">3</span>
+        </button>
       </div>
     </header>
 
-    <main class="app-body">
-      <section class="hero-panel card">
-        <div class="hero-copy">
-          <span class="eyebrow">NAZ Coin Arcade</span>
-          <h2>Win coins across quick games and grow your player profile.</h2>
+    <main class="app-main">
+      <section class="promo-banner">
+        <div class="promo-copy">
+          <span class="promo-badge">WELCOME TO NAZ3-GAME</span>
+          <h2>PLAY GAMES<br /><span>WIN REAL REWARDS</span></h2>
           <p>
-            Jump into Dice, Coin, Lucky, and Tri-Color. Sign in to save progress,
-            track your balance, and unlock future rewards.
+            Join thousands of players and win exciting rewards every day.
           </p>
-
-          <div class="hero-stats">
-            <div class="stat-box">
-              <strong>4</strong>
-              <span>Mini games</span>
-            </div>
-            <div class="stat-box">
-              <strong>100</strong>
-              <span>Starter coins</span>
-            </div>
-            <div class="stat-box">
-              <strong>1</strong>
-              <span>Player wallet</span>
-            </div>
+          <div class="promo-actions">
+            <button class="primary-cta" id="playNowBtn" type="button">Play Now</button>
           </div>
         </div>
 
-        <div id="authCard" class="card auth-card">
-          <div class="auth-toggle">
-            <button id="loginTab" class="active" type="button">Login</button>
-            <button id="registerTab" type="button">Register</button>
-          </div>
+        <div class="promo-art" aria-hidden="true">
+          <div class="trophy-orb"></div>
+          <div class="trophy-cup">🏆</div>
+          <div class="floating-card card-a">A♠</div>
+          <div class="floating-card card-b">A♥</div>
+          <div class="floating-dice dice-a">🎲</div>
+          <div class="floating-dice dice-b">🎲</div>
+          <div class="coin coin-1">🪙</div>
+          <div class="coin coin-2">🪙</div>
+          <div class="coin coin-3">🪙</div>
+        </div>
 
-          <div id="loginSection" class="auth-form active">
-            <div class="form-group">
-              <label for="loginEmail">Email</label>
-              <input type="email" id="loginEmail" placeholder="Enter your email" />
-            </div>
-            <div class="form-group">
-              <label for="loginPassword">Password</label>
-              <input type="password" id="loginPassword" placeholder="Enter your password" />
-            </div>
-            <button id="loginBtn" class="primary-btn" type="button">Login to dashboard</button>
-          </div>
-
-          <div id="registerSection" class="auth-form">
-            <div class="form-group">
-              <label for="registerUsername">Username</label>
-              <input type="text" id="registerUsername" placeholder="Choose a username" />
-            </div>
-            <div class="form-group">
-              <label for="registerEmail">Email</label>
-              <input type="email" id="registerEmail" placeholder="Enter your email" />
-            </div>
-            <div class="form-group">
-              <label for="registerPassword">Password</label>
-              <input type="password" id="registerPassword" placeholder="Create a password" />
-            </div>
-            <button id="registerBtn" class="primary-btn" type="button">Create account</button>
-          </div>
-
-          <div id="authMessage" class="auth-message" aria-live="polite"></div>
+        <div class="promo-dots" aria-hidden="true">
+          <span class="active"></span>
+          <span></span>
+          <span></span>
+          <span></span>
         </div>
       </section>
 
-      <section id="gameSection" class="card dashboard-card" style="display:none">
-        <div class="hub-header">
-          <div>
-            <span class="eyebrow">Player dashboard</span>
-            <h2>Game Hub</h2>
-          </div>
+      <section class="quick-actions">
+        <button class="quick-card" type="button">
+          <span class="quick-icon green">💼</span>
+          <strong>Add Money</strong>
+          <small>Load your wallet</small>
+        </button>
 
-          <div class="hub-actions">
-            <button id="dailyBonusBtn" class="chip-btn" type="button">Daily Bonus</button>
-            <button id="leaderboardBtn" class="chip-btn" type="button">Leaderboard</button>
-          </div>
+        <button class="quick-card" type="button">
+          <span class="quick-icon purple">⇄</span>
+          <strong>Withdraw</strong>
+          <small>Send to bank</small>
+        </button>
+
+        <button class="quick-card" type="button" id="dailyBonusBtn">
+          <span class="quick-icon blue">🎁</span>
+          <strong>Daily Bonus</strong>
+          <small>Claim your bonus</small>
+        </button>
+
+        <button class="quick-card" type="button">
+          <span class="quick-icon orange">🎧</span>
+          <strong>Support</strong>
+          <small>We are here</small>
+        </button>
+      </section>
+
+      <section class="section-block">
+        <div class="section-head">
+          <h3>Popular Games</h3>
+          <button class="view-all-btn" type="button">View All →</button>
         </div>
 
-        <div class="games-grid">
-          <button class="game-tile" type="button" data-link="dice.html">
-            <span class="game-icon">🎲</span>
-            <strong>Dice</strong>
-            <small>Roll and win coins</small>
-          </button>
+        <div class="games-scroll">
+          <article class="game-app-card">
+            <div class="game-thumb purple-thumb">🎲</div>
+            <h4>Dice Roll</h4>
+            <p>Roll Dice & Win Big</p>
+            <button class="play-btn" type="button" data-link="dice.html">Play Now</button>
+          </article>
 
-          <button class="game-tile" type="button" data-link="coin.html">
-            <span class="game-icon">🪙</span>
-            <strong>Coin</strong>
-            <small>Pick heads or tails</small>
-          </button>
+          <article class="game-app-card">
+            <div class="game-thumb orange-thumb">⚪🟠🟢</div>
+            <h4>Color Prediction</h4>
+            <p>Predict colors & win</p>
+            <button class="play-btn" type="button" data-link="tricolor.html">Play Now</button>
+          </article>
 
-          <button class="game-tile" type="button" data-link="lucky.html">
-            <span class="game-icon">🍀</span>
-            <strong>Lucky</strong>
-            <small>Try your chance</small>
-          </button>
+          <article class="game-app-card">
+            <div class="game-thumb blue-thumb">🚀</div>
+            <h4>Lucky Game</h4>
+            <p>Test luck before crash</p>
+            <button class="play-btn" type="button" data-link="lucky.html">Play Now</button>
+          </article>
 
-          <button class="game-tile" type="button" data-link="tricolor.html">
-            <span class="game-icon">🇮🇳</span>
-            <strong>Tri-Color</strong>
-            <small>Choose the winning color</small>
-          </button>
+          <article class="game-app-card">
+            <div class="game-thumb violet-thumb">🂡</div>
+            <h4>Coin Battle</h4>
+            <p>Pick the right side</p>
+            <button class="play-btn" type="button" data-link="coin.html">Play Now</button>
+          </article>
         </div>
+      </section>
+
+      <section class="section-block winners-block">
+        <div class="section-head">
+          <h3>Live Winners</h3>
+          <button class="view-all-btn" type="button">View All</button>
+        </div>
+
+        <div class="winner-list">
+          <div class="winner-row">
+            <div class="winner-user">
+              <div class="winner-avatar">R</div>
+              <span>Rahul K.</span>
+            </div>
+            <span class="winner-status">Won</span>
+            <strong>₹ 1,250</strong>
+          </div>
+
+          <div class="winner-row">
+            <div class="winner-user">
+              <div class="winner-avatar">A</div>
+              <span>Aditya S.</span>
+            </div>
+            <span class="winner-status">Won</span>
+            <strong>₹ 850</strong>
+          </div>
+
+          <div class="winner-row">
+            <div class="winner-user">
+              <div class="winner-avatar">R</div>
+              <span>Rohit P.</span>
+            </div>
+            <span class="winner-status">Won</span>
+            <strong>₹ 2,400</strong>
+          </div>
+
+          <div class="winner-row">
+            <div class="winner-user">
+              <div class="winner-avatar">A</div>
+              <span>Aryan M.</span>
+            </div>
+            <span class="winner-status">Won</span>
+            <strong>₹ 500</strong>
+          </div>
+        </div>
+      </section>
+
+      <section class="invite-banner">
+        <div class="invite-gift">🎁</div>
+        <div class="invite-copy">
+          <h4>Invite Your Friends & Earn</h4>
+          <p>Refer your friends and earn upto ₹500 per friend</p>
+        </div>
+        <button class="invite-btn" type="button">Invite Now ✈</button>
+      </section>
+
+      <section class="auth-panel" id="authPanel">
+        <div class="section-head">
+          <h3>Account Access</h3>
+          <button class="view-all-btn" type="button" id="authToggleBtn">Switch</button>
+        </div>
+
+        <div class="auth-toggle auth-toggle-app">
+          <button id="loginTab" class="active" type="button">Login</button>
+          <button id="registerTab" type="button">Register</button>
+        </div>
+
+        <div id="loginSection" class="auth-form active">
+          <div class="form-group">
+            <label for="loginEmail">Email</label>
+            <input type="email" id="loginEmail" placeholder="Enter your email" />
+          </div>
+          <div class="form-group">
+            <label for="loginPassword">Password</label>
+            <input type="password" id="loginPassword" placeholder="Enter your password" />
+          </div>
+          <button id="loginBtn" class="primary-btn app-primary-btn" type="button">Login Now</button>
+        </div>
+
+        <div id="registerSection" class="auth-form">
+          <div class="form-group">
+            <label for="registerUsername">Username</label>
+            <input type="text" id="registerUsername" placeholder="Choose a username" />
+          </div>
+          <div class="form-group">
+            <label for="registerEmail">Email</label>
+            <input type="email" id="registerEmail" placeholder="Enter your email" />
+          </div>
+          <div class="form-group">
+            <label for="registerPassword">Password</label>
+            <input type="password" id="registerPassword" placeholder="Create a password" />
+          </div>
+          <button id="registerBtn" class="primary-btn app-primary-btn" type="button">Create Account</button>
+        </div>
+
+        <div id="authMessage" class="auth-message" aria-live="polite"></div>
       </section>
     </main>
+
+    <nav class="bottom-nav">
+      <button class="nav-item active" type="button">
+        <span>🏠</span>
+        <small>Home</small>
+      </button>
+      <button class="nav-item" type="button" data-link="dice.html">
+        <span>🎮</span>
+        <small>Games</small>
+      </button>
+      <button class="nav-item" type="button">
+        <span>👛</span>
+        <small>Wallet</small>
+      </button>
+      <button class="nav-item" type="button" id="rewardsBtn">
+        <span>🎁</span>
+        <small>Rewards</small>
+      </button>
+      <button class="nav-item" type="button" id="profileBtn">
+        <span>👤</span>
+        <small>Profile</small>
+      </button>
+    </nav>
   </div>
 
   <script type="module">
@@ -144,18 +264,14 @@
     import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'https://www.gstatic.com/firebasejs/10.12.3/firebase-auth.js';
     import { doc, setDoc } from 'https://www.gstatic.com/firebasejs/10.12.3/firebase-firestore.js';
 
-    const authCard = document.getElementById('authCard');
-    const gameSection = document.getElementById('gameSection');
-    const userSummary = document.getElementById('userSummary');
-    const authMessage = document.getElementById('authMessage');
     const loginTab = document.getElementById('loginTab');
     const registerTab = document.getElementById('registerTab');
     const loginSection = document.getElementById('loginSection');
     const registerSection = document.getElementById('registerSection');
-    const currentUsername = document.getElementById('currentUsername');
-    const headerCoins = document.getElementById('headerCoins');
-    const userAvatar = document.getElementById('userAvatar');
-    const logoutBtn = document.getElementById('logoutBtn');
+    const authMessage = document.getElementById('authMessage');
+    const walletBalance = document.getElementById('walletBalance');
+    const playNowBtn = document.getElementById('playNowBtn');
+    const authPanel = document.getElementById('authPanel');
 
     function setMessage(message = '', type = '') {
       authMessage.textContent = message;
@@ -170,23 +286,22 @@
       setMessage('');
     }
 
-    function showGame(userData = {}) {
-      authCard.style.display = 'none';
-      gameSection.style.display = 'block';
-      userSummary.style.display = 'flex';
-
-      const username = userData.username || 'Player';
+    function updateWalletDisplay(userData = {}) {
       const coins = Number(userData.coins ?? 0);
-
-      currentUsername.textContent = username;
-      headerCoins.textContent = coins;
-      userAvatar.textContent = username.charAt(0).toUpperCase();
+      walletBalance.textContent = `₹ ${coins.toLocaleString('en-IN', {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+      })}`;
     }
 
-    function showAuth() {
-      authCard.style.display = 'block';
-      gameSection.style.display = 'none';
-      userSummary.style.display = 'none';
+    function showGuest() {
+      authPanel.style.display = 'block';
+      walletBalance.textContent = '₹ 0.00';
+    }
+
+    function showUser(userData = {}) {
+      authPanel.style.display = 'block';
+      updateWalletDisplay(userData);
     }
 
     loginTab.addEventListener('click', () => switchTab(true));
@@ -240,30 +355,46 @@
       }
     });
 
-    logoutBtn.addEventListener('click', async () => {
-      try {
-        await appLogout();
-      } catch (e) {
-        setMessage(e.message || 'Logout failed.', 'error');
+    document.getElementById('dailyBonusBtn').addEventListener('click', () => {
+      alert('Daily bonus feature coming soon.');
+    });
+
+    document.getElementById('walletBtn').addEventListener('click', () => {
+      alert('Wallet feature coming soon.');
+    });
+
+    document.getElementById('rewardsBtn').addEventListener('click', () => {
+      alert('Rewards section coming soon.');
+    });
+
+    document.getElementById('profileBtn').addEventListener('click', async () => {
+      if (auth.currentUser) {
+        const doLogout = confirm('Do you want to logout?');
+        if (doLogout) await appLogout();
+      } else {
+        authPanel.scrollIntoView({ behavior: 'smooth', block: 'start' });
       }
     });
 
-    document.getElementById('dailyBonusBtn').addEventListener('click', () => {
-      alert('Daily bonus system is coming soon.');
+    playNowBtn.addEventListener('click', () => {
+      document.querySelector('.section-block')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
     });
 
-    document.getElementById('leaderboardBtn').addEventListener('click', () => {
-      alert('Leaderboard will be available soon.');
-    });
-
-    document.querySelectorAll('.game-tile').forEach((button) => {
+    document.querySelectorAll('[data-link]').forEach((button) => {
       button.addEventListener('click', () => {
         const { link } = button.dataset;
         if (link) location.href = link;
       });
     });
 
-    watchAuth(showGame, showAuth);
+    watchAuth(
+      (userData) => {
+        showUser(userData || {});
+      },
+      () => {
+        showGuest();
+      }
+    );
   </script>
 </body>
 </html>
