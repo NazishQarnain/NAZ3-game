@@ -1,126 +1,239 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8" />
-    <title>Coin Flip - NAZ3 Game</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="css/style.css" />
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet" />
+  <meta charset="UTF-8" />
+  <title>Coin Flip - NAZ3 Game</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Play Coin Flip in NAZ3 Game and win NAZ coins." />
+  <link rel="stylesheet" href="css/style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
 </head>
 <body>
-    <div class="shell game-shell">
-        <header>
-            <div class="title-block">
-                <h1>Coin Flip</h1>
-            <p>Bet <span id="betDesc">5</span> NAZ. Heads wins +<span id="winDesc">15</span>.</p>                            <div class="bet-input-group">
-              <label for="betAmount">Bet Amount:</label>
-              <input type="number" id="betAmount" min="1" value="5" />
-              <span>NAZ</span>
-            </div>
-            </div>
-            <div class="user-pill">
-                <div id="userAvatar" class="user-avatar">P</div>
-                <div class="user-meta">
-                    <span id="username">Player</span>
-                    <div class="coin-chip"><span class="coin-badge">₦</span> <span id="coinBalance">0</span></div>
-                </div>
-            </div>
-        </header>
-
-        <div class="layout">
-            <div class="play-card">
-                <div class="coin-display">
-                    <div id="coinEmoji" class="coin">🪙</div>
-                    <p class="coin-label">Heads wins</p>
-                </div>
-                <button id="playBtn" class="primary-btn">Flip (5 NAZ)</button>
-                <button onclick="goBack()" class="secondary-btn">Back</button>
-            </div>
-
-            <div class="rules-card">
-                <p class="rules-title">Rules</p>
-                <ul class="rules-list">
-                    <li>50% Heads / 50% Tails</li>
-              <li>Win: <span class="highlight">+<span id="winRule">15</span> NAZ</span></li>                </ul>
-                <div id="result" class="status info">Ready to flip</div>
-            </div>
+  <div class="shell game-shell">
+    <div class="inner">
+      <header class="play-header">
+        <div class="title-block">
+          <div class="logo-pill"><span>₦</span></div>
+          <div>
+            <h1>Coin Flip</h1>
+            <p>Pick a side, flip the coin, and grow your NAZ balance.</p>
+          </div>
         </div>
+
+        <div class="user-pill">
+          <div id="userAvatar" class="user-avatar">P</div>
+          <div class="user-meta">
+            <span id="username">Player</span>
+            <div class="coin-chip">
+              <span class="coin-badge">₦</span>
+              <span id="coinBalance">0</span>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <div class="layout">
+        <section class="play-card">
+          <span class="eyebrow">Heads or tails</span>
+          <h2 class="section-title">Make your call</h2>
+
+          <div class="stats-row">
+            <div class="stat-card">
+              <span class="lbl">Current bet</span>
+              <span class="val" id="betDesc">5</span>
+            </div>
+            <div class="stat-card">
+              <span class="lbl">Winning return</span>
+              <span class="val" id="winDesc">15</span>
+            </div>
+          </div>
+
+          <div class="form-group" style="margin-top: 16px;">
+            <label for="betAmount">Bet Amount</label>
+            <input type="number" id="betAmount" min="1" value="5" />
+          </div>
+
+          <div class="hub-actions" style="margin: 10px 0 16px;">
+            <button class="chip-btn choice-btn active" type="button" data-choice="heads">Heads</button>
+            <button class="chip-btn choice-btn" type="button" data-choice="tails">Tails</button>
+          </div>
+
+          <div class="coin-display" style="text-align:center; margin: 18px 0;">
+            <div id="coinEmoji" class="lucky-circle">🪙</div>
+            <p class="number-label" id="coinLabel">Your pick: Heads</p>
+          </div>
+
+          <button id="playBtn" class="primary-btn" type="button">Flip Coin</button>
+          <div id="resultMessage" class="status info">Choose a side and press flip.</div>
+
+          <div class="hub-actions" style="margin-top: 14px;">
+            <button id="playAgainBtn" class="chip-btn" type="button">Play Again</button>
+            <button id="goBackBtn" class="chip-btn" type="button">Back to Hub</button>
+          </div>
+        </section>
+
+        <aside class="rules-card">
+          <span class="eyebrow">Game rules</span>
+          <h2 class="rules-title">How it works</h2>
+          <ul class="rules-list">
+            <li>Enter your bet amount before flipping.</li>
+            <li>Choose <span class="highlight">Heads</span> or <span class="highlight">Tails</span>.</li>
+            <li>If your guess is correct, you win <span class="highlight">3x return</span>.</li>
+            <li>If your guess is wrong, the bet amount is deducted from your balance.</li>
+            <li>Make sure you have enough NAZ coins before playing.</li>
+          </ul>
+
+          <div class="status info" style="margin-top: 16px;">
+            Tip: Start with smaller bets and scale up after a win streak.
+          </div>
+        </aside>
+      </div>
     </div>
+  </div>
 
-    <script type="module">
-        import { auth, db } from './js/firebase-config.js';
-        import { onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.12.3/firebase-auth.js';
-        import { doc, getDoc, updateDoc } from 'https://www.gstatic.com/firebasejs/10.12.3/firebase-firestore.js';
+  <script type="module">
+    import { watchAuth } from './js/auth.js';
+    import { auth, db } from './js/firebase-config.js';
+    import {
+      doc,
+      getDoc,
+      updateDoc
+    } from 'https://www.gstatic.com/firebasejs/10.12.3/firebase-firestore.js';
 
-        const coinSpan = document.getElementById('coinBalance');
-        const resultDiv = document.getElementById('result');
-        const emoji = document.getElementById('coinEmoji');
-        const playBtn = document.getElementById('playBtn');
-        let currentUserData = null;
-        let userRef = null;
-          const betInput = document.getElementById('betAmount');
-  const betDisplay = document.getElementById('betDisplay');
-  const betDesc = document.getElementById('betDesc');
-  const winDesc = document.getElementById('winDesc');
-  const winRule = document.getElementById('winRule');
+    const usernameEl = document.getElementById('username');
+    const coinBalanceEl = document.getElementById('coinBalance');
+    const userAvatarEl = document.getElementById('userAvatar');
+    const betAmountEl = document.getElementById('betAmount');
+    const betDescEl = document.getElementById('betDesc');
+    const winDescEl = document.getElementById('winDesc');
+    const playBtn = document.getElementById('playBtn');
+    const playAgainBtn = document.getElementById('playAgainBtn');
+    const goBackBtn = document.getElementById('goBackBtn');
+    const coinEmoji = document.getElementById('coinEmoji');
+    const coinLabel = document.getElementById('coinLabel');
+    const resultMessage = document.getElementById('resultMessage');
+    const choiceButtons = document.querySelectorAll('.choice-btn');
 
-  function updateBetDisplay() {
-    const bet = parseInt(betInput.value) || 5;
-    const win = bet * 3;
-    betDisplay.textContent = bet;
-    betDesc.textContent = bet;
-    winDesc.textContent = win;
-    winRule.textContent = win;
-  }
+    let currentUser = null;
+    let currentCoins = 0;
+    let selectedChoice = 'heads';
+    let isPlaying = false;
 
-  betInput.addEventListener('input', updateBetDisplay);
-  updateBetDisplay();
+    function setStatus(message, type = 'info') {
+      resultMessage.textContent = message;
+      resultMessage.className = `status ${type}`;
+    }
 
-        const setStatus = (text, type = 'info') => {
-            resultDiv.textContent = text;
-            resultDiv.className = 'status ' + type;
-        };
+    function updateBetPreview() {
+      const bet = Math.max(1, Number(betAmountEl.value) || 1);
+      betAmountEl.value = bet;
+      betDescEl.textContent = bet;
+      winDescEl.textContent = bet * 3;
+      playBtn.textContent = `Flip Coin (${bet} NAZ)`;
+    }
 
-        onAuthStateChanged(auth, async (user) => {
-            if (!user) return window.location.href = 'index.html';
-            userRef = doc(db, 'users', user.uid);
-            const snap = await getDoc(userRef);
-            if (snap.exists()) {
-                currentUserData = snap.data();
-                document.getElementById('username').textContent = currentUserData.username || 'Player';
-                coinSpan.textContent = currentUserData.coins || 0;
-                document.getElementById('userAvatar').textContent = (currentUserData.username || 'P')[0].toUpperCase();
-            }
-        });
+    function setChoice(choice) {
+      selectedChoice = choice;
+      choiceButtons.forEach((button) => {
+        button.classList.toggle('active', button.dataset.choice === choice);
+      });
+      coinLabel.textContent = `Your pick: ${choice.charAt(0).toUpperCase() + choice.slice(1)}`;
+    }
 
-        playBtn.addEventListener('click', async () => {
-            if (currentUserData.coins < parseInt(betInput.value)) return setStatus('Not enough coins!', 'lose');
-            playBtn.disabled = true;
-            emoji.classList.add('spin');
-            setStatus('Flipping...', 'info');
-            
-            try {
-      const betAmount = parseInt(betInput.value) || 5;
-      const newCoins = currentUserData.coins - betAmount;                await updateDoc(userRef, { coins: newCoins });
-                currentUserData.coins = newCoins;
-                coinSpan.textContent = newCoins;
+    async function loadUserData(uid) {
+      const userRef = doc(db, 'users', uid);
+      const snap = await getDoc(userRef);
 
-                await new Promise(r => setTimeout(r, 800));
-                const win = Math.random() < 0.5;
-                if (win) {
-        const winTotal = currentUserData.coins + (betAmount * 3);                    await updateDoc(userRef, { coins: winTotal });
-                    currentUserData.coins = winTotal;
-                    coinSpan.textContent = winTotal;
-                    emoji.textContent = '🙂';
-        setStatus('Heads! Won +' + (betAmount * 3), 'win');                } else {
-                    emoji.textContent = '😵';
-        setStatus('Tails! Lost ' + betAmount, 'lose');                }
-            } finally {
-                playBtn.disabled = false;
-                emoji.classList.remove('spin');
-            }
-        });
-        window.goBack = () => location.href = 'index.html';
-    </script>
+      if (!snap.exists()) {
+        setStatus('User data not found.', 'error');
+        return;
+      }
+
+      const userData = snap.data();
+      currentCoins = Number(userData.coins ?? 0);
+      usernameEl.textContent = userData.username || 'Player';
+      coinBalanceEl.textContent = currentCoins;
+      userAvatarEl.textContent = (userData.username || 'P').charAt(0).toUpperCase();
+    }
+
+    async function playCoinFlip() {
+      if (!currentUser || isPlaying) return;
+
+      const bet = Math.max(1, Number(betAmountEl.value) || 0);
+
+      if (!bet || bet < 1) {
+        setStatus('Enter a valid bet amount.', 'error');
+        return;
+      }
+
+      if (bet > currentCoins) {
+        setStatus('Not enough NAZ coins for this bet.', 'error');
+        return;
+      }
+
+      isPlaying = true;
+      playBtn.disabled = true;
+      setStatus('Flipping coin...', 'info');
+      coinEmoji.classList.remove('pulse');
+      void coinEmoji.offsetWidth;
+      coinEmoji.classList.add('pulse');
+
+      const result = Math.random() < 0.5 ? 'heads' : 'tails';
+      const didWin = result === selectedChoice;
+      const updatedCoins = didWin ? currentCoins + bet * 2 : currentCoins - bet;
+
+      setTimeout(async () => {
+        coinEmoji.textContent = result === 'heads' ? '🙂' : '🦅';
+
+        try {
+          await updateDoc(doc(db, 'users', currentUser.uid), {
+            coins: updatedCoins
+          });
+
+          currentCoins = updatedCoins;
+          coinBalanceEl.textContent = currentCoins;
+
+          if (didWin) {
+            setStatus(`It was ${result}. You won ${bet * 2} NAZ profit.`, 'win');
+          } else {
+            setStatus(`It was ${result}. You lost ${bet} NAZ.`, 'lose');
+          }
+        } catch (error) {
+          setStatus(error.message || 'Failed to update coins.', 'error');
+        } finally {
+          isPlaying = false;
+          playBtn.disabled = false;
+        }
+      }, 900);
+    }
+
+    choiceButtons.forEach((button) => {
+      button.addEventListener('click', () => setChoice(button.dataset.choice));
+    });
+
+    betAmountEl.addEventListener('input', updateBetPreview);
+    playBtn.addEventListener('click', playCoinFlip);
+    playAgainBtn.addEventListener('click', () => {
+      coinEmoji.textContent = '🪙';
+      setStatus('Choose a side and press flip.', 'info');
+    });
+
+    goBackBtn.addEventListener('click', () => {
+      location.href = 'index.html';
+    });
+
+    watchAuth(
+      async (user) => {
+        currentUser = user;
+        await loadUserData(user.uid);
+      },
+      () => {
+        location.href = 'index.html';
+      }
+    );
+
+    updateBetPreview();
+    setChoice('heads');
+  </script>
 </body>
 </html>
